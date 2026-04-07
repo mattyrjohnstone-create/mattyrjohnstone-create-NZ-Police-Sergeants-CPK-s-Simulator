@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NZ Police Sergeants CPK Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b12;
+  --panel: #0d1220;
+  --panel2: #111827;
+  --border: #1e2d45;
+  --border2: #253550;
+  --blue: #1e90ff;
+  --cyan: #00d4ff;
+  --green: #00e676;
+  --red: #ff3d5a;
+  --gold: #ffc107;
+  --orange: #ff6d00;
+  --purple: #b388ff;
+  --text: #e8edf5;
+  --muted: #4a6080;
+  --muted2: #6b80a0;
+  --font-h: 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-b: 'Barlow', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;overflow-x:hidden;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(30,144,255,.08) 0%,transparent 60%),
+  repeating-linear-gradient(0deg,transparent,transparent 49px,rgba(30,60,100,.06) 50px),
+  repeating-linear-gradient(90deg,transparent,transparent 49px,rgba(30,60,100,.06) 50px)}
+/* ── HERO HEADER ── */
+.site-header{background:var(--panel);border-bottom:1px solid var(--border);padding:1.1rem 1.5rem 1rem;text-align:center;position:relative;overflow:hidden}
+.site-header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1e90ff,#00d4ff,#00e676,#00d4ff,#1e90ff);background-size:200% 100%;animation:header-shine 4s linear infinite}
+@keyframes header-shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.site-header-inner{max-width:900px;margin:0 auto;position:relative}
+.site-badge{font-family:var(--font-mono);font-size:.62rem;letter-spacing:3px;color:var(--cyan);border:1px solid rgba(0,212,255,.3);padding:.25rem .9rem;border-radius:20px;background:rgba(0,212,255,.05);display:inline-block;margin-bottom:.6rem}
+.site-title{font-family:var(--font-h);font-size:clamp(1.4rem,5vw,2.4rem);font-weight:700;letter-spacing:3px;color:var(--text);line-height:1.1;margin-bottom:.3rem}
+.site-title .accent{color:var(--cyan)}
+.site-sub{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:1.5px}
+.version-badge{position:absolute;top:0;right:0;font-family:var(--font-mono);font-size:.6rem;color:var(--muted);background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.2rem .5rem;letter-spacing:1px;cursor:pointer;transition:all .15s}
+.version-badge:hover{border-color:var(--cyan);color:var(--cyan)}
+.site-footer{background:var(--panel);border-top:1px solid var(--border);padding:.85rem 1.5rem;text-align:center}
+.footer-contact{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:.5px;line-height:1.8}
+.footer-contact strong{color:var(--cyan)}
+.footer-saves{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);letter-spacing:.5px;margin-top:.3rem}
+.footer-saves span{color:var(--green)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;z-index:300;padding:1rem}
+.modal-overlay.hidden{display:none}
+.changelog-box{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:2rem;max-width:480px;width:100%;position:relative;overflow:hidden;max-height:90vh;overflow-y:auto}
+.changelog-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green))}
+.changelog-title{font-family:var(--font-h);font-size:1.5rem;font-weight:700;letter-spacing:2px;color:var(--cyan);margin-bottom:.25rem}
+.changelog-version{font-family:var(--font-mono);font-size:.68rem;color:var(--gold);letter-spacing:2px;margin-bottom:1.25rem}
+.changelog-section-title{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:2px;margin-bottom:.5rem}
+.changelog-item{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.4rem;font-size:.85rem;line-height:1.5}
+.changelog-item .ci-dot{color:var(--green);flex-shrink:0}
+.changelog-dismiss{width:100%;margin-top:1.25rem;font-family:var(--font-h);font-size:1rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:var(--bg);border:none;padding:.7rem;border-radius:6px;cursor:pointer;transition:all .15s}
+.changelog-dismiss:hover{opacity:.85}
+
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ── NAV TABS ── */
+.nav-tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.nav-tab{flex:1;font-family:var(--font-h);font-size:.85rem;font-weight:600;letter-spacing:1.5px;color:var(--muted2);
+  background:none;border:none;border-bottom:2px solid transparent;padding:.7rem .5rem;cursor:pointer;transition:all .15s;text-align:center}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+
+/* ── MAIN CONTENT AREA ── */
+.main-wrap{flex:1;max-width:900px;margin:0 auto;width:100%;padding:1.5rem 1rem}
+
+/* ── RANK HERO ── */
+.rank-hero{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.rank-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rank-color,var(--blue)),var(--cyan))}
+.rank-row{display:flex;align-items:center;gap:1.25rem}
+.rank-badge-big{font-size:3rem;line-height:1;flex-shrink:0}
+.rank-info{flex:1}
+.rank-prestige{font-family:var(--font-mono);font-size:.65rem;color:var(--gold);letter-spacing:2px;margin-bottom:.2rem}
+.rank-title{font-family:var(--font-h);font-size:1.8rem;font-weight:700;letter-spacing:2px;line-height:1;color:var(--text)}
+.rank-subtitle{font-family:var(--font-mono);font-size:.7rem;color:var(--muted2);margin-top:.3rem;letter-spacing:1px}
+.xp-row{display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
+.xp-label{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:1px}
+.xp-val{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan)}
+.xp-bar-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:.4rem;position:relative}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--rank-color,var(--blue)),var(--cyan));border-radius:4px;transition:width .6s ease}
+.xp-glow{position:absolute;top:0;height:100%;width:30px;background:rgba(255,255,255,.3);border-radius:4px;animation:xp-shimmer 2s infinite;pointer-events:none}
+@keyframes xp-shimmer{0%{left:-30px}100%{left:110%}}
+
+/* ── QUICK STATS ── */
+.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+.qs{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center}
+.qs-val{font-family:var(--font-h);font-size:1.6rem;font-weight:700;display:block;color:var(--cyan)}
+.qs-lbl{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:1px;margin-top:.2rem}
+
+/* ── SECTION HEADERS ── */
+.section-hdr{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:2px;margin-bottom:.75rem;margin-top:1.5rem;display:flex;align-items:center;gap:.75rem}
+.section-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── DAILY BOX ── */
+.daily-box{background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.daily-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.daily-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;letter-spacing:1px;color:var(--gold)}
+.daily-reset{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:1px}
+.daily-scores{display:grid;gap:.4rem}
+.daily-row{display:flex;align-items:center;gap.75rem;padding:.4rem 0;border-bottom:1px solid var(--border)}
+.daily-row:last-child{border-bottom:none}
+.daily-pos{font-family:var(--font-mono);font-size:.75rem;color:var(--muted);min-width:24px}
+.daily-pos.gold-pos{color:var(--gold)}
+.daily-pos.silver-pos{color:#c0c0c0}
+.daily-pos.bronze-pos{color:#cd7f32}
+.daily-name{flex:1;font-size:.85rem;font-family:var(--font-mono);color:var(--text);letter-spacing:.5px}
+.daily-score{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan)}
+.daily-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);min-width:40px;text-align:right}
+
+/* ── ACHIEVEMENTS ── */
+.achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.achv{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.8rem;text-align:center;transition:all .2s}
+.achv.unlocked{border-color:var(--gold);background:rgba(255,193,7,.05)}
+.achv.locked{opacity:.4;filter:grayscale(1)}
+.achv-icon{font-size:1.6rem;margin-bottom:.4rem}
+.achv-name{font-family:var(--font-h);font-size:.85rem;font-weight:600;letter-spacing:.5px;color:var(--text)}
+.achv-desc{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.2rem;letter-spacing:.5px}
+
+/* ── TOPIC PERFORMANCE ── */
+.topic-table{display:grid;gap:.5rem}
+.topic-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:.75rem 1rem;display:flex;align-items:center;gap.75rem;gap:.75rem}
+.topic-name{font-size:.85rem;font-weight:500;min-width:160px}
+.topic-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.topic-fill{height:100%;border-radius:3px}
+.topic-pct{font-family:var(--font-mono);font-size:.72rem;min-width:38px;text-align:right}
+.topic-count{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);min-width:50px;text-align:right}
+
+/* ── SCORE HISTORY ── */
+.score-history{display:grid;gap:.4rem}
+.score-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem}
+.score-date{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);min-width:90px}
+.score-mode{font-family:var(--font-mono);font-size:.65rem;padding:.15rem .4rem;border-radius:3px;min-width:65px;text-align:center}
+.score-topic{font-size:.8rem;flex:1;color:var(--muted2)}
+.score-val{font-family:var(--font-h);font-size:1rem;font-weight:700;min-width:50px;text-align:right}
+.score-xp{font-family:var(--font-mono);font-size:.65rem;color:var(--purple);min-width:55px;text-align:right}
+
+/* ── SIZE SCORE RECORDS ── */
+.size-records{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem}
+.sr{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center}
+.sr-size{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:1px;margin-bottom:.3rem}
+.sr-val{font-family:var(--font-h);font-size:1.8rem;font-weight:700;color:var(--gold);display:block}
+.sr-date{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.2rem}
+
+/* ── PLAY TAB ── */
+.play-section{margin-bottom:1.25rem}
+.play-label{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:2px;margin-bottom:.6rem}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.pill{font-family:var(--font-mono);font-size:.72rem;padding:.35rem .8rem;border-radius:4px;border:1px solid var(--border2);background:var(--panel);color:var(--muted2);cursor:pointer;transition:all .15s;letter-spacing:.5px}
+.pill:hover{border-color:var(--blue);color:var(--text)}
+.pill.sel{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.08)}
+.pill.all-pill.sel{border-color:var(--blue);color:var(--blue);background:rgba(30,144,255,.1)}
+
+.mode-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1rem}
+@media(min-width:600px){.mode-cards{grid-template-columns:repeat(4,1fr)}}
+.mode-card{background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:.9rem;text-align:center;cursor:pointer;transition:all .2s}
+.mode-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.mode-card.sel{border-color:var(--cyan);background:rgba(0,212,255,.07)}
+.mode-icon{font-size:1.6rem;margin-bottom:.3rem}
+.mode-name{font-family:var(--font-h);font-size:.9rem;font-weight:700;letter-spacing:1px}
+.mode-desc{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.2rem;letter-spacing:.5px}
+
+.btn-start-big{width:100%;font-family:var(--font-h);font-size:1.4rem;font-weight:700;letter-spacing:3px;color:var(--bg);
+  background:linear-gradient(135deg,var(--blue),var(--cyan));border:none;padding:1rem;border-radius:8px;
+  cursor:pointer;transition:all .2s;box-shadow:0 0 30px rgba(30,144,255,.3);position:relative;overflow:hidden;margin-top:.5rem}
+.btn-start-big::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .4s}
+.btn-start-big:hover::after{left:150%}
+.btn-start-big:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(30,144,255,.5)}
+.btn-start-big:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+
+/* ── QUIZ SCREEN ── */
+#screen-quiz{padding:0}
+.quiz-topbar{display:flex;align-items:center;padding:.6rem 1rem;background:var(--panel);border-bottom:1px solid var(--border);gap:.75rem;position:sticky;top:0;z-index:10}
+.qtb-back{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.3rem .7rem;cursor:pointer;letter-spacing:.5px;transition:all .15s;white-space:nowrap}
+.qtb-back:hover{border-color:var(--red);color:var(--red)}
+.qtb-center{flex:1}
+.timer-bar-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:.3rem}
+.timer-bar-fill{height:100%;border-radius:2px;transition:width .1s linear,background .5s;background:var(--cyan)}
+.qtb-row2{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.65rem;color:var(--muted)}
+.qtb-right{display:flex;gap:.75rem;align-items:center;flex-shrink:0}
+.streak-badge{font-family:var(--font-h);font-size:1rem;font-weight:700;color:var(--gold);white-space:nowrap}
+.xp-badge{font-family:var(--font-mono);font-size:.7rem;color:var(--purple);white-space:nowrap}
+
+.quiz-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 1rem;max-width:780px;margin:0 auto;width:100%}
+.q-meta{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:.75rem}
+.q-number{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:1px}
+.q-category{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);background:var(--panel);border:1px solid var(--border);padding:.2rem .6rem;border-radius:3px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.question-box{width:100%;background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:1.5rem;margin-bottom:1.25rem;font-size:.97rem;line-height:1.65;color:var(--text);position:relative;overflow:hidden}
+.question-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+
+.options-grid{width:100%;display:grid;gap:.55rem}
+.opt-btn{width:100%;background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:.9rem 1.1rem;display:flex;align-items:flex-start;gap:.85rem;cursor:pointer;text-align:left;transition:all .18s;color:var(--text);font-family:var(--font-b);font-size:.9rem;line-height:1.5}
+.opt-btn:hover:not(:disabled){border-color:var(--blue);background:rgba(30,144,255,.07);transform:translateX(3px)}
+.opt-letter{font-family:var(--font-mono);font-size:.72rem;font-weight:600;color:var(--muted);min-width:20px;padding-top:2px;flex-shrink:0}
+.opt-text{flex:1}
+.result-icon{margin-left:auto;font-size:1rem;flex-shrink:0}
+.opt-btn.correct{border-color:var(--green)!important;background:rgba(0,230,118,.1)!important;animation:correct-flash .4s ease}
+.opt-btn.correct .opt-letter{color:var(--green)}
+.opt-btn.wrong{border-color:var(--red)!important;background:rgba(255,61,90,.1)!important;animation:wrong-shake .3s ease}
+.opt-btn.wrong .opt-letter{color:var(--red)}
+.opt-btn.reveal-correct{border-color:var(--green)!important;background:rgba(0,230,118,.06)!important}
+.opt-btn.reveal-correct .opt-letter{color:var(--green)}
+@keyframes correct-flash{0%{transform:scale(1)}30%{transform:scale(1.01)}100%{transform:scale(1)}}
+@keyframes wrong-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.feedback-bar{width:100%;border-radius:8px;padding:.9rem 1.1rem;margin-top:.75rem;font-size:.87rem;line-height:1.55;display:none;border:1px solid transparent}
+.feedback-bar.correct-fb{display:block;background:rgba(0,230,118,.08);border-color:rgba(0,230,118,.3);color:var(--green)}
+.feedback-bar.wrong-fb{display:block;background:rgba(255,61,90,.08);border-color:rgba(255,61,90,.3);color:var(--text)}
+.fb-label{font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:1px;margin-bottom:.3rem;display:block}
+.feedback-bar.correct-fb .fb-label{color:var(--green)}
+.feedback-bar.wrong-fb .fb-label{color:var(--red)}
+.xp-gained{font-family:var(--font-mono);font-size:.68rem;color:var(--purple);margin-top:.3rem}
+
+.btn-next{margin-top:1rem;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:var(--blue);color:white;border:none;padding:.65rem 2.5rem;border-radius:6px;cursor:pointer;transition:all .15s;display:none}
+.btn-next:hover{background:var(--cyan);color:var(--bg);transform:translateY(-1px)}
+.btn-next.vis{display:inline-block}
+
+/* ── RESULTS ── */
+#screen-results{align-items:center;justify-content:center;padding:2rem 1rem;min-height:100vh}
+.results-card{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:2rem;max-width:620px;width:100%;position:relative;overflow:hidden}
+.results-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green))}
+.results-grade{font-family:var(--font-h);font-size:4.5rem;font-weight:700;text-align:center;letter-spacing:4px;display:block;line-height:1;margin-bottom:.2rem}
+.results-pct{font-family:var(--font-mono);font-size:.82rem;text-align:center;color:var(--muted2);margin-bottom:1.5rem;letter-spacing:2px}
+.new-best{font-family:var(--font-h);font-size:.95rem;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:.75rem;display:none;animation:pulse-gold 1s ease infinite alternate}
+@keyframes pulse-gold{from{opacity:.7}to{opacity:1}}
+.results-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1.5rem}
+.rs{text-align:center;border:1px solid var(--border);border-radius:6px;padding:.65rem;background:var(--panel2)}
+.rs-val{font-family:var(--font-h);font-size:1.5rem;font-weight:700;display:block}
+.rs-lbl{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);letter-spacing:1px}
+/* XP rank up in results */
+.rank-up-box{background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.3);border-radius:8px;padding:.9rem;text-align:center;margin-bottom:1.25rem;display:none}
+.rank-up-box .ru-label{font-family:var(--font-mono);font-size:.65rem;color:var(--gold);letter-spacing:2px}
+.rank-up-box .ru-rank{font-family:var(--font-h);font-size:1.6rem;font-weight:700;color:var(--gold);letter-spacing:2px}
+/* breakdown */
+.breakdown{margin-bottom:1.25rem}
+.breakdown-title{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:2px;margin-bottom:.6rem}
+.breakdown-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.4rem}
+.br-name{font-size:.76rem;min-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.br-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.br-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.br-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);min-width:34px;text-align:right}
+/* results buttons */
+.results-btns{display:flex;gap:.6rem;flex-wrap:wrap}
+.btn-ra{flex:1;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:var(--bg);border:none;padding:.65rem;border-radius:6px;cursor:pointer;transition:all .15s;min-width:120px}
+.btn-ra:hover{opacity:.85;transform:translateY(-1px)}
+.btn-rb{flex:1;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:var(--panel2);color:var(--text);border:1px solid var(--border2);padding:.65rem;border-radius:6px;cursor:pointer;transition:all .15s;min-width:120px}
+.btn-rb:hover{border-color:var(--blue)}
+.btn-wrong-only{width:100%;font-family:var(--font-h);font-size:.85rem;font-weight:600;letter-spacing:1px;background:rgba(255,61,90,.1);color:var(--red);border:1px solid rgba(255,61,90,.3);padding:.55rem;border-radius:6px;cursor:pointer;transition:all .15s;margin-top:.5rem}
+.btn-wrong-only:hover{background:rgba(255,61,90,.2)}
+
+/* ── FLOATING POPUPS ── */
+.xp-pop,.streak-pop,.rank-pop{position:fixed;pointer-events:none;z-index:999;animation:xp-float 1.3s ease forwards}
+.xp-pop{font-family:var(--font-h);font-size:1.3rem;font-weight:700;color:var(--purple)}
+.streak-pop{font-family:var(--font-h);font-size:1.7rem;font-weight:700;color:var(--gold);text-align:center}
+.rank-pop{font-family:var(--font-h);font-size:1.5rem;font-weight:700;color:var(--gold);text-align:center;background:var(--panel);border:2px solid var(--gold);border-radius:8px;padding:.5rem 1.25rem;letter-spacing:2px}
+@keyframes xp-float{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(1.2)}}
+
+/* ── CONFIRM QUIT ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;display:none}
+.overlay.vis{display:flex}
+.confirm-box{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:2rem;text-align:center;max-width:340px;width:90%}
+.confirm-box h3{font-family:var(--font-h);font-size:1.4rem;font-weight:700;letter-spacing:2px;margin-bottom:.5rem;color:var(--red)}
+.confirm-box p{font-family:var(--font-mono);font-size:.75rem;color:var(--muted2);margin-bottom:1.5rem;letter-spacing:.5px;line-height:1.6}
+.confirm-btns{display:flex;gap:.75rem;justify-content:center}
+.cbtn{font-family:var(--font-h);font-size:.9rem;font-weight:700;letter-spacing:1px;border:none;padding:.6rem 1.5rem;border-radius:6px;cursor:pointer;transition:all .15s}
+.cbtn.danger{background:var(--red);color:white}
+.cbtn.danger:hover{opacity:.85}
+.cbtn.cancel{background:var(--panel2);color:var(--text);border:1px solid var(--border2)}
+.cbtn.cancel:hover{border-color:var(--blue)}
+
+/* ── CONFETTI ── */
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:999;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ── MISC ── */
+.empty-state{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);text-align:center;padding:2rem;letter-spacing:1px}
+.badge-chip{font-family:var(--font-mono);font-size:.62rem;padding:.15rem .5rem;border-radius:3px;letter-spacing:.5px}
+
+@media(max-width:600px){
+  .quick-stats{grid-template-columns:repeat(2,1fr)}
+  .results-stats{grid-template-columns:repeat(2,1fr)}
+  .rank-title{font-size:1.4rem}
+  .quiz-topbar{gap:.4rem}
+  .question-box{font-size:.88rem;padding:1.1rem}
+  .opt-btn{padding:.7rem .9rem;font-size:.84rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CONFIRM QUIT OVERLAY ══ -->
+<div class="overlay" id="quit-overlay">
+  <div class="confirm-box">
+    <h3>QUIT QUIZ?</h3>
+    <p>You'll forfeit all XP and progress<br>from this session. Are you sure?</p>
+    <div class="confirm-btns">
+      <button class="cbtn cancel" onclick="closeQuit()">KEEP GOING</button>
+      <button class="cbtn danger" onclick="confirmQuit()">QUIT</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHANGELOG MODAL ══ -->
+<div class="modal-overlay hidden" id="changelog-modal">
+  <div class="changelog-box">
+    <div class="changelog-title">WHAT'S NEW</div>
+    <div class="changelog-version">VERSION 2.1 — NZ POLICE SGT CPK SIMULATOR</div>
+    <div class="changelog-section-title">NEW IN THIS VERSION</div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Full site title and branding added to the home screen</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Version badge — always know which version you're running</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Changelog popup on first load after each update</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Footer with contact/feedback info</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Progress saves automatically in your browser — your rank, XP and history persist every visit</span></div>
+    <div style="margin-top:1rem" class="changelog-section-title">PREVIOUSLY ADDED</div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Full XP &amp; NZ Police rank progression system (Recruit → Commissioner)</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Prestige system, achievements, daily scores &amp; all-time records</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Topic performance analysis &amp; weak spot tracking</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Practice, Timed, Exam Sim &amp; Weak Spots game modes</span></div>
+    <button class="changelog-dismiss" onclick="dismissChangelog()">LET'S GO →</button>
+  </div>
+</div>
+
+<!-- ══════════════ HOME SCREEN ══════════════ -->
+<div id="screen-home" class="screen active">
+
+  <!-- SITE HEADER -->
+  <div class="site-header">
+    <div class="site-header-inner">
+      <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.1</button>
+      <div class="site-badge">NEW ZEALAND POLICE · SERGEANT PROMOTION</div>
+      <div class="site-title">NZ Police <span class="accent">Sergeants</span> CPK Simulator</div>
+      <div class="site-sub">CORE POLICING KNOWLEDGE · MULTI-CHOICE EXAM PRACTICE · 376 QUESTIONS ACROSS 14 TOPICS</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="homeTab('play')">PLAY</button>
+    <button class="nav-tab" onclick="homeTab('profile')">PROFILE</button>
+    <button class="nav-tab" onclick="homeTab('scores')">SCORES</button>
+    <button class="nav-tab" onclick="homeTab('stats')">ANALYSIS</button>
+  </div>
+
+  <!-- PLAY TAB -->
+  <div class="main-wrap" id="tab-play">
+    <div class="play-section">
+      <div class="play-label">SELECT TOPICS</div>
+      <div class="pill-row" id="deck-pills"></div>
+    </div>
+    <div class="play-section">
+      <div class="play-label">QUESTION COUNT</div>
+      <div class="pill-row" id="q-count-pills">
+        <button class="pill" data-q="10" onclick="selectQ(this)">10</button>
+        <button class="pill sel" data-q="20" onclick="selectQ(this)">20</button>
+        <button class="pill" data-q="30" onclick="selectQ(this)">30</button>
+        <button class="pill" data-q="40" onclick="selectQ(this)">40</button>
+        <button class="pill" data-q="50" onclick="selectQ(this)">50</button>
+        <button class="pill" data-q="75" onclick="selectQ(this)">75</button>
+        <button class="pill" data-q="100" onclick="selectQ(this)">100</button>
+        <button class="pill" data-q="150" onclick="selectQ(this)">150</button>
+        <button class="pill" data-q="0" onclick="selectQ(this)">ALL</button>
+      </div>
+    </div>
+    <div class="play-section">
+      <div class="play-label">GAME MODE</div>
+      <div class="mode-cards">
+        <div class="mode-card sel" data-mode="practice" onclick="selectMode(this)">
+          <div class="mode-icon">📝</div>
+          <div class="mode-name">PRACTICE</div>
+          <div class="mode-desc">Instant feedback · no timer</div>
+        </div>
+        <div class="mode-card" data-mode="timed" onclick="selectMode(this)">
+          <div class="mode-icon">⏱️</div>
+          <div class="mode-name">TIMED</div>
+          <div class="mode-desc">30s per question</div>
+        </div>
+        <div class="mode-card" data-mode="exam" onclick="selectMode(this)">
+          <div class="mode-icon">🎯</div>
+          <div class="mode-name">EXAM SIM</div>
+          <div class="mode-desc">No feedback til the end</div>
+        </div>
+        <div class="mode-card" data-mode="weak" onclick="selectMode(this)">
+          <div class="mode-icon">🔁</div>
+          <div class="mode-name">WEAK SPOTS</div>
+          <div class="mode-desc">Your worst topics first</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-start-big" id="btn-start" onclick="startQuiz()">START QUIZ →</button>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div class="main-wrap" id="tab-profile" style="display:none">
+    <div class="rank-hero" id="rank-hero"></div>
+    <div class="quick-stats">
+      <div class="qs"><span class="qs-val" id="qs-played">0</span><div class="qs-lbl">QUIZZES</div></div>
+      <div class="qs"><span class="qs-val" id="qs-best">—</span><div class="qs-lbl">BEST %</div></div>
+      <div class="qs"><span class="qs-val" id="qs-streak">0</span><div class="qs-lbl">BEST STREAK</div></div>
+      <div class="qs"><span class="qs-val" id="qs-xp">0</span><div class="qs-lbl">TOTAL XP</div></div>
+    </div>
+    <div class="section-hdr">ACHIEVEMENTS</div>
+    <div class="achievements-grid" id="achievements-grid"></div>
+  </div>
+
+  <!-- SCORES TAB -->
+  <div class="main-wrap" id="tab-scores" style="display:none">
+    <div class="section-hdr">TODAY'S SESSIONS <span id="daily-reset-lbl" style="color:var(--muted);font-size:.6rem;margin-left:.5rem"></span></div>
+    <div class="daily-box" id="daily-box"></div>
+
+    <div class="section-hdr">ALL-TIME BEST BY QUIZ SIZE</div>
+    <div class="size-records" id="size-records"></div>
+
+    <div class="section-hdr">RECENT HISTORY</div>
+    <div class="score-history" id="score-history"></div>
+  </div>
+
+  <!-- ANALYSIS TAB -->
+  <div class="main-wrap" id="tab-stats" style="display:none">
+    <div class="section-hdr">TOPIC PERFORMANCE</div>
+    <div class="topic-table" id="topic-table"></div>
+    <div class="section-hdr">RECOMMENDED FOCUS</div>
+    <div id="focus-box"></div>
+  </div>
+
+  <!-- SITE FOOTER -->
+  <div class="site-footer">
+    <div class="site-footer-inner">
+      <div class="footer-contact">
+        Any improvements, suggestions or mistakes? Please reach out to <strong>MJQD53</strong>
+      </div>
+      <div class="footer-saves"><span>●</span> Your progress, rank &amp; XP save automatically in this browser · No account needed</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ QUIZ SCREEN ══════════════ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-topbar">
+    <button class="qtb-back" onclick="tryQuit()">✕ QUIT</button>
+    <div class="qtb-center">
+      <div class="timer-bar-track"><div class="timer-bar-fill" id="timer-bar" style="width:100%"></div></div>
+      <div class="qtb-row2">
+        <span id="q-progress-txt">Q 1 / 20</span>
+        <span id="timer-txt"></span>
+      </div>
+    </div>
+    <div class="qtb-right">
+      <div class="xp-badge" id="xp-display">0 XP</div>
+      <div class="streak-badge">🔥<span id="streak-display">0</span></div>
+    </div>
+  </div>
+  <div class="quiz-body">
+    <div class="q-meta">
+      <div class="q-number" id="q-number">QUESTION 1</div>
+      <div class="q-category" id="q-category"></div>
+    </div>
+    <div class="question-box" id="question-box"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback-bar" id="feedback-bar"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">NEXT →</button>
+  </div>
+</div>
+
+<!-- ══════════════ RESULTS SCREEN ══════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-card">
+    <div class="new-best" id="new-best">⭐ NEW PERSONAL BEST!</div>
+    <span class="results-grade" id="results-grade"></span>
+    <div class="results-pct" id="results-pct"></div>
+    <div class="rank-up-box" id="rank-up-box">
+      <div class="ru-label">RANK UP!</div>
+      <div class="ru-rank" id="ru-rank-name"></div>
+    </div>
+    <div class="results-stats">
+      <div class="rs"><span class="rs-val" id="rs-correct" style="color:var(--green)">0</span><div class="rs-lbl">CORRECT</div></div>
+      <div class="rs"><span class="rs-val" id="rs-wrong" style="color:var(--red)">0</span><div class="rs-lbl">WRONG</div></div>
+      <div class="rs"><span class="rs-val" id="rs-streak" style="color:var(--gold)">0</span><div class="rs-lbl">BEST STREAK</div></div>
+      <div class="rs"><span class="rs-val" id="rs-xp" style="color:var(--purple)">0</span><div class="rs-lbl">XP EARNED</div></div>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="results-btns">
+      <button class="btn-ra" onclick="retryQuiz()">TRY AGAIN</button>
+      <button class="btn-rb" onclick="goHome()">MENU</button>
+    </div>
+    <button class="btn-wrong-only" id="btn-wrong-only" onclick="retryWrong()">🔁 RETRY WRONG ANSWERS</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// RANK & XP SYSTEM
+// ═══════════════════════════════════════════════════
+const RANKS = [
+  // Every 10 levels = rank up in Police hierarchy
+  // level 1-9 → Recruit; 10-19 → Probationary Constable; etc.
+  {level:1,  title:"Recruit",                  icon:"👤", color:"#6b80a0", xpPerLevel:100},
+  {level:10, title:"Probationary Constable",   icon:"🔵", color:"#4a9eff", xpPerLevel:200},
+  {level:20, title:"Constable",                icon:"🔵", color:"#1e90ff", xpPerLevel:350},
+  {level:30, title:"Senior Constable",         icon:"🟦", color:"#00c4ff", xpPerLevel:550},
+  {level:40, title:"Sergeant",                 icon:"🟨", color:"#ffc107", xpPerLevel:800},
+  {level:50, title:"Senior Sergeant",          icon:"🟧", color:"#ff9800", xpPerLevel:1100},
+  {level:60, title:"Inspector",                icon:"🔶", color:"#ff6d00", xpPerLevel:1500},
+  {level:70, title:"Superintendent",           icon:"🔴", color:"#f44336", xpPerLevel:2000},
+  {level:80, title:"Assistant Commissioner",   icon:"⭐", color:"#e91e63", xpPerLevel:2800},
+  {level:90, title:"Deputy Commissioner",      icon:"🌟", color:"#d4af37", xpPerLevel:3800},
+  {level:100,title:"Commissioner",             icon:"👑", color:"#ffd700", xpPerLevel:5000},
+];
+
+const ACHIEVEMENTS = [
+  {id:"first_quiz",   icon:"🎯", name:"First Steps",       desc:"Complete your first quiz",            check:s=>s.played>=1},
+  {id:"streak5",      icon:"🔥", name:"On Fire",           desc:"Get a 5-question streak",             check:s=>s.bestStreak>=5},
+  {id:"streak10",     icon:"🔥", name:"Inferno",           desc:"Get a 10-question streak",            check:s=>s.bestStreak>=10},
+  {id:"streak20",     icon:"🌋", name:"Unstoppable",       desc:"Get a 20-question streak",            check:s=>s.bestStreak>=20},
+  {id:"perfect",      icon:"💎", name:"Flawless",          desc:"Score 100% on any quiz",              check:s=>s.hasPerfect},
+  {id:"score90",      icon:"🥇", name:"Gold Standard",     desc:"Score 90%+ on a 20+ question quiz",   check:s=>s.has90on20},
+  {id:"played10",     icon:"📚", name:"Studious",          desc:"Complete 10 quizzes",                 check:s=>s.played>=10},
+  {id:"played50",     icon:"📖", name:"Dedicated",         desc:"Complete 50 quizzes",                 check:s=>s.played>=50},
+  {id:"xp1000",       icon:"⚡", name:"XP Hunter",         desc:"Earn 1,000 total XP",                 check:s=>s.totalXP>=1000},
+  {id:"xp10000",      icon:"⚡", name:"XP Master",         desc:"Earn 10,000 total XP",                check:s=>s.totalXP>=10000},
+  {id:"aos",          icon:"🔫", name:"A.O.S. Trained",    desc:"Complete a Firearms quiz at 80%+",    check:s=>s.firearms80},
+  {id:"delta",        icon:"🐕", name:"Delta Handler",     desc:"Score 100% on any Drugs quiz",        check:s=>s.drugsPerfect},
+  {id:"soco",         icon:"🔬", name:"SOCO",              desc:"Score 90%+ on Evidence",              check:s=>s.evidence90},
+  {id:"nightshift",   icon:"🌙", name:"Night Shift",       desc:"Complete a quiz after 10pm",          check:s=>s.nightShift},
+  {id:"speed",        icon:"⚡", name:"Speed Demon",       desc:"Answer 10 timed Qs correctly",        check:s=>s.timedCorrect>=10},
+  {id:"commissioner", icon:"👑", name:"Commissioner",      desc:"Reach level 100",                     check:s=>s.level>=100},
+  {id:"prestige1",    icon:"🌠", name:"Prestige I",        desc:"Prestige for the first time",         check:s=>s.prestige>=1},
+  {id:"prestige3",    icon:"🌌", name:"Legend",            desc:"Prestige 3 times",                    check:s=>s.prestige>=3},
+];
+
+// ═══════════════════════════════════════════════════
+// DATA (all questions)
+// ═══════════════════════════════════════════════════
+const DECKS = [
+  {id:0,name:"Oranga Tamariki",short:"OT Act",color:"#00d4ff",cards:[
+    {q:"What is the care and protection age under the Oranga Tamariki Act?",a:"12–14 years of age.",w:["10–16 years of age","Under 17 years of age","Under 18 years of age"]},
+    {q:"Section 39(1) — A Place of Safety Warrant may be issued by whom, on what grounds?",a:"Any district court judge (or issuing officer) satisfied on reasonable grounds that a child or young person is suffering, or is likely to suffer ill-treatment, neglect, deprivation, abuse or harm.",w:["A Sergeant or above satisfied on RG of imminent danger","Any constable who has RGB of abuse or harm","An inspector or above, on application by a social worker"]},
+    {q:"Section 39(3) OT Act — With a Place of Safety Warrant, a constable may do what?",a:"Enter and search by force if necessary, remove or detain the child by force if necessary, or direct a Medical Superintendent to keep the child in hospital.",w:["Only enter and search without the use of force","Arrest the child's parents and remove the child to Police custody","Refer the matter to a Youth Aid Officer for follow-up"]},
+    {q:"Section 42 OT Act — A constable may search without a warrant when what condition is met?",a:"The constable believes on reasonable grounds that it is critically necessary to protect a child or young person from injury or death.",w:["The constable suspects the child may be at risk of neglect","A social worker has requested Police assistance","The constable has RGB that a child is unaccompanied in a public place"]},
+    {q:"Section 42(2) OT Act — After entering under s42, what must a constable do within 3 days?",a:"Furnish a report to the Commissioner of Police.",w:["Notify Oranga Tamariki and complete an event report","Brief the duty inspector and complete a use of force form","Notify the Family Court and the local OT office"]},
+    {q:"Section 48 OT Act — A constable may take a CYP found unaccompanied when?",a:"Where the CYP is found unaccompanied by a parent/guardian in a situation where their physical or mental health is being, or is likely to be, impaired.",w:["Whenever a CYP is found alone in a public place after 10pm","Whenever a CYP appears to be under the influence of alcohol or drugs","When a CYP has been reported missing to Police"]},
+    {q:"Section 208 OT Act — How many principles guide handling youth offenders?",a:"7 principles.",w:["5 principles","4 principles","10 principles"]},
+    {q:"Section 208 OT Act — Which is one of the 7 principles?",a:"CYP should be kept in the COMMUNITY where practicable and safe.",w:["CYP must always be brought before the Youth Court","Criminal proceedings are always preferred over alternatives","CYP may be detained in Police custody for up to 48 hours without charge"]},
+    {q:"Section 214 OT Act — Grounds for arrest of a CYP (PEEP)?",a:"Proceeding by summons would not achieve purpose; Ensure court appearance; Evidence preservation; Prevent further offending.",w:["Reasonable grounds to suspect the CYP committed any offence","The nature of the offence alone justifies arrest","The CYP has previously been before the Youth Court"]},
+    {q:"Section 214A — A CYP may be arrested for breach of bail when?",a:"The CYP has breached a bail condition AND has on 2 or more previous occasions breached a condition of bail.",w:["The CYP has breached bail on any one occasion","The CYP has failed to appear in court twice","The CYP has committed a new offence while on bail"]},
+    {q:"Who must authorise the arrest of a CYP for breach of bail under s214A?",a:"A Youth Aid Sergeant in the first instance, or in their absence a supervising sergeant (or above) or a qualified Youth Aid Officer.",w:["Any constable may arrest without authorisation","An inspector or above must authorise the arrest","The on-call prosecutor must approve the arrest"]},
+    {q:"Section 218 OT Act — In what manner must a CYP's rights be given?",a:"In a manner and language appropriate to the age and level of understanding of the CYP.",w:["In writing only, witnessed by an adult","Via a standard rights card read verbatim","Through a nominated person only"]},
+    {q:"Section 219 OT Act — Rights don't need to be re-given if advised within?",a:"No earlier than 1 hour prior.",w:["No earlier than 30 minutes prior","No earlier than 2 hours prior","No earlier than 3 hours prior"]},
+    {q:"Section 222 OT Act — On what grounds can a nominated person be refused?",a:"When you believe the nominated person is likely to pervert the course of justice, or they cannot be located and reasonable measures have been taken.",w:["If they are a family member of the victim","If they do not hold a valid ID","If they are under 21 years of age"]},
+    {q:"Section 236 OT Act — A joint certificate allows Police custody for how long?",a:"A period exceeding 24 hours until appearance before the court.",w:["Up to 12 hours only","A maximum of 48 hours then must be released","Up to 72 hours with inspector approval"]},
+    {q:"Section 236 OT Act — Report on joint certificate must be furnished within?",a:"Within 5 working days.",w:["Within 24 hours","Within 3 working days","Within 10 working days"]},
+    {q:"Section 233 OT Act — What does this section relate to?",a:"Breath alcohol provisions — nothing in sections 214–232 limits the effect of sections 68–72 of the Land Transport Act 1998.",w:["The right of a CYP to have a nominated person present","The power to detain a CYP pending OT placement","The obligation to notify the youth court on arrest"]},
+  ]},
+  {id:1,name:"Family Violence & PSO",short:"FV/PSO",color:"#ff6d00",cards:[
+    {q:"Under the Family Violence Act, when can a PSO NOT be issued?",a:"When a person has been charged for a family violence offence, or when a person is under 16 years of age.",w:["When the parties have been separated for more than 6 months","When the offender is a first-time offender","When there is insufficient evidence to charge"]},
+    {q:"How long can a PSO last?",a:"A PSO cannot exceed 10 days.",w:["A PSO cannot exceed 7 days","A PSO cannot exceed 14 days","A PSO cannot exceed 24 hours"]},
+    {q:"What is the restriction on Police bail in family violence offences?",a:"A person must not be granted Police bail for 24 hours immediately following their arrest.",w:["A person must not be granted Police bail for 48 hours","Police bail may be granted immediately if a supervisor approves","Police bail may be granted after 12 hours"]},
+    {q:"When granting Police bail in FV cases after the restriction period, what authorisation is required?",a:"The authority of a supervisor of or above the level of sergeant.",w:["The authority of an inspector or above","The authority of any sworn officer","The authority of the on-call prosecutor"]},
+    {q:"Who is a qualified constable who can authorise a PSO?",a:"Of or above SGT rank — substantive SGT or formally appointed under s63 Policing Act. An acting sergeant cannot issue PSOs.",w:["Any sworn constable who has completed their probation","A Senior Constable with Youth Aid experience","An inspector or above only"]},
+    {q:"Maximum detention period when Police are issuing a PSO?",a:"Up to 2 hours. The period commences when a decision to issue a PSO is made.",w:["Up to 4 hours from the time of initial contact","Up to 1 hour from the time of initial contact","Up to 6 hours from the time of arrival"]},
+    {q:"If unable to serve a PSO during the 2-hour detention period, what must Police do?",a:"Release the detained person. Police then have 48 hours to issue and serve the order (from when the PSO was authorised).",w:["Detain the person for a further 2 hours","Apply to the court for an extension","The duty inspector may extend detention by 4 hours"]},
+    {q:"The 6 principles guiding Police response to family violence (A.C.E.S.W.C)?",a:"Accountability, Culturally appropriate, Early intervention, Safety, Working Collaboratively, Collection of Risk Information.",w:["Arrest, Caution, Evidence, Support, Welfare, Communication","Accountability, Communication, Empathy, Safety, Welfare, Collection","Authority, Community, Evidence, Support, Welfare, Control"]},
+    {q:"When arresting for breach of PSO, within what time must the person be before a court?",a:"Within 24 hours. If not possible, release at the expiry of 24 hours and summons them.",w:["Within 48 hours","Within 12 hours","Within 72 hours if the court is not sitting"]},
+    {q:"Case Law — Senior v Police. What does this establish?",a:"If a respondent posts abusive messages online and the abuse circulates back to the victim — it is a breach, whether intended or not.",w:["A respondent may contact the victim through third parties","Online messages do not constitute a breach unless viewed directly by the victim","A respondent must be given 24 hours notice before breach proceedings"]},
+    {q:"Case Law — Police v Elliot. What does this establish?",a:"The applicant can withdraw consent for a respondent to remain on property at any time. If withdrawn, reasonable time must be given to gather items and leave.",w:["A respondent has an automatic right to collect belongings within 48 hours","Police must obtain a court order before directing a respondent to leave","The respondent's property rights override the applicant's consent"]},
+    {q:"Standard conditions of a Protection Order — respondent must not (P.M.D.T)?",a:"Physically threaten/abuse; Make any contact by any means; Damage or threaten to damage property; Threaten to sexually assault.",w:["Possess a vehicle; Contact the applicant's workplace; Attend licensed premises; Use drugs","Enter the applicant's suburb; Contact mutual friends; Damage property; Leave NZ","Attend a non-violence programme; Own a firearm; Enter the address; Make contact"]},
+    {q:"When must a respondent of a Protection Order surrender their weapons and firearms licence?",a:"As soon as practicable after service of the order but within 24 hours, and on demand at any time.",w:["Within 48 hours of service","Within 72 hours of service","Immediately upon service, no grace period"]},
+    {q:"When a PSO is issued, when must the respondent surrender their weapons?",a:"Immediately.",w:["Within 24 hours","Within 48 hours","At the next available opportunity"]},
+    {q:"Under a Protection Order, what happens to a respondent's firearms licence on the making of the order?",a:"It is deemed to be SUSPENDED. The licence becomes REVOKED when the order becomes final.",w:["It is immediately revoked upon the making of any protection order","It remains valid unless the respondent is convicted of an offence","It is suspended for 30 days pending further review"]},
+    {q:"Under what circumstances can a PSO be issued to a 16 or 17 year old?",a:"RGB order necessary for serious FV safety; total concern level in OnDuty is High; AND approval from a Snr Sgt who has consulted with OT.",w:["A PSO can never be issued to a person under 18","Any constable may issue a PSO to a 16/17 year old without special approval","A PSO may be issued if the Youth Court approves"]},
+    {q:"Who can issue Protection Orders?",a:"Family Court and District Court.",w:["Family Court, District Court and High Court","District Court only","A Senior Sergeant or above in urgent circumstances"]},
+    {q:"When a child breaches a PSO, does this authorise OT Act s234 for placement?",a:"No. It is not technically an arrest, therefore s234 does not apply.",w:["Yes, s234 applies to all CYP who breach a PSO","Yes, but only if the breach involved violence","Only if the CYP is under 14 years of age"]},
+  ]},
+  {id:2,name:"Firearms & Taser",short:"Firearms",color:"#ffc107",cards:[
+    {q:"Section 66 Arms Act — Who is deemed in possession of a firearm found in a vehicle?",a:"Every driver of any vehicle in which any firearm is found, unless they prove it was not their property and was in the possession of some other person.",w:["The registered owner of the vehicle only","The person physically holding the firearm","The person whose name is on the firearms licence"]},
+    {q:"Section 66 Arms Act — Threshold of proof to rebut deemed possession?",a:"The balance of probabilities.",w:["Beyond reasonable doubt","Reasonable grounds to suspect","Prima facie evidence"]},
+    {q:"In what circumstances can Police carry firearms? (F.A.S.T.E.D)",a:"Fear of death/GBH (PCA); Airport duties; STG/AOS/DPS; Training; Escorts of valuables; Destroy animals.",w:["Only AOS and STG may carry firearms","Any constable may carry a firearm with sergeant approval","Firearms may only be carried when responding to a Code 1 callout"]},
+    {q:"An offender must NOT be shot unless what 4 conditions are met? (F.O.L.D)",a:"Officers Fear death/GBH; Offender asked to surrender (unless impractical); no Less violent means; Further delay dangerous/impractical.",w:["The offender is armed and has discharged their weapon","An inspector has authorised the use of lethal force","The offender has failed to comply with 3 verbal warnings"]},
+    {q:"Lawful purposes for Police using firearms under the Crimes Act?",a:"S48 self-defence/defence of another; S39 arrest; S40 prevent escape; Destroying animals.",w:["S48 arrest; S39 self-defence; S41 prevent escape; Animal destruction","S50 self-defence; S40 arrest; S41 prevent escape; Training","S48 self-defence; S40 arrest; S45 prevent escape; Evidence preservation"]},
+    {q:"Who completes the Tactical Options Report when a firearm discharge results in death or injury?",a:"A supervisor — NOT the person who used the force.",w:["The person who discharged the firearm","The District Commander","The on-call AOS commander"]},
+    {q:"On what 4 occasions must an employee complete their own TOR?",a:"Presentation (except AOS/STG); Discharge (not training); Animal destruction; Unintentional discharge (no injury).",w:["Every time a firearm is signed out; Discharge; Animal destruction; Training","Presentation; Discharge; Training exercises; Unintentional discharge","Arrest situation; Discharge; Animal destruction; Inspection"]},
+    {q:"Supervisor's actions after operational use of a TASER (P.M.P.E.M.U.R)?",a:"Physical attendance; Medical attention; Preserve scene; Evidence collection (4-5 tags); Medical practitioner; Upload footage and TOR; Review.",w:["Phone report; Medical check; Photograph scene; Evidence bag; Medical officer; Upload; Review","Physical attendance; Mental health check; Preserve evidence; Equipment check; Medical officer; Upload footage; Report","Presence at scene; Medical check; Preserve; Equipment check; Medical officer; Upload; Debrief"]},
+    {q:"Section 18 Search & Surveillance — When can a constable search for arms without a warrant?",a:"Breach of Arms Act; Person's physical/mental condition makes them unable to safely control arms; A PO or PSO is in force under the FV Act.",w:["Constable suspects the person may be armed; Domestic violence callout; Person is intoxicated","RGB the person has a firearm; Person has a criminal history; PSO is in force","RGTS of a weapons offence; Person is in a high-risk area; PO is in force"]},
+    {q:"Who can authorise Temporary Carriage of firearms?",a:"Inspector or above.",w:["Sergeant or above","Senior Sergeant or above","District Commander only"]},
+    {q:"Section 18(3) SAS — When can a constable enter a place or vehicle without warrant to search for arms?",a:"RGTS that a Category 3 or 4 offence has been, is being or will be committed, AND evidential material relating to that or Arms Act offence is present.",w:["RGTS of any criminal offence involving a weapon","When the constable has seen a firearm in the location","When the occupant refuses to cooperate"]},
+    {q:"Section 22H Arms Act — What happens to a firearms licence if the holder becomes disqualified?",a:"The licence is immediately revoked and the holder cannot apply for a review.",w:["The licence is suspended for 12 months pending review","The licence remains valid until the court orders revocation","The holder is given 30 days to surrender their firearms"]},
+    {q:"Under s176 Family Violence Act 2018 — What must Police do when they receive a copy of a PO?",a:"Police must immediately establish whether the respondent and any associated respondent hold a firearms licence.",w:["Police must immediately serve the order on the respondent","Police must notify Te Tari Pureke within 24 hours","Police must seize all firearms within 48 hours"]},
+    {q:"Section 66B Arms Act — Obligations of a person in possession of arms when demanded by Police?",a:"Must give full name, DOB and address. Failure or false details — may be cautioned and if continues, arrested without warrant. Penalty: 6 months / $10,000.",w:["Must produce their firearms licence; if unable — seized","Must allow Police to inspect the firearm; refusal is an offence","Must allow Police entry to their premises; refusal attracts a fine"]},
+    {q:"What happens when a final Protection Order comes into force regarding the respondent's firearms licence?",a:"The firearms licence is deemed to be REVOKED.",w:["The licence is suspended until the order expires","The licence remains valid but the holder cannot purchase new firearms","The licence is reviewed by Te Tari Pureke within 30 days"]},
+  ]},
+  {id:3,name:"Drugs",short:"Drugs",color:"#00e676",cards:[
+    {q:"What is the aim of an unplanned entry into a clandestine lab?",a:"To turn an unplanned entry into a planned response and investigation with appropriate structure and procedures.",w:["To immediately arrest all persons present and seize all evidence","To establish a perimeter and wait for NCLRT","To complete a scene examination and decontaminate before entering"]},
+    {q:"Clandestine lab unplanned entry — FIRST action (R.I.S.P.N.A.S.M)?",a:"Immediately REMOVE POIs from the premises.",w:["ISOLATE the site and maintain a safety perimeter","NOTIFY the duty inspector and NCLRT","PRESERVE the crime scene"]},
+    {q:"Who must give approval for a warrantless drug-related search (S20 SAS)?",a:"A sergeant or above should be obtained before exercising the power, unless impractical.",w:["Inspector or above must always approve warrantless drug searches","Any sworn officer may exercise the power independently","The shift supervisor must approve and document the decision"]},
+    {q:"Section 20 SAS — Entry of a place/vehicle without warrant for drugs requires what belief?",a:"RGTB: not practicable to get a warrant; a controlled drug/precursor is present; an offence has/is/will be committed; AND evidence will be CADD if not entered immediately.",w:["RGTS: a drug offence has been committed in the place","RGB: drugs are present and the person has a criminal history","RGTB: a person in the place is in possession of a controlled drug"]},
+    {q:"Section 22 SAS — Warrantless search of a person in any place requires what belief?",a:"RGTB: the person is in possession of a controlled drug or precursor AND an offence has/is/will be committed in respect of that drug.",w:["RGTS that the person may be carrying drugs","RGB that the person has previously been convicted of a drug offence","RGTB the person has recently purchased a controlled drug"]},
+    {q:"Does requesting a person to open their mouth constitute an internal search?",a:"No. A constable may conduct a visual examination of the mouth, nose and ears but must not insert anything. Permitted under S87.",w:["Yes — any examination of a body orifice is an internal search","Yes — but it is permitted under S87 without consent","No, but it requires the approval of a supervisor"]},
+    {q:"What is an internal search?",a:"An examination of any part of a person's body by X-ray/similar device, or a manual/visual examination through any body orifice — EXCEPT the mouth.",w:["Any physical search requiring the removal of clothing","A search of the body using a handheld metal detector","Any search requiring a doctor's presence"]},
+    {q:"Collings v Police — Does evidence of demeanour provide Police with reasonable grounds for belief?",a:"No — the High Court found that demeanour and appearance did not provide Police with reasonable grounds for belief under the Act.",w:["Yes — observable behaviour is sufficient for RGTB","Yes — combined with other factors it can satisfy RGTB","Yes, but only where a constable has drug investigation experience"]},
+    {q:"R v T — Can Police use reasonable force if a person attempts to swallow drugs?",a:"Yes. The Court of Appeal confirmed this does not amount to an unreasonable search or internal search.",w:["No — only a doctor may physically intervene","Yes, but only if the person is in formal Police custody","Yes, but only with a supervisor's prior authority"]},
+    {q:"Who may conduct an internal search?",a:"A registered medical practitioner.",w:["A registered nurse under supervision of a doctor","Any constable with appropriate training","A Police Surgeon authorised by the District Commander"]},
+    {q:"Under S23 SAS — When can an internal search be conducted?",a:"Searching the person's mouth with their consent, or under another enactment.",w:["Whenever the constable has RGTB drugs are concealed internally","With inspector approval only","Only where the person has been arrested for a category 4 offence"]},
+    {q:"If a suspect refuses an internal exam and the court is satisfied the requirement was properly made, what may the court do?",a:"Decline to consider the person's bail, or order detention for up to 2 days after the requirement, or until they permit the exam.",w:["Order an immediate internal examination under medical supervision","Impose a fine of up to $5,000 for refusal","Draw an adverse inference at trial but cannot order further detention"]},
+  ]},
+  {id:4,name:"Mental Health",short:"MHA",color:"#b388ff",cards:[
+    {q:"How is 'mental disorder' defined under the Mental Health Act 1992?",a:"An abnormal state of mind characterised by delusions or disorders of mood, perception, volition or cognition — posing serious danger to health/safety of the person or others, OR seriously diminishing their capacity to care for themselves.",w:["Any diagnosed psychiatric condition that impairs daily functioning","A condition where a person is unable to communicate rationally with Police","A state of intoxication or drug-induced psychosis causing erratic behaviour"]},
+    {q:"Section 109 — What powers does a constable have regarding a person suspected of being mentally disordered?",a:"Apprehend the person and take them to a hospital or other place for assessment. Must promptly notify the responsible clinician and deliver the person to a medical officer.",w:["Detain the person for up to 6 hours at a Police station","Only refer the matter to mental health services — Police cannot detain","Arrest the person and hold them under s21 of the Police Act"]},
+    {q:"What force may be used when apprehending a person under s109 Mental Health Act?",a:"Such force as may be reasonably necessary in the circumstances.",w:["No force may be used — mental health apprehensions must be non-contact","Force may only be used if a doctor is physically present","Force may only be used with a supervisor's prior authorisation"]},
+    {q:"Section 110 Mental Health Act — What does this section relate to?",a:"Police powers to retake a person who is absent without leave from a hospital or facility — a constable may apprehend and return them.",w:["The obligation to notify next of kin when a person is apprehended","The right of a mentally disordered person to refuse assessment","The power to obtain a court order for compulsory mental health treatment"]},
+    {q:"Key Police considerations when dealing with a mental health event?",a:"Safety of everyone involved; de-escalation; early contact with mental health services; force as a last resort; ongoing TENR assessment.",w:["Immediate arrest to stabilise the situation; medical referral; documentation","Use of restraints to prevent self-harm; isolation; notification of family","Rapid resolution to clear the callout; notification of mental health team after"]},
+  ]},
+  {id:5,name:"Alcohol Act",short:"Alcohol",color:"#f72585",cards:[
+    {q:"Object of the Sale and Supply of Alcohol Act 2012 (s4)?",a:"That the sale, supply and consumption of alcohol should be undertaken safely and responsibly, and the harm caused by excessive or inappropriate consumption should be minimised.",w:["To prohibit the supply of alcohol to minors and intoxicated persons","To regulate the licensing of premises and the hours of alcohol sale","To impose strict liability on licensees for harm caused by intoxicated patrons"]},
+    {q:"Minimum purchasing age for alcohol under the Sale and Supply of Alcohol Act 2012?",a:"18 years of age.",w:["16 years of age","17 years of age","20 years of age"]},
+    {q:"Section 169 — A constable may require a person to leave licensed premises if they are?",a:"Intoxicated, disorderly, or quarrelsome.",w:["Intoxicated only","Intoxicated or refusing to purchase","Under the influence of drugs or alcohol"]},
+    {q:"How long can a constable order the immediate closure of licensed premises?",a:"A period not exceeding 24 hours.",w:["A period not exceeding 48 hours","A period not exceeding 7 days","A period not exceeding 12 hours"]},
+    {q:"A Temporary Closure Order (up to 7 days) can be issued by whom?",a:"A constable of or above the rank of inspector, where serious disorder or disorderly conduct has occurred or is occurring.",w:["Any constable with sergeant approval","A licensing inspector","The District Licensing Committee upon application by Police"]},
+    {q:"How is 'intoxicated' defined under the Act?",a:"A person whose behaviour, or the way they look, move, or talk, indicates they have consumed alcohol (or drugs) and their self-control is impaired or likely to become impaired.",w:["A person who has consumed more than the legal blood alcohol limit","A person who has been observed consuming alcohol on licensed premises","A person who fails a sobriety assessment conducted by an officer"]},
+  ]},
+  {id:6,name:"Search & Surveillance",short:"S&S",color:"#00d4ff",cards:[
+    {q:"Difference between 'reasonable grounds to believe' (RGTB) and 'reasonable grounds to suspect' (RGTS)?",a:"RGTB is an objective, higher threshold — a reasonable person with the same information would hold the same belief. RGTS is a lower threshold — a suspicion based on some factual foundation.",w:["RGTB requires a court order; RGTS can be applied independently","RGTB applies only to property searches; RGTS only to person searches","They are interchangeable terms"]},
+    {q:"Section 8 SAS — Entry to avoid loss of offender — what is required?",a:"RGB that an offence is being or has been committed in that place, AND RGB that a person in that place has committed or is committing an offence, AND it is not practicable to obtain a warrant.",w:["RGTS of any offence being committed at the location","RGTB that evidence of a serious offence is present","Inspector approval and RGTB of an imminent threat"]},
+    {q:"Section 14 SAS — Emergency powers allow entry without warrant to do what?",a:"Prevent loss of life or serious harm; prevent serious damage to property; prevent serious disorder — in emergency circumstances.",w:["Seize evidential material in urgent circumstances","Arrest a person where a warrant is not practicable","Search a person where RGTS they possess a weapon"]},
+    {q:"Before executing a search warrant, what must you do (unless impracticable)?",a:"Announce presence; identify yourself as a constable; produce the warrant; state the purpose of entry; request admission.",w:["Simply enter — announcing presence is not required","Notify the occupant 24 hours in advance","Obtain a second officer's signature before entry"]},
+    {q:"When can the announcement requirements for a search warrant be dispensed with?",a:"When you believe on RG that: complying would endanger safety; complying would impede the search's success; OR evidence would be CADD.",w:["Whenever a supervisor has authorised dispensing with requirements","Only where the warrant specifically authorises non-announcement","Whenever the premises are believed to be unoccupied"]},
+    {q:"Section 20 SAS — Which is NOT a required element for warrantless drug search?",a:"The person in the place must have a prior drug conviction.",w:["It is not practicable to obtain a warrant","A controlled drug or precursor is believed to be in the place","Evidence will be CADD if entry is not immediate"]},
+    {q:"Requirements when searching a person under the SAS?",a:"Same gender if practicable; inform person of reason; conduct with decency and sensitivity; no unnecessary humiliation; removal of more than outer clothing must be private and same gender.",w:["A supervisor must be present; searches must be recorded on body camera","No more than two officers may be present; search at a Police station","A doctor must be present for any clothing removal"]},
+    {q:"Section 19 SAS — A constable may search persons in a place subject to a drug search warrant if?",a:"The offence specified in the application for the warrant is an offence against the Misuse of Drugs Act 1975.",w:["The person is the named subject of the search warrant","The constable has RGTS the person is in possession of drugs","The person refuses to identify themselves"]},
+    {q:"Section 21 SAS — Can a constable search persons in a place being searched under S20?",a:"Yes — a constable conducting a search under S20 may without a warrant search any person in or on the place or vehicle.",w:["No — a separate warrant is required to search persons","Only if those persons are under arrest","Only with a supervisor's specific approval for each individual"]},
+    {q:"When evidential material is seized during a search, what must be provided to the occupier?",a:"A list of all items seized must be provided.",w:["A receipt signed by the seizing officer and witnessed by a second officer","A copy of the search warrant only","A statement explaining the likely charges"]},
+  ]},
+  {id:7,name:"Managing Suspects",short:"Suspects",color:"#ff6d00",cards:[
+    {q:"Key rights of a defendant upon arrest?",a:"Right to be informed of reason for arrest; right to consult a lawyer without delay; right to remain silent; right to be brought before a court as soon as practicable; right to be treated with humanity.",w:["Right to call family immediately; right to a public defender; right to bail","Right to remain silent; right to a jury trial; right to be released within 24 hours","Right to refuse fingerprinting; right to consult a lawyer; right to bail"]},
+    {q:"Correct wording of the NZ Police caution?",a:"'You have the right to remain silent. Anything you say will be recorded and may be given in evidence.'",w:["'You are not obliged to say anything, but anything you do say may be taken down and used in evidence against you.'","'You have the right to remain silent. If you do speak, anything you say may be used against you in court.'","'You have the right to say nothing. You are entitled to a lawyer before answering questions.'"]},
+    {q:"4 grounds for arrest without warrant?",a:"Caught in the act; RGTB has committed an imprisonable offence; prevent harm to person or property; breach of the peace.",w:["RGTS of any offence; public interest; fleeing; victim request","RGTB of any offence; risk of flight; evidence risk; public safety","Caught in the act; RGTS of imprisonable offence; breach of peace; victim identification"]},
+    {q:"When must the caution be given?",a:"Before questioning a person you have RGTS has committed an offence, and immediately upon arrest.",w:["Only upon formal arrest — not during general questioning","After the person has been charged only","Only if the person asks whether they need to answer questions"]},
+    {q:"Purpose of the Criminal Disclosure Act?",a:"To provide defendants with access to information held by the prosecution to enable the preparation of an adequate defence.",w:["To ensure Police maintain accurate records of all criminal investigations","To regulate the storage and destruction of evidential material","To allow victims access to information about the offender's history"]},
+    {q:"When does the right to disclosure arise?",a:"Upon charge — the prosecution must disclose all relevant information (inculpatory and exculpatory) to the defence.",w:["Only at the commencement of trial","Upon arrest, if the person requests disclosure","Only where the defendant has legal representation"]},
+    {q:"What must you do when you arrest a person?",a:"Identify yourself; tell the person they are under arrest; tell the reason for arrest; give the caution; transport to Police station.",w:["Identify yourself; apply restraints; give caution; transport","Identify yourself; give caution; notify supervisor; transport","Identify yourself; give reason; apply restraints; notify family"]},
+    {q:"Police bail conditions — what may be imposed?",a:"Any condition that ensures court appearance; protects victim safety; prevents interference with witnesses/evidence; prevents further offending.",w:["Only non-association conditions are permitted on Police bail","Conditions only where the offence carries imprisonment","Conditions approved by the on-call prosecutor only"]},
+  ]},
+  {id:8,name:"Road Policing",short:"Road",color:"#ffc107",cards:[
+    {q:"Overriding principle of road policing?",a:"The safety of the road user and other members of the public.",w:["The enforcement of road rules to deter offending","The efficient flow of traffic","The reduction of fatal crashes through visible Police presence"]},
+    {q:"Adult evidential breath test (EBT) threshold in New Zealand?",a:"Over 250 micrograms of alcohol per litre of breath.",w:["Over 400 micrograms per litre of breath","Over 200 micrograms per litre of breath","Over 300 micrograms per litre of breath"]},
+    {q:"EBT threshold for persons under 20 or drivers of large passenger service vehicles?",a:"Over 150 micrograms of alcohol per litre of breath.",w:["Over 250 micrograms per litre of breath","Over 100 micrograms per litre of breath","Zero — no alcohol is permitted for drivers under 20"]},
+    {q:"When must a Police supervisor be notified during a vehicle pursuit?",a:"Immediately when a pursuit commences.",w:["When the pursuit exceeds 3 minutes","When the pursuit enters a built-up area","When the pursuing vehicle reaches speeds above 100km/h"]},
+    {q:"Key consideration when deciding whether to abandon a vehicle pursuit?",a:"Whether the risk to public safety outweighs the benefit of apprehending the offender.",w:["Whether the offender's vehicle is faster than the Police vehicle","Whether the pursuit has been authorised by an inspector","Whether the offender has committed a serious offence warranting pursuit"]},
+    {q:"Can a constable stop any vehicle at any time?",a:"Yes — under the Land Transport Act a constable may stop any vehicle at any time for any reason, including routine safety checks.",w:["No — a constable must have RGTS of an offence before stopping a vehicle","Yes, but only during an authorised checkpoint operation","No — stopping a vehicle requires RGB of a traffic infringement"]},
+    {q:"What is a 'tactical approach' in road policing?",a:"A planned method of stopping a vehicle that minimises risk to the public and Police, takes into account the threat posed, and considers the environment and circumstances.",w:["A vehicle checkpoint operation authorised by a senior officer","The use of road spikes or blocking vehicles","An approach to a vehicle where the officer has RGTS of an offence"]},
+  ]},
+  {id:9,name:"Staff Management",short:"Staff Mgmt",color:"#b388ff",cards:[
+    {q:"Is performance management a disciplinary process?",a:"No. Performance management is a supportive process focused on improving performance. Disciplinary action is separate.",w:["Yes — performance management is the first stage of the disciplinary process","Yes — any performance issue may result in disciplinary action","It depends on the severity of the performance issue"]},
+    {q:"3 core components of performance management?",a:"Setting clear expectations/goals; regular feedback and coaching; recognising good performance and addressing poor performance.",w:["Annual appraisal; written warnings; formal review process","Goal setting; termination procedures; performance improvement plans","Attendance monitoring; conduct recording; annual salary review"]},
+    {q:"Difference between misconduct and serious misconduct?",a:"Misconduct: failure to meet expected standards, below the threshold for serious misconduct. Serious misconduct: behaviour warranting dismissal, criminal offending, significant breach of policy or major integrity failure.",w:["Misconduct: any breach of policy. Serious misconduct: a criminal offence only","Misconduct: verbal warnings. Serious misconduct: written warnings","Misconduct: performance issues. Serious misconduct: attendance issues"]},
+    {q:"Supervisor's obligation when aware of a potential conduct issue?",a:"Take the matter seriously; gather relevant information; consider referral to Professional Standards; treat the employee fairly and with respect; keep records.",w:["Immediately refer to Professional Standards without further inquiry","Issue a written warning pending investigation","Discuss with the employee informally and take no further action if resolved"]},
+    {q:"What is EAP and its purpose?",a:"Employee Assistance Programme — a confidential counselling and support service available to all Police employees and their immediate family members.",w:["Emergency Action Plan — a procedure for managing critical incidents","Employee Assessment Programme — a tool for measuring performance","Early Assistance Protocol — a process for referring at-risk employees to OH&S"]},
+    {q:"NZ Police values?",a:"Tiakitanga (care), Ngākau Māhaki (respect), Māia (courage), Oranga (wellbeing), Mahi Tahi (collaboration), Tika (integrity).",w:["Integrity, Respect, Fairness, Duty of Care, Professionalism","Courage, Compassion, Commitment, Community, Communication","Service, Integrity, Respect, Courage, Community"]},
+  ]},
+  {id:10,name:"Evidence",short:"Evidence",color:"#00d4ff",cards:[
+    {q:"General rule of evidence in New Zealand under the Evidence Act 2006?",a:"All relevant evidence is admissible unless there is good reason to exclude it. Evidence is relevant if it has a tendency to prove or disprove anything of consequence.",w:["Only direct evidence is admissible; hearsay is excluded unless an exception applies","Evidence must be corroborated to be admissible","Evidence obtained without a warrant is automatically excluded"]},
+    {q:"What is hearsay evidence?",a:"A statement made by a person not giving evidence at trial, offered to prove the truth of the matter asserted.",w:["A statement made by the defendant prior to arrest","Any statement made outside the courtroom","Evidence given by a witness about what they personally observed"]},
+    {q:"When will hearsay evidence be admissible?",a:"Both parties agree; the maker is unavailable; the court is satisfied it is sufficiently reliable; or under a specific statutory exception.",w:["Only when the maker of the statement has died","Only when the defendant consents to its admission","Hearsay is never admissible in New Zealand criminal proceedings"]},
+    {q:"What is a voir dire?",a:"A trial within a trial held to determine the admissibility of evidence — usually whether a statement was made voluntarily or whether a search was lawful.",w:["A pre-trial hearing where the prosecutor discloses the Crown's case","A judicial review of a Police decision to lay charges","A sentencing hearing conducted before the verdict"]},
+    {q:"Standard of proof in criminal proceedings?",a:"Beyond reasonable doubt — the prosecution must prove every element of the offence to this standard.",w:["The balance of probabilities","Reasonable grounds to believe","Prima facie evidence"]},
+    {q:"How does the court decide whether to exclude improperly obtained evidence (s30 Evidence Act)?",a:"Balancing: seriousness of the impropriety; whether it was deliberate/reckless; importance of the evidence; and the public interest in prosecuting offenders.",w:["Any evidence obtained without a warrant must be automatically excluded","The court applies a strict exclusionary rule — no discretion","Exclusion only where the impropriety was deliberate"]},
+    {q:"When will propensity evidence about an accused be admissible?",a:"When its probative value outweighs the risk of unfair prejudice — considering similarity, recency, and whether it shows a pattern.",w:["It is always admissible as long as it relates to the same type of offence","It is never admissible as it is inherently prejudicial","Only when the defendant specifically puts their character in issue"]},
+    {q:"Can an adverse inference be drawn from the accused's silence in New Zealand?",a:"No — in New Zealand, no adverse inference may be drawn from a defendant's silence.",w:["Yes — a judge may direct the jury to draw an adverse inference","Yes, but only where the defendant has previously spoken to Police","Only in serious criminal cases where the defendant fails to give evidence"]},
+    {q:"What must an admission be to be admissible?",a:"Made voluntarily and not obtained by oppression, improper inducement, or unfair means.",w:["Witnessed by an independent person and signed by the defendant","Made in the presence of a lawyer or nominated person","Recorded electronically and produced verbatim at trial"]},
+  ]},
+  {id:11,name:"Health & Safety",short:"H&S",color:"#f72585",cards:[
+    {q:"Risk assessment model Police use?",a:"TENR: Threat, Exposure, Number, Risk — combined with the Hierarchy of Controls: Eliminate, Substitute, Isolate, Engineering, Administrative, PPE.",w:["SAFER: Situation, Assessment, Force, Evidence, Review","IIMARCH: Information, Intention, Method, Admin, Resources, Command, Husbandry","CRIM: Collect, Review, Intervene, Monitor"]},
+    {q:"What is a PCBU and their duty?",a:"Person Conducting a Business or Undertaking — duty to so far as is reasonably practicable eliminate or minimise risks to health and safety of workers and others.",w:["Police Command Business Unit — responsible for strategic health and safety planning","Primary Care Business Unit — responsible for staff wellbeing referrals","Police Compliance Bureau Unit — responsible for policy compliance"]},
+    {q:"What is a 'notifiable event' under the HSWA 2015?",a:"The death of a person; a notifiable injury or illness; or a notifiable incident (near miss with serious potential).",w:["Any incident resulting in a public complaint","Any use of force by a Police officer resulting in injury","Any vehicle accident involving a Police vehicle"]},
+    {q:"When a notifiable event occurs, what must Police do regarding the scene?",a:"Report to WorkSafe NZ as soon as practicable, and preserve the scene until a WorkSafe inspector gives clearance (unless risk to life).",w:["Notify the District Commander within 2 hours","Complete an AOS 1 form and submit to Professional Standards within 24 hours","Notify the officer's union representative before making any report"]},
+    {q:"What does 'so far as is reasonably practicable' mean under the HSWA 2015?",a:"Doing what is achievable, taking into account: likelihood of the hazard; degree of harm; what is known about the hazard; and availability and cost of ways to eliminate/minimise.",w:["Doing the absolute minimum required by law to avoid liability","Implementing all possible controls regardless of cost","Applying best practice as defined by WorkSafe NZ guidelines"]},
+  ]},
+  {id:12,name:"Command & Control",short:"Cmd/Ctrl",color:"#ffc107",cards:[
+    {q:"TENR — What does each letter stand for?",a:"Threat, Exposure, Number, Risk.",w:["Threat, Evidence, Number, Response","Tactic, Exposure, Necessity, Risk","Threat, Estimate, Number, Reduction"]},
+    {q:"What is CIMS and its key functions?",a:"Coordinated Incident Management System — Control, Operations, Planning, Logistics, Public Information Management (PIM).",w:["Critical Incident Management System — Command, Intelligence, Monitoring, Safety","Coordinated Incident Management System — Control, Intelligence, Management, Support","Crisis Intervention Management System — Command, Operations, Investigation, Media, Safety"]},
+    {q:"Role of the Incident Controller?",a:"Overall management of the incident; setting incident objectives; approving the Incident Action Plan; ensuring responder safety; authorising resource requests.",w:["Controlling all operational resources at the scene independently","Communicating with media and providing public information","Conducting post-incident debriefs and completing all documentation"]},
+    {q:"Three levels of command at a major incident?",a:"Strategic (Gold) — senior management; Tactical (Silver) — incident command; Operational (Bronze) — on-scene execution.",w:["Command (Gold); Control (Silver); Coordination (Bronze)","Executive (Gold); Management (Silver); Response (Bronze)","District (Gold); Area (Silver); Station (Bronze)"]},
+    {q:"What is an inner cordon?",a:"An immediate scene control barrier restricting access to emergency personnel only.",w:["A wide exclusion zone keeping the public away from the general area","A traffic management measure to divert vehicles","A boundary line marking the outer extent of the crime scene"]},
+    {q:"What is situational awareness?",a:"The continuous process of gathering, processing and understanding information about the incident — what has happened, what is happening now, and what is likely to happen next.",w:["The ability to observe an offender without being detected","The use of intelligence systems to track suspects in real time","A formal briefing process used at the start of each shift"]},
+    {q:"Purpose of a debrief after a critical incident?",a:"Identify what went well and what needs improvement; support staff wellbeing; share learnings; identify policy or training gaps; provide closure.",w:["To allocate blame for any errors","To provide a formal report to Professional Standards","To determine whether any criminal charges should be laid against officers"]},
+  ]},
+  {id:13,name:"Offensive Weapons & Sudden Death",short:"OW/Death",color:"#ff3d5a",cards:[
+    {q:"Who is qualified to verify a death?",a:"A registered medical practitioner, or where a doctor is unavailable — a registered nurse.",w:["Any Police officer present at the scene","A certified ambulance officer or paramedic","A forensic pathologist only"]},
+    {q:"When must a Coroner be notified of a death?",a:"When the cause of death is unknown; the death was sudden or unexpected; occurred in suspicious circumstances; resulted from accident or injury; or the person was in official custody.",w:["In all cases of death regardless of circumstances","Only when foul play is suspected","Only when the deceased has no known next of kin"]},
+    {q:"Role of the Coroner following a sudden death?",a:"Determine the identity of the deceased; the cause of death; and the circumstances of death. May order a post-mortem, hold an inquiry, or hold an inquest.",w:["To determine criminal liability and refer to Police","To notify the family and arrange disposal of the body","To certify the death and issue the death certificate only"]},
+    {q:"Police obligations at a sudden death scene?",a:"Secure and preserve the scene; notify the duty inspector; notify the Coroner; arrange identification of the deceased; contact NOK sensitively; complete required documentation.",w:["Arrest the last person to be with the deceased; preserve the scene; notify the mortuary","Secure the scene; conduct an immediate post-mortem; notify the prosecutor","Identify the deceased; immediately remove the body; complete a sudden death report"]},
+    {q:"What does 'disabling substance' mean under the Crimes Act?",a:"Any substance (other than a firearm) capable of causing death or serious bodily injury — including corrosive substances, stupefying substances, or any gas or liquid.",w:["Any Class A controlled drug under the Misuse of Drugs Act","Any explosive device or incendiary material","Any substance that temporarily impairs vision or hearing"]},
+    {q:"How can a deceased person be identified?",a:"Visual identification by a person who knew them; fingerprint comparison; dental records; DNA comparison; distinguishing features; or personal items.",w:["Visual identification by Police officers only","DNA comparison is the only legally accepted method","Dental records only where visual identification is not possible"]},
+  ]},
+];
+
+// ═══════════════════════════════════════════
+// STORAGE HELPERS
+// ═══════════════════════════════════════════
+function load(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+// ═══════════════════════════════════════════
+// PLAYER DATA
+// ═══════════════════════════════════════════
+let P = load('cpk_player2', {
+  totalXP: 0,
+  level: 1,
+  prestige: 0,
+  played: 0,
+  bestPct: 0,
+  bestStreak: 0,
+  hasPerfect: false,
+  has90on20: false,
+  firearms80: false,
+  drugsPerfect: false,
+  evidence90: false,
+  nightShift: false,
+  timedCorrect: 0,
+  unlockedAchievements: [],
+  topicStats: {},   // {deckId: {correct, total}}
+  history: [],      // last 50 sessions
+  sizeRecords: {},  // {questionCount: {pct, date}}
+  dailyKey: '',
+  dailySessions: [],
+});
+
+function saveP() { save('cpk_player2', P); }
+
+// ═══════════════════════════════════════════
+// LEVEL / RANK CALC
+// ═══════════════════════════════════════════
+function getRankForLevel(level) {
+  let rank = RANKS[0];
+  for (let r of RANKS) { if (level >= r.level) rank = r; }
+  return rank;
+}
+
+function getXPForLevel(level) {
+  const rank = getRankForLevel(level);
+  // Progressive: base xpPerLevel * (level within tier)
+  const levelInTier = (level - rank.level);
+  return rank.xpPerLevel + levelInTier * Math.floor(rank.xpPerLevel * 0.3);
+}
+
+function getTotalXPForLevel(targetLevel) {
+  let total = 0;
+  for (let l = 1; l < targetLevel; l++) total += getXPForLevel(l);
+  return total;
+}
+
+function getLevelFromXP(totalXP) {
+  let xp = totalXP, level = 1;
+  while (true) {
+    const needed = getXPForLevel(level);
+    if (xp < needed) break;
+    xp -= needed;
+    level++;
+    if (level > 110) break; // cap
+  }
+  return { level, xpInLevel: xp, xpForLevel: getXPForLevel(level) };
+}
+
+function addXP(amount) {
+  const before = getLevelFromXP(P.totalXP);
+  P.totalXP += amount;
+  const after = getLevelFromXP(P.totalXP);
+  P.level = after.level;
+  return after.level > before.level ? after.level : null;
+}
+
+// ═══════════════════════════════════════════
+// DAILY SCORES
+// ═══════════════════════════════════════════
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function checkDaily() {
+  const key = todayKey();
+  if (P.dailyKey !== key) { P.dailyKey = key; P.dailySessions = []; }
+}
+
+// ═══════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════
+let GS = {
+  selectedDecks: new Set(['all']),
+  questionCount: 20,
+  mode: 'practice',
+  questions: [],
+  currentQ: 0,
+  score: 0,
+  sessionXP: 0,
+  streak: 0,
+  bestStreak: 0,
+  answered: false,
+  timer: null,
+  timeLeft: 30,
+  wrongAnswers: [],
+  deckPerf: {},
+  rankUpTo: null,
+};
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+const CURRENT_VERSION = 'v2.1';
+
+function init() {
+  checkDaily();
+  renderDeckPills();
+  renderProfileTab();
+  renderScoresTab();
+  renderStatsTab();
+  homeTab('play');
+  checkChangelog();
+}
+
+function checkChangelog() {
+  const seen = load('cpk_changelog_seen', '');
+  if (seen !== CURRENT_VERSION) {
+    setTimeout(() => showChangelog(), 600);
+  }
+}
+
+function showChangelog() {
+  document.getElementById('changelog-modal').classList.remove('hidden');
+}
+
+function dismissChangelog() {
+  document.getElementById('changelog-modal').classList.add('hidden');
+  save('cpk_changelog_seen', CURRENT_VERSION);
+}
+
+function renderDeckPills() {
+  const el = document.getElementById('deck-pills');
+  el.innerHTML = `<button class="pill all-pill sel" data-id="all" onclick="toggleDeck(this,'all')">ALL TOPICS</button>` +
+    DECKS.map(d => `<button class="pill" data-id="${d.id}" onclick="toggleDeck(this,'${d.id}')">${d.short}</button>`).join('');
+}
+
+function toggleDeck(btn, id) {
+  if (id === 'all') {
+    GS.selectedDecks = new Set(['all']);
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('sel'));
+    btn.classList.add('sel');
+  } else {
+    GS.selectedDecks.delete('all');
+    document.querySelector('.all-pill').classList.remove('sel');
+    btn.classList.toggle('sel');
+    if (btn.classList.contains('sel')) GS.selectedDecks.add(id);
+    else GS.selectedDecks.delete(id);
+    if (!GS.selectedDecks.size) {
+      GS.selectedDecks.add('all');
+      document.querySelector('.all-pill').classList.add('sel');
+    }
+  }
+}
+
+function selectQ(btn) {
+  document.querySelectorAll('[data-q]').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  GS.questionCount = parseInt(btn.dataset.q);
+}
+
+function selectMode(card) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  GS.mode = card.dataset.mode;
+}
+
+// ═══════════════════════════════════════════
+// HOME TABS
+// ═══════════════════════════════════════════
+function homeTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  ['play','profile','scores','stats'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  const tabs = document.querySelectorAll('.nav-tab');
+  const idx = ['play','profile','scores','stats'].indexOf(tab);
+  if (tabs[idx]) tabs[idx].classList.add('active');
+  if (tab === 'profile') renderProfileTab();
+  if (tab === 'scores') renderScoresTab();
+  if (tab === 'stats') renderStatsTab();
+}
+
+// ═══════════════════════════════════════════
+// PROFILE TAB
+// ═══════════════════════════════════════════
+function renderProfileTab() {
+  const lvlInfo = getLevelFromXP(P.totalXP);
+  const rank = getRankForLevel(lvlInfo.level);
+  const pct = Math.round(lvlInfo.xpInLevel / lvlInfo.xpForLevel * 100);
+  const prestige = P.prestige;
+
+  const hero = document.getElementById('rank-hero');
+  hero.style.setProperty('--rank-color', rank.color);
+  hero.innerHTML = `
+    <div class="rank-row">
+      <div class="rank-badge-big">${rank.icon}</div>
+      <div class="rank-info">
+        ${prestige > 0 ? `<div class="rank-prestige">★ PRESTIGE ${['I','II','III','IV','V','VI','VII'][prestige-1]||prestige} ★</div>` : ''}
+        <div class="rank-title" style="color:${rank.color}">${rank.title}</div>
+        <div class="rank-subtitle">LEVEL ${lvlInfo.level} · ${P.totalXP.toLocaleString()} TOTAL XP</div>
+        ${lvlInfo.level >= 100 ? `<div style="font-family:var(--font-mono);font-size:.65rem;color:var(--gold);margin-top:.4rem;letter-spacing:1px">PRESTIGE AVAILABLE → <button onclick="doPrestige()" style="background:none;border:1px solid var(--gold);color:var(--gold);font-family:var(--font-mono);font-size:.65rem;padding:.2rem .6rem;border-radius:3px;cursor:pointer;letter-spacing:1px">PRESTIGE NOW</button></div>` : ''}
+      </div>
+    </div>
+    <div class="xp-row">
+      <div class="xp-label">PROGRESS TO LEVEL ${lvlInfo.level + 1}</div>
+      <div class="xp-val">${lvlInfo.xpInLevel} / ${lvlInfo.xpForLevel} XP</div>
+    </div>
+    <div class="xp-bar-track">
+      <div class="xp-bar-fill" style="width:${pct}%;--rank-color:${rank.color}"></div>
+      <div class="xp-glow"></div>
+    </div>`;
+
+  document.getElementById('qs-played').textContent = P.played;
+  document.getElementById('qs-best').textContent = P.bestPct ? P.bestPct + '%' : '—';
+  document.getElementById('qs-streak').textContent = P.bestStreak;
+  document.getElementById('qs-xp').textContent = P.totalXP.toLocaleString();
+
+  renderAchievements();
+}
+
+function doPrestige() {
+  const lvlInfo = getLevelFromXP(P.totalXP);
+  if (lvlInfo.level < 100) return;
+  P.prestige++;
+  P.totalXP = 0;
+  P.level = 1;
+  saveP();
+  checkAchievements();
+  renderProfileTab();
+  popRank('★ PRESTIGE ' + P.prestige + ' ★');
+}
+
+function renderAchievements() {
+  const el = document.getElementById('achievements-grid');
+  el.innerHTML = ACHIEVEMENTS.map(a => {
+    const unlocked = P.unlockedAchievements.includes(a.id);
+    return `<div class="achv ${unlocked ? 'unlocked' : 'locked'}">
+      <div class="achv-icon">${a.icon}</div>
+      <div class="achv-name">${a.name}</div>
+      <div class="achv-desc">${a.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a => {
+    if (!P.unlockedAchievements.includes(a.id) && a.check(P)) {
+      P.unlockedAchievements.push(a.id);
+      setTimeout(() => showAchievementToast(a), 500);
+    }
+  });
+}
+
+function showAchievementToast(a) {
+  const el = document.createElement('div');
+  el.style.cssText = `position:fixed;bottom:1.5rem;right:1.5rem;background:var(--panel);border:1px solid var(--gold);border-radius:8px;padding:.75rem 1.1rem;z-index:999;font-family:var(--font-h);font-size:.9rem;letter-spacing:1px;color:var(--gold);animation:xp-float 3s ease forwards;display:flex;align-items:center;gap:.6rem;max-width:280px`;
+  el.innerHTML = `<span style="font-size:1.4rem">${a.icon}</span><div><div>ACHIEVEMENT UNLOCKED</div><div style="color:var(--text);font-size:.8rem">${a.name}</div></div>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+// ═══════════════════════════════════════════
+// SCORES TAB
+// ═══════════════════════════════════════════
+function renderScoresTab() {
+  checkDaily();
+  const now = new Date();
+  const midnight = new Date(now); midnight.setHours(24,0,0,0);
+  const diff = midnight - now;
+  const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
+  document.getElementById('daily-reset-lbl').textContent = `Resets in ${h}h ${m}m`;
+
+  // Daily
+  const daily = document.getElementById('daily-box');
+  if (!P.dailySessions.length) {
+    daily.innerHTML = '<div class="empty-state">No sessions today. Start a quiz!</div>';
+  } else {
+    const sorted = [...P.dailySessions].sort((a,b) => b.pct - a.pct);
+    daily.innerHTML = '<div class="daily-scores">' + sorted.slice(0,10).map((s,i) => {
+      const pos = i===0?'gold-pos':i===1?'silver-pos':i===2?'bronze-pos':'';
+      const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+      return `<div class="daily-row">
+        <div class="daily-pos ${pos}">${medal}</div>
+        <div class="daily-name">${s.topic} · ${s.size}Qs · ${s.mode.toUpperCase()}</div>
+        <div class="daily-score">${s.correct}/${s.size}</div>
+        <div class="daily-pct" style="color:${s.pct>=80?'var(--green)':s.pct>=60?'var(--gold)':'var(--red)'}">${s.pct}%</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  // Size records
+  const srEl = document.getElementById('size-records');
+  const sizes = [10,20,30,40,50,75,100,150,'all'];
+  srEl.innerHTML = sizes.map(sz => {
+    const rec = P.sizeRecords[sz];
+    return `<div class="sr">
+      <div class="sr-size">${sz === 'all' ? 'ALL Qs' : sz + ' QUESTIONS'}</div>
+      <span class="sr-val" style="color:${rec?'var(--gold)':'var(--muted)'}">${rec ? rec.pct+'%' : '—'}</span>
+      <div class="sr-date">${rec ? rec.date : 'No record yet'}</div>
+    </div>`;
+  }).join('');
+
+  // History
+  const histEl = document.getElementById('score-history');
+  if (!P.history.length) {
+    histEl.innerHTML = '<div class="empty-state">No quiz history yet.</div>';
+  } else {
+    const modeColors = {practice:'var(--blue)',timed:'var(--gold)',exam:'var(--purple)',weak:'var(--orange)'};
+    histEl.innerHTML = P.history.slice().reverse().slice(0,30).map(s => `
+      <div class="score-row">
+        <div class="score-date">${s.date}</div>
+        <div class="score-mode badge-chip" style="background:${modeColors[s.mode]||'var(--border)'}22;color:${modeColors[s.mode]||'var(--muted)'};border:1px solid ${modeColors[s.mode]||'var(--border)'}44">${s.mode.toUpperCase()}</div>
+        <div class="score-topic">${s.topic}</div>
+        <div class="score-val" style="color:${s.pct>=80?'var(--green)':s.pct>=60?'var(--gold)':'var(--red)'}">${s.pct}%</div>
+        <div class="score-xp">+${s.xp}XP</div>
+      </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════
+// STATS / ANALYSIS TAB
+// ═══════════════════════════════════════════
+function renderStatsTab() {
+  const table = document.getElementById('topic-table');
+  const focusEl = document.getElementById('focus-box');
+
+  if (!Object.keys(P.topicStats).length) {
+    table.innerHTML = '<div class="empty-state">Play some quizzes to see your topic analysis!</div>';
+    focusEl.innerHTML = '';
+    return;
+  }
+
+  const rows = DECKS.map(d => {
+    const ts = P.topicStats[d.id] || {correct:0,total:0};
+    const pct = ts.total ? Math.round(ts.correct/ts.total*100) : null;
+    const color = pct===null?'var(--muted)':pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
+    return { d, pct, ts, color };
+  });
+
+  table.innerHTML = rows.map(r => `
+    <div class="topic-row">
+      <div class="topic-name" style="color:${r.d.color}">${r.d.name}</div>
+      <div class="topic-bar"><div class="topic-fill" style="width:${r.pct??0}%;background:${r.color}"></div></div>
+      <div class="topic-pct" style="color:${r.color}">${r.pct!==null?r.pct+'%':'—'}</div>
+      <div class="topic-count">${r.ts.correct||0}/${r.ts.total||0}</div>
+    </div>`).join('');
+
+  // Focus recommendations
+  const weak = rows.filter(r => r.pct !== null && r.pct < 70).sort((a,b) => a.pct - b.pct);
+  const strong = rows.filter(r => r.pct !== null && r.pct >= 80);
+
+  if (!weak.length && !strong.length) {
+    focusEl.innerHTML = '<div class="empty-state">Keep playing to get recommendations!</div>';
+  } else {
+    focusEl.innerHTML = '';
+    if (weak.length) {
+      focusEl.innerHTML += `<div style="background:rgba(255,61,90,.06);border:1px solid rgba(255,61,90,.2);border-radius:8px;padding:1rem;margin-bottom:.75rem">
+        <div style="font-family:var(--font-mono);font-size:.68rem;color:var(--red);letter-spacing:1px;margin-bottom:.5rem">⚠ NEEDS WORK</div>
+        ${weak.map(r=>`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+          <span style="color:${r.d.color};font-size:.85rem">●</span>
+          <span style="font-size:.85rem">${r.d.name}</span>
+          <span style="font-family:var(--font-mono);font-size:.72rem;color:var(--red);margin-left:auto">${r.pct}%</span>
+        </div>`).join('')}
+      </div>`;
+    }
+    if (strong.length) {
+      focusEl.innerHTML += `<div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:8px;padding:1rem">
+        <div style="font-family:var(--font-mono);font-size:.68rem;color:var(--green);letter-spacing:1px;margin-bottom:.5rem">✓ STRONG AREAS</div>
+        ${strong.map(r=>`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+          <span style="color:${r.d.color};font-size:.85rem">●</span>
+          <span style="font-size:.85rem">${r.d.name}</span>
+          <span style="font-family:var(--font-mono);font-size:.72rem;color:var(--green);margin-left:auto">${r.pct}%</span>
+        </div>`).join('')}
+      </div>`;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// QUIZ START
+// ═══════════════════════════════════════════
+function buildQuestions() {
+  let pool = [];
+  const useAll = GS.selectedDecks.has('all');
+
+  if (GS.mode === 'weak') {
+    // sort decks by weakest performance, pull more from worst
+    const sorted = DECKS.slice().sort((a,b) => {
+      const sa = P.topicStats[a.id]||{correct:0,total:1};
+      const sb = P.topicStats[b.id]||{correct:0,total:1};
+      return (sa.correct/sa.total) - (sb.correct/sb.total);
+    });
+    sorted.forEach(d => {
+      if (!useAll && !GS.selectedDecks.has(String(d.id))) return;
+      d.cards.forEach(c => pool.push({...c, deckName:d.name, deckId:d.id}));
+    });
+  } else {
+    DECKS.forEach(d => {
+      if (!useAll && !GS.selectedDecks.has(String(d.id))) return;
+      d.cards.forEach(c => pool.push({...c, deckName:d.name, deckId:d.id}));
+    });
+    pool.sort(() => Math.random() - 0.5);
+  }
+
+  const count = GS.questionCount === 0 ? pool.length : Math.min(GS.questionCount, pool.length);
+  return pool.slice(0, count);
+}
+
+function startQuiz() {
+  GS.questions = buildQuestions();
+  if (!GS.questions.length) return;
+  GS.currentQ = 0;
+  GS.score = 0;
+  GS.sessionXP = 0;
+  GS.streak = 0;
+  GS.bestStreak = 0;
+  GS.answered = false;
+  GS.wrongAnswers = [];
+  GS.deckPerf = {};
+  GS.rankUpTo = null;
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ═══════════════════════════════════════════
+// QUESTION RENDER
+// ═══════════════════════════════════════════
+function renderQuestion() {
+  const q = GS.questions[GS.currentQ];
+  const total = GS.questions.length;
+  GS.answered = false;
+
+  const options = [q.a, ...q.w].sort(() => Math.random() - 0.5);
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('q-progress-txt').textContent = `Q ${GS.currentQ+1} / ${total}`;
+  document.getElementById('xp-display').textContent = GS.sessionXP + ' XP';
+  document.getElementById('streak-display').textContent = GS.streak;
+  document.getElementById('q-number').textContent = `QUESTION ${GS.currentQ+1}`;
+  document.getElementById('q-category').textContent = q.deckName || '';
+  document.getElementById('question-box').textContent = q.q;
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = options.map((opt,i) => `
+    <button class="opt-btn" data-correct="${opt===q.a}" onclick="answer(this,${opt===q.a})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span class="opt-text">${opt}</span>
+      <span class="result-icon"></span>
+    </button>`).join('');
+
+  const fb = document.getElementById('feedback-bar');
+  fb.className = 'feedback-bar';
+  fb.style.display = 'none';
+  document.getElementById('btn-next').classList.remove('vis');
+
+  clearInterval(GS.timer);
+  if (GS.mode === 'timed') {
+    GS.timeLeft = 30;
+    updateTimerBar();
+    GS.timer = setInterval(tickTimer, 100);
+    document.getElementById('timer-txt').textContent = '30s';
+  } else {
+    document.getElementById('timer-bar').style.width = '100%';
+    document.getElementById('timer-bar').style.background = 'var(--cyan)';
+    document.getElementById('timer-txt').textContent = '';
+  }
+}
+
+function tickTimer() {
+  GS.timeLeft -= 0.1;
+  updateTimerBar();
+  document.getElementById('timer-txt').textContent = Math.ceil(GS.timeLeft) + 's';
+  if (GS.timeLeft <= 0) { clearInterval(GS.timer); timeUp(); }
+}
+
+function updateTimerBar() {
+  const pct = Math.max(0, GS.timeLeft/30*100);
+  const bar = document.getElementById('timer-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = GS.timeLeft < 10 ? 'var(--red)' : GS.timeLeft < 20 ? 'var(--gold)' : 'var(--cyan)';
+}
+
+function timeUp() {
+  if (GS.answered) return;
+  GS.answered = true;
+  document.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
+  });
+  GS.streak = 0;
+  document.getElementById('streak-display').textContent = 0;
+  recordDeckPerf(GS.questions[GS.currentQ].deckId, false);
+  GS.wrongAnswers.push(GS.questions[GS.currentQ]);
+  const fb = document.getElementById('feedback-bar');
+  fb.className = 'feedback-bar wrong-fb';
+  fb.style.display = 'block';
+  fb.innerHTML = `<span class="fb-label">⏰ TIME'S UP</span>See the correct answer highlighted above.`;
+  document.getElementById('btn-next').classList.add('vis');
+}
+
+// ═══════════════════════════════════════════
+// ANSWER
+// ═══════════════════════════════════════════
+function answer(btn, isCorrect) {
+  if (GS.answered) return;
+  GS.answered = true;
+  clearInterval(GS.timer);
+
+  const q = GS.questions[GS.currentQ];
+
+  document.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
+  });
+
+  const fb = document.getElementById('feedback-bar');
+
+  if (isCorrect) {
+    btn.classList.remove('reveal-correct');
+    btn.classList.add('correct');
+    GS.score++;
+    GS.streak++;
+    if (GS.streak > GS.bestStreak) GS.bestStreak = GS.streak;
+    document.getElementById('streak-display').textContent = GS.streak;
+
+    let xp = 10;
+    if (GS.mode === 'timed') xp += Math.round(Math.max(0,GS.timeLeft)/30*15);
+    if (GS.streak >= 5) xp += 5;
+    if (GS.streak >= 10) xp += 5;
+    if (GS.mode === 'exam') xp += 5;
+    GS.sessionXP += xp;
+    document.getElementById('xp-display').textContent = GS.sessionXP + ' XP';
+
+    if (GS.mode !== 'exam') {
+      fb.className = 'feedback-bar correct-fb';
+      fb.style.display = 'block';
+      const sm = GS.streak>=10?` 🔥 ${GS.streak} STREAK!`:GS.streak>=5?` 🔥 ${GS.streak} in a row!`:'';
+      fb.innerHTML = `<span class="fb-label">✓ CORRECT${sm}</span><div class="xp-gained">+${xp} XP${GS.mode==='timed'?' (speed bonus included)':''}</div>`;
+    }
+
+    if (GS.mode === 'timed') P.timedCorrect = (P.timedCorrect||0) + 1;
+    recordDeckPerf(q.deckId, true);
+    popXP(xp);
+    if (GS.streak === 5 || GS.streak === 10 || GS.streak === 20) popStreak(GS.streak);
+
+  } else {
+    btn.classList.add('wrong');
+    btn.querySelector('.result-icon').textContent = '✗';
+    GS.streak = 0;
+    document.getElementById('streak-display').textContent = 0;
+    if (GS.mode !== 'exam') {
+      fb.className = 'feedback-bar wrong-fb';
+      fb.style.display = 'block';
+      fb.innerHTML = `<span class="fb-label">✗ INCORRECT</span>Correct answer: <strong>${q.a}</strong>`;
+    }
+    GS.wrongAnswers.push(q);
+    recordDeckPerf(q.deckId, false);
+  }
+
+  document.getElementById('btn-next').classList.add('vis');
+}
+
+function recordDeckPerf(deckId, correct) {
+  if (!GS.deckPerf[deckId]) GS.deckPerf[deckId] = {correct:0,total:0};
+  GS.deckPerf[deckId].total++;
+  if (correct) GS.deckPerf[deckId].correct++;
+
+  // Update persistent topic stats
+  if (!P.topicStats[deckId]) P.topicStats[deckId] = {correct:0,total:0};
+  P.topicStats[deckId].total++;
+  if (correct) P.topicStats[deckId].correct++;
+}
+
+function nextQuestion() {
+  GS.currentQ++;
+  if (GS.currentQ >= GS.questions.length) showResults();
+  else renderQuestion();
+}
+
+// ═══════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════
+function showResults() {
+  clearInterval(GS.timer);
+  const total = GS.questions.length;
+  const pct = Math.round(GS.score/total*100);
+  const isNewBest = pct > P.bestPct;
+
+  // Grade
+  let grade, gc;
+  if (pct>=95){grade='A+';gc='var(--green)'}
+  else if(pct>=85){grade='A';gc='var(--green)'}
+  else if(pct>=75){grade='B+';gc='var(--cyan)'}
+  else if(pct>=65){grade='B';gc='var(--cyan)'}
+  else if(pct>=55){grade='C';gc='var(--gold)'}
+  else if(pct>=45){grade='D';gc='var(--orange)'}
+  else{grade='F';gc='var(--red)'}
+
+  document.getElementById('results-grade').textContent = grade;
+  document.getElementById('results-grade').style.color = gc;
+  document.getElementById('results-pct').textContent = `${GS.score} / ${total} CORRECT · ${pct}%`;
+  document.getElementById('rs-correct').textContent = GS.score;
+  document.getElementById('rs-wrong').textContent = total - GS.score;
+  document.getElementById('rs-streak').textContent = GS.bestStreak;
+  document.getElementById('rs-xp').textContent = '+' + GS.sessionXP;
+  document.getElementById('new-best').style.display = isNewBest ? 'block' : 'none';
+
+  // Update player stats
+  if (isNewBest) P.bestPct = pct;
+  if (GS.bestStreak > P.bestStreak) P.bestStreak = GS.bestStreak;
+  P.played++;
+
+  // Size records
+  const sizeKey = GS.questionCount === 0 ? 'all' : GS.questionCount;
+  if (!P.sizeRecords[sizeKey] || pct > P.sizeRecords[sizeKey].pct) {
+    P.sizeRecords[sizeKey] = {pct, date: new Date().toLocaleDateString('en-NZ')};
+  }
+
+  // Unlock checks
+  if (pct === 100) P.hasPerfect = true;
+  if (pct >= 90 && total >= 20) P.has90on20 = true;
+  if (new Date().getHours() >= 22) P.nightShift = true;
+
+  // Check per-deck achievements
+  Object.keys(GS.deckPerf).forEach(id => {
+    const d = DECKS.find(x => x.id == id);
+    const dp = GS.deckPerf[id];
+    const dp_pct = Math.round(dp.correct/dp.total*100);
+    if (d && d.name === 'Firearms & Taser' && dp_pct >= 80) P.firearms80 = true;
+    if (d && d.name === 'Drugs' && dp_pct === 100) P.drugsPerfect = true;
+    if (d && d.name === 'Evidence' && dp_pct >= 90) P.evidence90 = true;
+  });
+
+  // XP & rank up
+  const rankBefore = getRankForLevel(getLevelFromXP(P.totalXP).level);
+  const rankUpLevel = addXP(GS.sessionXP);
+  const rankAfter = getRankForLevel(P.level);
+  GS.rankUpTo = rankAfter.title !== rankBefore.title ? rankAfter : null;
+
+  const ruBox = document.getElementById('rank-up-box');
+  const ruName = document.getElementById('ru-rank-name');
+  if (GS.rankUpTo) {
+    ruBox.style.display = 'block';
+    ruName.textContent = GS.rankUpTo.icon + ' ' + GS.rankUpTo.title;
+    setTimeout(() => popRank('RANK UP: ' + GS.rankUpTo.title), 800);
+  } else {
+    ruBox.style.display = 'none';
+  }
+
+  // History entry
+  const useAll = GS.selectedDecks.has('all');
+  const topicLabel = useAll ? 'All Topics' : DECKS.filter(d => GS.selectedDecks.has(String(d.id))).map(d=>d.short).join(', ');
+  const histEntry = {
+    date: new Date().toLocaleString('en-NZ',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),
+    pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP
+  };
+  P.history.push(histEntry);
+  if (P.history.length > 50) P.history.shift();
+
+  // Daily sessions
+  checkDaily();
+  P.dailySessions.push({pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP});
+
+  checkAchievements();
+  saveP();
+
+  // Breakdown
+  const bdEl = document.getElementById('breakdown');
+  const deckIds = Object.keys(GS.deckPerf);
+  if (deckIds.length > 1) {
+    bdEl.innerHTML = '<div class="breakdown-title">PERFORMANCE BY TOPIC</div>' +
+      deckIds.map(id => {
+        const deck = DECKS.find(d => d.id == id);
+        const dp = GS.deckPerf[id];
+        const p = Math.round(dp.correct/dp.total*100);
+        const color = p>=80?'var(--green)':p>=60?'var(--gold)':'var(--red)';
+        return `<div class="breakdown-row">
+          <div class="br-name" style="color:${deck?deck.color:'var(--muted)'}">${deck?deck.short:'Topic'}</div>
+          <div class="br-bar"><div class="br-fill" style="width:${p}%;background:${color}"></div></div>
+          <div class="br-pct">${p}%</div>
+        </div>`;
+      }).join('');
+  } else { bdEl.innerHTML = ''; }
+
+  document.getElementById('btn-wrong-only').style.display = GS.wrongAnswers.length ? 'block' : 'none';
+
+  if (pct >= 70) launchConfetti();
+  showScreen('results');
+}
+
+// ═══════════════════════════════════════════
+// QUIT HANDLING
+// ═══════════════════════════════════════════
+function tryQuit() {
+  clearInterval(GS.timer);
+  document.getElementById('quit-overlay').classList.add('vis');
+}
+
+function closeQuit() {
+  document.getElementById('quit-overlay').classList.remove('vis');
+  if (GS.mode === 'timed' && !GS.answered) {
+    GS.timer = setInterval(tickTimer, 100);
+  }
+}
+
+function confirmQuit() {
+  clearInterval(GS.timer);
+  document.getElementById('quit-overlay').classList.remove('vis');
+  showScreen('home');
+}
+
+// ═══════════════════════════════════════════
+// RETRY
+// ═══════════════════════════════════════════
+function retryQuiz() { startQuiz(); }
+
+function retryWrong() {
+  const wrong = [...GS.wrongAnswers];
+  GS.questions = wrong;
+  GS.currentQ = 0;
+  GS.score = 0;
+  GS.sessionXP = 0;
+  GS.streak = 0;
+  GS.bestStreak = 0;
+  GS.answered = false;
+  GS.wrongAnswers = [];
+  GS.deckPerf = {};
+  GS.rankUpTo = null;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function goHome() {
+  clearInterval(GS.timer);
+  renderProfileTab();
+  renderScoresTab();
+  renderStatsTab();
+  showScreen('home');
+}
+
+// ═══════════════════════════════════════════
+// FX
+// ═══════════════════════════════════════════
+function popXP(amount) {
+  const el = document.createElement('div');
+  el.className = 'xp-pop';
+  el.textContent = '+' + amount + ' XP';
+  el.style.left = (20+Math.random()*60)+'%';
+  el.style.top = '20%';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1400);
+}
+
+function popStreak(n) {
+  const el = document.createElement('div');
+  el.className = 'streak-pop';
+  el.textContent = `🔥 ${n} STREAK!`;
+  el.style.left = '50%';
+  el.style.top = '35%';
+  el.style.transform = 'translateX(-50%)';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1600);
+}
+
+function popRank(msg) {
+  const el = document.createElement('div');
+  el.className = 'rank-pop';
+  el.textContent = msg;
+  el.style.left = '50%';
+  el.style.top = '40%';
+  el.style.transform = 'translateX(-50%)';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
+function launchConfetti() {
+  const colors=['#1e90ff','#00d4ff','#00e676','#ffc107','#ff6d00','#b388ff','#ff3d5a'];
+  for (let i=0;i<60;i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left = Math.random()*100+'vw';
+      el.style.top = '-10px';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.animationDuration = (1.5+Math.random()*2)+'s';
+      el.style.animationDelay = (Math.random()*.4)+'s';
+      el.style.width = el.style.height = (6+Math.random()*8)+'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3500);
+    }, i*25);
+  }
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
