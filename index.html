@@ -316,13 +316,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 <div class="modal-overlay hidden" id="changelog-modal">
   <div class="changelog-box">
     <div class="changelog-title">WHAT'S NEW</div>
-    <div class="changelog-version">VERSION 2.1 — NZ POLICE SGT CPK SIMULATOR</div>
+    <div class="changelog-version">VERSION 2.2 — NZ POLICE SGT CPK SIMULATOR</div>
     <div class="changelog-section-title">NEW IN THIS VERSION</div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Full site title and branding added to the home screen</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Version badge — always know which version you're running</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Changelog popup on first load after each update</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Footer with contact/feedback info</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Progress saves automatically in your browser — your rank, XP and history persist every visit</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Fixed: "Retry Wrong Answers" no longer counts toward achievements, played count, or history</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Fixed: AOS Trained, Delta Handler, SOCO and other specialist achievements now require at least 10 questions from that topic in one quiz</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Fixed: Flawless achievement now requires 10+ questions so a 1-question retry can't trigger it</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Fixed: Question rotation improved — you'll cycle through the full bank before seeing repeats</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>Added 20+ new achievements including NZ Police awards (QSM, GSM, Long Service Medal, Bravery Award, Commissioner's Commendation)</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span>New achievements: Early Bird, Weekend Warrior, The Full CPK, Rapid Response, Exam Ready and more</span></div>
     <div style="margin-top:1rem" class="changelog-section-title">PREVIOUSLY ADDED</div>
     <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Full XP &amp; NZ Police rank progression system (Recruit → Commissioner)</span></div>
     <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Prestige system, achievements, daily scores &amp; all-time records</span></div>
@@ -338,7 +339,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
   <!-- SITE HEADER -->
   <div class="site-header">
     <div class="site-header-inner">
-      <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.1</button>
+      <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.2</button>
       <div class="site-badge">NEW ZEALAND POLICE · SERGEANT PROMOTION</div>
       <div class="site-title">NZ Police <span class="accent">Sergeants</span> CPK Simulator</div>
       <div class="site-sub">CORE POLICING KNOWLEDGE · MULTI-CHOICE EXAM PRACTICE · 376 QUESTIONS ACROSS 14 TOPICS</div>
@@ -518,24 +519,58 @@ const RANKS = [
 ];
 
 const ACHIEVEMENTS = [
-  {id:"first_quiz",   icon:"🎯", name:"First Steps",       desc:"Complete your first quiz",            check:s=>s.played>=1},
-  {id:"streak5",      icon:"🔥", name:"On Fire",           desc:"Get a 5-question streak",             check:s=>s.bestStreak>=5},
-  {id:"streak10",     icon:"🔥", name:"Inferno",           desc:"Get a 10-question streak",            check:s=>s.bestStreak>=10},
-  {id:"streak20",     icon:"🌋", name:"Unstoppable",       desc:"Get a 20-question streak",            check:s=>s.bestStreak>=20},
-  {id:"perfect",      icon:"💎", name:"Flawless",          desc:"Score 100% on any quiz",              check:s=>s.hasPerfect},
-  {id:"score90",      icon:"🥇", name:"Gold Standard",     desc:"Score 90%+ on a 20+ question quiz",   check:s=>s.has90on20},
-  {id:"played10",     icon:"📚", name:"Studious",          desc:"Complete 10 quizzes",                 check:s=>s.played>=10},
-  {id:"played50",     icon:"📖", name:"Dedicated",         desc:"Complete 50 quizzes",                 check:s=>s.played>=50},
-  {id:"xp1000",       icon:"⚡", name:"XP Hunter",         desc:"Earn 1,000 total XP",                 check:s=>s.totalXP>=1000},
-  {id:"xp10000",      icon:"⚡", name:"XP Master",         desc:"Earn 10,000 total XP",                check:s=>s.totalXP>=10000},
-  {id:"aos",          icon:"🔫", name:"A.O.S. Trained",    desc:"Complete a Firearms quiz at 80%+",    check:s=>s.firearms80},
-  {id:"delta",        icon:"🐕", name:"Delta Handler",     desc:"Score 100% on any Drugs quiz",        check:s=>s.drugsPerfect},
-  {id:"soco",         icon:"🔬", name:"SOCO",              desc:"Score 90%+ on Evidence",              check:s=>s.evidence90},
-  {id:"nightshift",   icon:"🌙", name:"Night Shift",       desc:"Complete a quiz after 10pm",          check:s=>s.nightShift},
-  {id:"speed",        icon:"⚡", name:"Speed Demon",       desc:"Answer 10 timed Qs correctly",        check:s=>s.timedCorrect>=10},
-  {id:"commissioner", icon:"👑", name:"Commissioner",      desc:"Reach level 100",                     check:s=>s.level>=100},
-  {id:"prestige1",    icon:"🌠", name:"Prestige I",        desc:"Prestige for the first time",         check:s=>s.prestige>=1},
-  {id:"prestige3",    icon:"🌌", name:"Legend",            desc:"Prestige 3 times",                    check:s=>s.prestige>=3},
+  // ── GETTING STARTED ──
+  {id:"first_quiz",    icon:"🎯", name:"First Steps",         desc:"Complete your first quiz",                        check:s=>s.played>=1},
+  {id:"played5",       icon:"📋", name:"Showing Up",          desc:"Complete 5 quizzes",                              check:s=>s.played>=5},
+  {id:"played10",      icon:"📚", name:"Studious",            desc:"Complete 10 quizzes",                             check:s=>s.played>=10},
+  {id:"played25",      icon:"📖", name:"Dedicated",           desc:"Complete 25 quizzes",                             check:s=>s.played>=25},
+  {id:"played50",      icon:"🎓", name:"Student of the Law",  desc:"Complete 50 quizzes",                             check:s=>s.played>=50},
+  {id:"played100",     icon:"🏛️", name:"Century",             desc:"Complete 100 quizzes",                            check:s=>s.played>=100},
+  // ── SCORES ──
+  {id:"score60",       icon:"✅", name:"Pass Mark",           desc:"Score 60%+ on a 20+ question quiz",               check:s=>s.has60on20},
+  {id:"score80",       icon:"🥈", name:"Sharp Mind",          desc:"Score 80%+ on a 20+ question quiz",               check:s=>s.has80on20},
+  {id:"score90",       icon:"🥇", name:"Gold Standard",       desc:"Score 90%+ on a 20+ question quiz",               check:s=>s.has90on20},
+  {id:"perfect",       icon:"💎", name:"Flawless",            desc:"Score 100% on a quiz of 10+ questions",           check:s=>s.hasPerfect},
+  {id:"perfect20",     icon:"💠", name:"Perfect Deposition",  desc:"Score 100% on a 20+ question quiz",               check:s=>s.hasPerfect20},
+  // ── STREAKS ──
+  {id:"streak5",       icon:"🔥", name:"On Fire",             desc:"Get a 5-question streak in one quiz",             check:s=>s.bestStreak>=5},
+  {id:"streak10",      icon:"🔥", name:"Inferno",             desc:"Get a 10-question streak in one quiz",            check:s=>s.bestStreak>=10},
+  {id:"streak20",      icon:"🌋", name:"Unstoppable",         desc:"Get a 20-question streak in one quiz",            check:s=>s.bestStreak>=20},
+  {id:"streak30",      icon:"☄️", name:"Legendary Run",       desc:"Get a 30-question streak in one quiz",            check:s=>s.bestStreak>=30},
+  // ── XP & RANK ──
+  {id:"xp500",         icon:"⚡", name:"First Charge",        desc:"Earn 500 total XP",                               check:s=>s.totalXP>=500},
+  {id:"xp2500",        icon:"⚡", name:"XP Hunter",           desc:"Earn 2,500 total XP",                             check:s=>s.totalXP>=2500},
+  {id:"xp10000",       icon:"⚡", name:"XP Master",           desc:"Earn 10,000 total XP",                            check:s=>s.totalXP>=10000},
+  {id:"xp50000",       icon:"🌟", name:"XP Legend",           desc:"Earn 50,000 total XP",                            check:s=>s.totalXP>=50000},
+  {id:"rank_sgt",      icon:"🟨", name:"Sergeant",            desc:"Reach the rank of Sergeant (Level 40)",           check:s=>s.level>=40},
+  {id:"rank_insp",     icon:"🔶", name:"Inspector",           desc:"Reach the rank of Inspector (Level 60)",          check:s=>s.level>=60},
+  {id:"commissioner",  icon:"👑", name:"Commissioner",        desc:"Reach the rank of Commissioner (Level 100)",      check:s=>s.level>=100},
+  {id:"prestige1",     icon:"🌠", name:"Prestige I",          desc:"Prestige for the first time",                     check:s=>s.prestige>=1},
+  {id:"prestige3",     icon:"🌌", name:"Legend",              desc:"Prestige 3 times",                                check:s=>s.prestige>=3},
+  // ── SPECIALIST UNITS (require meaningful attempt) ──
+  {id:"aos",           icon:"🔫", name:"A.O.S. Trained",      desc:"Score 80%+ on 10+ Firearms questions in one quiz", check:s=>s.firearms80},
+  {id:"delta",         icon:"🐕", name:"Delta Handler",        desc:"Score 100% on 10+ Drugs questions in one quiz",   check:s=>s.drugsPerfect},
+  {id:"soco",          icon:"🔬", name:"SOCO",                 desc:"Score 90%+ on 10+ Evidence questions in one quiz", check:s=>s.evidence90},
+  {id:"fv_expert",     icon:"🛡️", name:"FV Specialist",        desc:"Score 90%+ on 10+ Family Violence questions",     check:s=>s.fv90},
+  {id:"ot_expert",     icon:"👶", name:"Youth Aid",            desc:"Score 90%+ on 10+ OT Act questions",              check:s=>s.ot90},
+  // ── GAME MODES ──
+  {id:"speed",         icon:"⚡", name:"Speed Demon",          desc:"Answer 20 timed questions correctly",              check:s=>s.timedCorrect>=20},
+  {id:"speed50",       icon:"🏎️", name:"Rapid Response",       desc:"Answer 50 timed questions correctly",              check:s=>s.timedCorrect>=50},
+  {id:"exam_pass",     icon:"📝", name:"Exam Ready",           desc:"Score 70%+ in Exam Sim mode (20+ questions)",      check:s=>s.examPass},
+  {id:"exam_ace",      icon:"🎓", name:"Top of the Class",     desc:"Score 90%+ in Exam Sim mode (20+ questions)",      check:s=>s.examAce},
+  {id:"comeback",      icon:"🔁", name:"Never Give Up",        desc:"Retry wrong answers and get 100%",                 check:s=>s.comingBack},
+  // ── NZ POLICE AWARDS ──
+  {id:"qsm",           icon:"🎖️", name:"Queen's Service Medal", desc:"Complete 30 quizzes with an average score of 75%+", check:s=>s.qsmEarned},
+  {id:"gcm",           icon:"🏅", name:"General Conduct Medal", desc:"Complete 20 consecutive quizzes without scoring below 60%", check:s=>s.gcmEarned},
+  {id:"lsm",           icon:"🏆", name:"Long Service Medal",    desc:"Complete 75 quizzes total",                        check:s=>s.played>=75},
+  {id:"bravery",       icon:"⭐", name:"Bravery Award",         desc:"Score 100% on a 40+ question quiz",                check:s=>s.bravery},
+  {id:"commendation",  icon:"📜", name:"Commissioner's Comm.",  desc:"Achieve a 15+ question streak in timed mode",      check:s=>s.timedStreak15},
+  // ── FUN / HIDDEN ──
+  {id:"nightshift",    icon:"🌙", name:"Night Shift",           desc:"Complete a quiz after 10pm",                       check:s=>s.nightShift},
+  {id:"earlybird",     icon:"🌅", name:"Early Bird",            desc:"Complete a quiz before 7am",                       check:s=>s.earlyBird},
+  {id:"weekend",       icon:"📅", name:"Weekend Warrior",       desc:"Complete a quiz on a Saturday or Sunday",          check:s=>s.weekendWarrior},
+  {id:"century_qs",    icon:"💯", name:"The Full CPK",          desc:"Complete a 100-question quiz",                     check:s=>s.done100q},
+  {id:"all_qs",        icon:"🗂️", name:"Read the Manual",       desc:"Complete an ALL questions quiz",                   check:s=>s.doneAllQ},
 ];
 
 // ═══════════════════════════════════════════════════
@@ -723,17 +758,43 @@ let P = load('cpk_player2', {
   played: 0,
   bestPct: 0,
   bestStreak: 0,
+  // score achievements
   hasPerfect: false,
+  hasPerfect20: false,
+  has60on20: false,
+  has80on20: false,
   has90on20: false,
+  bravery: false,
+  // specialist units (require 10+ Qs from that topic)
   firearms80: false,
   drugsPerfect: false,
   evidence90: false,
+  fv90: false,
+  ot90: false,
+  // mode achievements
   nightShift: false,
+  earlyBird: false,
+  weekendWarrior: false,
   timedCorrect: 0,
+  timedStreak15: false,
+  examPass: false,
+  examAce: false,
+  comingBack: false,
+  // quiz size
+  done100q: false,
+  doneAllQ: false,
+  // NZ Police awards
+  qsmEarned: false,
+  gcmEarned: false,
+  // internal trackers
+  qsmQuizCount: 0,
+  qsmScoreSum: 0,
+  gcmStreak: 0,      // consecutive quizzes >= 60%
   unlockedAchievements: [],
   topicStats: {},   // {deckId: {correct, total}}
   history: [],      // last 50 sessions
   sizeRecords: {},  // {questionCount: {pct, date}}
+  recentSeen: [],   // recently shown question indices (global pool)
   dailyKey: '',
   dailySessions: [],
 });
@@ -819,7 +880,7 @@ let GS = {
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
-const CURRENT_VERSION = 'v2.1';
+const CURRENT_VERSION = 'v2.2';
 
 function init() {
   checkDaily();
@@ -1100,30 +1161,46 @@ function renderStatsTab() {
 // QUIZ START
 // ═══════════════════════════════════════════
 function buildQuestions() {
-  let pool = [];
   const useAll = GS.selectedDecks.has('all');
 
-  if (GS.mode === 'weak') {
-    // sort decks by weakest performance, pull more from worst
-    const sorted = DECKS.slice().sort((a,b) => {
-      const sa = P.topicStats[a.id]||{correct:0,total:1};
-      const sb = P.topicStats[b.id]||{correct:0,total:1};
-      return (sa.correct/sa.total) - (sb.correct/sb.total);
-    });
-    sorted.forEach(d => {
-      if (!useAll && !GS.selectedDecks.has(String(d.id))) return;
-      d.cards.forEach(c => pool.push({...c, deckName:d.name, deckId:d.id}));
-    });
-  } else {
-    DECKS.forEach(d => {
-      if (!useAll && !GS.selectedDecks.has(String(d.id))) return;
-      d.cards.forEach(c => pool.push({...c, deckName:d.name, deckId:d.id}));
-    });
-    pool.sort(() => Math.random() - 0.5);
-  }
+  // Build full pool with stable unique IDs
+  let fullPool = [];
+  const sorted = GS.mode === 'weak'
+    ? DECKS.slice().sort((a,b) => {
+        const sa = P.topicStats[a.id]||{correct:0,total:1};
+        const sb = P.topicStats[b.id]||{correct:0,total:1};
+        return (sa.correct/sa.total) - (sb.correct/sb.total);
+      })
+    : DECKS;
 
-  const count = GS.questionCount === 0 ? pool.length : Math.min(GS.questionCount, pool.length);
-  return pool.slice(0, count);
+  sorted.forEach(d => {
+    if (!useAll && !GS.selectedDecks.has(String(d.id))) return;
+    d.cards.forEach((c,i) => fullPool.push({...c, deckName:d.name, deckId:d.id, _uid:`${d.id}_${i}`}));
+  });
+
+  if (!fullPool.length) return [];
+
+  // Separate unseen from recently seen
+  if (!P.recentSeen) P.recentSeen = [];
+  const unseenPool = fullPool.filter(c => !P.recentSeen.includes(c._uid));
+  const seenPool   = fullPool.filter(c =>  P.recentSeen.includes(c._uid));
+
+  // Shuffle each group independently
+  unseenPool.sort(() => Math.random() - 0.5);
+  seenPool.sort(()   => Math.random() - 0.5);
+
+  // Prefer unseen, then top up with seen if needed
+  const combined = [...unseenPool, ...seenPool];
+  const count = GS.questionCount === 0 ? combined.length : Math.min(GS.questionCount, combined.length);
+  const selected = combined.slice(0, count);
+
+  // Update recentSeen buffer — keep last (poolSize * 0.6) so ~60% won't repeat
+  const bufferSize = Math.max(10, Math.floor(fullPool.length * 0.6));
+  const newSeen = selected.map(c => c._uid);
+  P.recentSeen = [...P.recentSeen, ...newSeen].slice(-bufferSize);
+  saveP();
+
+  return selected;
 }
 
 function startQuiz() {
@@ -1138,6 +1215,7 @@ function startQuiz() {
   GS.wrongAnswers = [];
   GS.deckPerf = {};
   GS.rankUpTo = null;
+  GS.isRetry = false;
 
   showScreen('quiz');
   renderQuestion();
@@ -1327,30 +1405,66 @@ function showResults() {
   document.getElementById('new-best').style.display = isNewBest ? 'block' : 'none';
 
   // Update player stats
-  if (isNewBest) P.bestPct = pct;
+  if (isNewBest && !GS.isRetry) P.bestPct = pct;
   if (GS.bestStreak > P.bestStreak) P.bestStreak = GS.bestStreak;
-  P.played++;
+  if (!GS.isRetry) P.played++;
 
-  // Size records
-  const sizeKey = GS.questionCount === 0 ? 'all' : GS.questionCount;
-  if (!P.sizeRecords[sizeKey] || pct > P.sizeRecords[sizeKey].pct) {
-    P.sizeRecords[sizeKey] = {pct, date: new Date().toLocaleDateString('en-NZ')};
+  // comeback achievement — got 100% on a retry session
+  if (GS.isRetry && pct === 100 && total >= 2) P.comingBack = true;
+
+  // Size records (only for real quizzes)
+  if (!GS.isRetry) {
+    const sizeKey = GS.questionCount === 0 ? 'all' : GS.questionCount;
+    if (!P.sizeRecords[sizeKey] || pct > P.sizeRecords[sizeKey].pct) {
+      P.sizeRecords[sizeKey] = {pct, date: new Date().toLocaleDateString('en-NZ')};
+    }
   }
 
-  // Unlock checks
-  if (pct === 100) P.hasPerfect = true;
-  if (pct >= 90 && total >= 20) P.has90on20 = true;
-  if (new Date().getHours() >= 22) P.nightShift = true;
+  // ── Score achievements (require real quiz, not retry)
+  if (!GS.isRetry) {
+    const h = new Date().getHours();
+    const dow = new Date().getDay(); // 0=Sun,6=Sat
+    if (pct === 100 && total >= 10) P.hasPerfect = true;
+    if (pct === 100 && total >= 20) P.hasPerfect20 = true;
+    if (pct >= 60  && total >= 20) P.has60on20 = true;
+    if (pct >= 80  && total >= 20) P.has80on20 = true;
+    if (pct >= 90  && total >= 20) P.has90on20 = true;
+    if (pct === 100 && total >= 40) P.bravery = true;
+    if (h >= 22 || h < 1) P.nightShift = true;
+    if (h >= 4 && h < 7) P.earlyBird = true;
+    if (dow === 0 || dow === 6) P.weekendWarrior = true;
+    if (total >= 100) P.done100q = true;
+    if (GS.questionCount === 0) P.doneAllQ = true;
+    if (GS.mode === 'exam' && pct >= 70 && total >= 20) P.examPass = true;
+    if (GS.mode === 'exam' && pct >= 90 && total >= 20) P.examAce = true;
 
-  // Check per-deck achievements
-  Object.keys(GS.deckPerf).forEach(id => {
-    const d = DECKS.find(x => x.id == id);
-    const dp = GS.deckPerf[id];
-    const dp_pct = Math.round(dp.correct/dp.total*100);
-    if (d && d.name === 'Firearms & Taser' && dp_pct >= 80) P.firearms80 = true;
-    if (d && d.name === 'Drugs' && dp_pct === 100) P.drugsPerfect = true;
-    if (d && d.name === 'Evidence' && dp_pct >= 90) P.evidence90 = true;
-  });
+    // GCM — consecutive quizzes >= 60%
+    if (!P.gcmStreak) P.gcmStreak = 0;
+    if (pct >= 60) { P.gcmStreak++; if (P.gcmStreak >= 20) P.gcmEarned = true; }
+    else P.gcmStreak = 0;
+
+    // QSM — 30 quizzes averaging 75%+
+    if (!P.qsmQuizCount) { P.qsmQuizCount = 0; P.qsmScoreSum = 0; }
+    P.qsmQuizCount++;
+    P.qsmScoreSum += pct;
+    if (P.qsmQuizCount >= 30 && (P.qsmScoreSum / P.qsmQuizCount) >= 75) P.qsmEarned = true;
+
+    // Best timed streak
+    if (GS.mode === 'timed' && GS.bestStreak >= 15) P.timedStreak15 = true;
+
+    // ── Specialist unit achievements — require 10+ questions from that topic
+    Object.keys(GS.deckPerf).forEach(id => {
+      const d = DECKS.find(x => x.id == id);
+      const dp = GS.deckPerf[id];
+      if (!d || dp.total < 10) return; // MINIMUM 10 questions from topic
+      const dp_pct = Math.round(dp.correct / dp.total * 100);
+      if (d.name === 'Firearms & Taser' && dp_pct >= 80) P.firearms80 = true;
+      if (d.name === 'Drugs'            && dp_pct === 100) P.drugsPerfect = true;
+      if (d.name === 'Evidence'         && dp_pct >= 90) P.evidence90 = true;
+      if (d.name === 'Family Violence & PSO' && dp_pct >= 90) P.fv90 = true;
+      if (d.name === 'Oranga Tamariki'  && dp_pct >= 90) P.ot90 = true;
+    });
+  }
 
   // XP & rank up
   const rankBefore = getRankForLevel(getLevelFromXP(P.totalXP).level);
@@ -1368,19 +1482,19 @@ function showResults() {
     ruBox.style.display = 'none';
   }
 
-  // History entry
+  // History entry (skip for retry sessions)
   const useAll = GS.selectedDecks.has('all');
   const topicLabel = useAll ? 'All Topics' : DECKS.filter(d => GS.selectedDecks.has(String(d.id))).map(d=>d.short).join(', ');
-  const histEntry = {
-    date: new Date().toLocaleString('en-NZ',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),
-    pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP
-  };
-  P.history.push(histEntry);
-  if (P.history.length > 50) P.history.shift();
-
-  // Daily sessions
-  checkDaily();
-  P.dailySessions.push({pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP});
+  if (!GS.isRetry) {
+    const histEntry = {
+      date: new Date().toLocaleString('en-NZ',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),
+      pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP
+    };
+    P.history.push(histEntry);
+    if (P.history.length > 50) P.history.shift();
+    checkDaily();
+    P.dailySessions.push({pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP});
+  }
 
   checkAchievements();
   saveP();
@@ -1447,6 +1561,7 @@ function retryWrong() {
   GS.wrongAnswers = [];
   GS.deckPerf = {};
   GS.rankUpTo = null;
+  GS.isRetry = true; // flag — no achievements, minimal XP, not counted in played
   showScreen('quiz');
   renderQuestion();
 }
