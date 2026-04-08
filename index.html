@@ -30,7 +30,9 @@
   --font-b: 'Barlow', sans-serif;
   --grid-line: rgba(30,60,100,.06);
   --shadow: rgba(0,0,0,.5);
+  --fs: 1;        /* font scale — 1 = default, 1.15 = large, 1.3 = xl */
 }
+html { font-size: calc(16px * var(--fs)); }
 [data-theme="light"] {
   --bg: #f0f4fa;
   --panel: #ffffff;
@@ -69,6 +71,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .site-title .accent{color:var(--cyan)}
 .site-sub{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:1.5px}
 .header-controls{position:absolute;top:0;right:0;display:flex;gap:.4rem;align-items:center}
+.font-controls{display:flex;gap:1px;align-items:center;background:var(--panel2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.font-btn{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);background:none;border:none;padding:.25rem .4rem;cursor:pointer;transition:all .15s;letter-spacing:.5px;line-height:1}
+.font-btn:hover{color:var(--cyan);background:rgba(0,212,255,.08)}
+#font-reset-btn{border-left:1px solid var(--border);border-right:1px solid var(--border);font-size:.7rem}
 .version-badge{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.2rem .5rem;letter-spacing:1px;cursor:pointer;transition:all .15s}
 .version-badge:hover{border-color:var(--cyan);color:var(--cyan)}
 .theme-toggle{font-size:.85rem;background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.2rem .45rem;cursor:pointer;transition:all .15s;line-height:1;color:var(--muted2)}
@@ -205,19 +211,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .achv.unlocked{border-color:var(--gold);background:rgba(255,193,7,.05)}
 .achv.locked{opacity:.4;filter:grayscale(1)}
 .achv-icon{font-size:1.6rem;margin-bottom:.4rem}
-.achv-name{font-family:var(--font-h);font-size:.85rem;font-weight:600;letter-spacing:.5px;color:var(--text)}
-.achv-desc{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.2rem;letter-spacing:.5px}
+.achv-name{font-family:var(--font-h);font-size:.9em;font-weight:600;letter-spacing:.5px;color:var(--text)}
+.achv-desc{font-family:var(--font-mono);font-size:.7em;color:var(--muted);margin-top:.3rem;letter-spacing:.5px;line-height:1.45}
 
 /* ── TOPIC PERFORMANCE ── */
 .topic-table{display:grid;gap:.5rem}
 .topic-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
-.topic-name{font-size:.85rem;font-weight:500;min-width:160px}
+.topic-name{font-size:.9em;font-weight:500;min-width:160px}
 .topic-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:60px}
 .topic-fill{height:100%;border-radius:3px}
-.topic-pct{font-family:var(--font-mono);font-size:.72rem;min-width:38px;text-align:right}
-.topic-count{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);min-width:50px;text-align:right}
+.topic-pct{font-family:var(--font-mono);font-size:.78em;min-width:38px;text-align:right}
+.topic-count{font-family:var(--font-mono);font-size:.72em;color:var(--muted);min-width:50px;text-align:right}
 /* trend mini-chart */
-.topic-trend{font-family:var(--font-mono);font-size:.65rem;min-width:40px;text-align:right}
+.topic-trend{font-family:var(--font-mono);font-size:.72em;min-width:40px;text-align:right}
 .trend-up{color:var(--green)}.trend-dn{color:var(--red)}.trend-flat{color:var(--muted)}
 /* weekly sparkline */
 .sparkline-wrap{width:100%;margin-top:.4rem}
@@ -410,6 +416,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 /* ── CONFETTI ── */
 .confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:999;animation:confetti-fall linear forwards}
 @keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@keyframes toast-slide-in{0%{opacity:0;transform:translateX(30px)}100%{opacity:1;transform:translateX(0)}}
 
 /* ── MISC ── */
 .empty-state{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);text-align:center;padding:2rem;letter-spacing:1px}
@@ -512,6 +519,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
   <div class="site-header">
     <div class="site-header-inner">
       <div class="header-controls">
+        <div class="font-controls" title="Adjust text size">
+          <button class="font-btn" onclick="adjustFont(-1)" aria-label="Decrease font size">A−</button>
+          <button class="font-btn" onclick="adjustFont(0)" id="font-reset-btn" aria-label="Reset font size">A</button>
+          <button class="font-btn" onclick="adjustFont(1)" aria-label="Increase font size">A+</button>
+        </div>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="theme-btn">☀️</button>
         <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.14</button>
       </div>
@@ -3759,7 +3771,7 @@ let P = load('cpk_player2', {
 const PDEFAULT = {topicWeekly:{},hardQuestions:{},avgTimeMs:{},srsData:{},bookmarks:[],totalBookmarks:0,
   dcKey:'',dcStreak:0,dcLastStreak:0,dcDoneToday:false,beatBest:false,topicBest:{},hintsUsed:0,idkUsed:0,
   srsCompleted:0,theme:'dark',topicExpert90Count:{},cdemExpert:false,roadPro:false,searchAce:false,riskMgr:false,
-  reportedQuestions:[]};
+  reportedQuestions:[],fontScale:1};
 Object.keys(PDEFAULT).forEach(k=>{ if(P[k]===undefined) P[k]=PDEFAULT[k]; });
 
 function saveP() { save('cpk_player2', P); }
@@ -3774,6 +3786,35 @@ function applyTheme(t) {
 function toggleTheme() {
   P.theme = P.theme === 'dark' ? 'light' : 'dark';
   applyTheme(P.theme);
+  saveP();
+}
+
+// ═══════════════════════════════════════════
+// FONT SIZE
+// ═══════════════════════════════════════════
+const FONT_STEPS = [0.85, 1, 1.15, 1.3, 1.5];
+const FONT_LABELS = ['XS', 'S', 'M', 'L', 'XL'];
+
+function applyFontScale(scale) {
+  document.documentElement.style.setProperty('--fs', scale);
+  // Update reset button label to show current size
+  const idx = FONT_STEPS.indexOf(scale);
+  const resetBtn = document.getElementById('font-reset-btn');
+  if (resetBtn) resetBtn.textContent = idx >= 0 ? FONT_LABELS[idx] : 'A';
+}
+
+function adjustFont(direction) {
+  // direction: -1 = smaller, 0 = reset to default, +1 = larger
+  const current = P.fontScale || 1;
+  let idx = FONT_STEPS.indexOf(current);
+  if (idx === -1) idx = 1; // default is index 1 (scale=1)
+
+  if (direction === 0) idx = 1; // reset
+  else if (direction === -1) idx = Math.max(0, idx - 1);
+  else if (direction === 1) idx = Math.min(FONT_STEPS.length - 1, idx + 1);
+
+  P.fontScale = FONT_STEPS[idx];
+  applyFontScale(P.fontScale);
   saveP();
 }
 
@@ -3922,6 +3963,7 @@ const CURRENT_VERSION = 'v2.14';
 
 function init() {
   applyTheme(P.theme);
+  applyFontScale(P.fontScale || 1);
   // Apply prestige cosmetics
   document.body.setAttribute('data-prestige', P.prestige || 0);
   checkDaily();
@@ -4081,21 +4123,64 @@ function renderAchievements() {
   }).join('');
 }
 
+let _achievementQueue = [];
+let _achievementShowing = false;
+
 function checkAchievements() {
   ACHIEVEMENTS.forEach(a => {
     if (!P.unlockedAchievements.includes(a.id) && a.check(P)) {
       P.unlockedAchievements.push(a.id);
-      setTimeout(() => showAchievementToast(a), 500);
+      _achievementQueue.push(a);
     }
+  });
+  // Kick off queue processing if not already running
+  if (!_achievementShowing) processAchievementQueue();
+}
+
+function processAchievementQueue() {
+  if (!_achievementQueue.length) { _achievementShowing = false; return; }
+  _achievementShowing = true;
+  const a = _achievementQueue.shift();
+  showAchievementToast(a, () => {
+    // Small gap between toasts so they feel distinct
+    setTimeout(processAchievementQueue, 300);
   });
 }
 
-function showAchievementToast(a) {
+function showAchievementToast(a, onDone) {
   const el = document.createElement('div');
-  el.style.cssText = `position:fixed;bottom:1.5rem;right:1.5rem;background:var(--panel);border:1px solid var(--gold);border-radius:8px;padding:.75rem 1.1rem;z-index:999;font-family:var(--font-h);font-size:.9rem;letter-spacing:1px;color:var(--gold);animation:xp-float 3s ease forwards;display:flex;align-items:center;gap:.6rem;max-width:280px`;
-  el.innerHTML = `<span style="font-size:1.4rem">${a.icon}</span><div><div>ACHIEVEMENT UNLOCKED</div><div style="color:var(--text);font-size:.8rem">${a.name}</div></div>`;
+  el.style.cssText = [
+    'position:fixed','bottom:1.5rem','right:1.5rem',
+    'background:var(--panel)','border:1px solid var(--gold)','border-radius:8px',
+    'padding:.75rem 1.1rem','z-index:9999',
+    'font-family:var(--font-h)','font-size:.9rem','letter-spacing:1px','color:var(--gold)',
+    'display:flex','align-items:center','gap:.6rem','max-width:300px',
+    'box-shadow:0 4px 20px rgba(255,193,7,.2)',
+    'animation:toast-slide-in .3s ease forwards',
+    'opacity:0'
+  ].join(';');
+  el.innerHTML = `
+    <span style="font-size:1.6rem;flex-shrink:0">${a.icon}</span>
+    <div>
+      <div style="font-size:.7rem;letter-spacing:2px;opacity:.8;margin-bottom:.15rem">ACHIEVEMENT UNLOCKED</div>
+      <div style="color:var(--text);font-size:.88rem;font-weight:600">${a.name}</div>
+      <div style="color:var(--muted2);font-size:.7rem;font-family:var(--font-mono);margin-top:.2rem;line-height:1.35">${a.desc}</div>
+    </div>`;
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 3200);
+
+  // Show duration: 3.5s display + 0.4s fade out
+  const DISPLAY_MS = 3500;
+  const FADE_MS = 400;
+
+  setTimeout(() => {
+    el.style.transition = `opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease`;
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(20px)';
+    setTimeout(() => {
+      el.remove();
+      if (onDone) onDone();
+    }, FADE_MS);
+  }, DISPLAY_MS);
 }
 
 // ═══════════════════════════════════════════
