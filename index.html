@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NZ Police Sergeants CPK Simulator</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+/* ══════════════════════════════════════════
+   THEME VARIABLES — dark (default) & light
+══════════════════════════════════════════ */
 :root {
   --bg: #080b12;
   --panel: #0d1220;
@@ -25,13 +28,37 @@
   --font-h: 'Rajdhani', sans-serif;
   --font-mono: 'Share Tech Mono', monospace;
   --font-b: 'Barlow', sans-serif;
+  --grid-line: rgba(30,60,100,.06);
+  --shadow: rgba(0,0,0,.5);
 }
+[data-theme="light"] {
+  --bg: #f0f4fa;
+  --panel: #ffffff;
+  --panel2: #f8fafc;
+  --border: #d0dcea;
+  --border2: #b8ccdf;
+  --blue: #1672cc;
+  --cyan: #0098c0;
+  --green: #00a854;
+  --red: #d93025;
+  --gold: #c08000;
+  --orange: #c85000;
+  --purple: #7c52d0;
+  --text: #101820;
+  --muted: #7090b0;
+  --muted2: #4a6888;
+  --grid-line: rgba(0,60,120,.04);
+  --shadow: rgba(0,0,0,.12);
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;overflow-x:hidden;
-  background-image:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(30,144,255,.08) 0%,transparent 60%),
-  repeating-linear-gradient(0deg,transparent,transparent 49px,rgba(30,60,100,.06) 50px),
-  repeating-linear-gradient(90deg,transparent,transparent 49px,rgba(30,60,100,.06) 50px)}
+  background-image:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(30,144,255,.06) 0%,transparent 60%),
+  repeating-linear-gradient(0deg,transparent,transparent 49px,var(--grid-line) 50px),
+  repeating-linear-gradient(90deg,transparent,transparent 49px,var(--grid-line) 50px);
+  transition:background .3s,color .3s}
+
 /* ── HERO HEADER ── */
 .site-header{background:var(--panel);border-bottom:1px solid var(--border);padding:1.1rem 1.5rem 1rem;text-align:center;position:relative;overflow:hidden}
 .site-header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1e90ff,#00d4ff,#00e676,#00d4ff,#1e90ff);background-size:200% 100%;animation:header-shine 4s linear infinite}
@@ -41,8 +68,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .site-title{font-family:var(--font-h);font-size:clamp(1.4rem,5vw,2.4rem);font-weight:700;letter-spacing:3px;color:var(--text);line-height:1.1;margin-bottom:.3rem}
 .site-title .accent{color:var(--cyan)}
 .site-sub{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:1.5px}
-.version-badge{position:absolute;top:0;right:0;font-family:var(--font-mono);font-size:.6rem;color:var(--muted);background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.2rem .5rem;letter-spacing:1px;cursor:pointer;transition:all .15s}
+.header-controls{position:absolute;top:0;right:0;display:flex;gap:.4rem;align-items:center}
+.version-badge{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.2rem .5rem;letter-spacing:1px;cursor:pointer;transition:all .15s}
 .version-badge:hover{border-color:var(--cyan);color:var(--cyan)}
+.theme-toggle{font-size:.85rem;background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:.2rem .45rem;cursor:pointer;transition:all .15s;line-height:1;color:var(--muted2)}
+.theme-toggle:hover{border-color:var(--gold);color:var(--gold)}
+
 .site-footer{background:var(--panel);border-top:1px solid var(--border);padding:.85rem 1.5rem;text-align:center}
 .footer-contact{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:.5px;line-height:1.8}
 .footer-contact strong{color:var(--cyan)}
@@ -52,7 +83,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 /* ── REPORT QUESTION ── */
 .btn-report{position:absolute;bottom:.6rem;right:.75rem;font-family:var(--font-mono);font-size:.58rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:3px;padding:.2rem .5rem;cursor:pointer;letter-spacing:.5px;transition:all .15s;opacity:.6}
 .btn-report:hover{border-color:var(--red);color:var(--red);opacity:1}
-.report-sent{font-family:var(--font-mono);font-size:.65rem;color:var(--green);text-align:center;margin-top:.5rem;display:none}
+.report-sent{font-family:var(--font-mono);font-size:.63rem;color:var(--green);text-align:center;margin-top:.5rem;display:none;padding:.3rem .5rem;background:rgba(0,230,118,.07);border-radius:4px;border:1px solid rgba(0,230,118,.2)}
 
 /* ── QUESTION COUNT BANNER ── */
 .q-count-banner{position:relative;overflow:hidden;border-radius:10px;padding:1rem 1.5rem;margin-top:1.25rem;text-align:center;
@@ -82,18 +113,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .coming-soon-bar .cs-label{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:2px;display:block;margin-bottom:.3rem}
 .coming-soon-bar .cs-text{font-family:var(--font-h);font-size:1rem;font-weight:600;letter-spacing:1.5px;color:var(--cyan)}
 
+/* ── MODALS ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;z-index:300;padding:1rem}
 .modal-overlay.hidden{display:none}
-.changelog-box{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:2rem;max-width:480px;width:100%;position:relative;overflow:hidden;max-height:90vh;overflow-y:auto}
-.changelog-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green))}
+.modal-box{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:2rem;max-width:480px;width:100%;position:relative;overflow:hidden;max-height:90vh;overflow-y:auto}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green))}
 .changelog-title{font-family:var(--font-h);font-size:1.5rem;font-weight:700;letter-spacing:2px;color:var(--cyan);margin-bottom:.25rem}
 .changelog-version{font-family:var(--font-mono);font-size:.68rem;color:var(--gold);letter-spacing:2px;margin-bottom:1.25rem}
 .changelog-section-title{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:2px;margin-bottom:.5rem}
 .changelog-item{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.4rem;font-size:.85rem;line-height:1.5}
 .changelog-item .ci-dot{color:var(--green);flex-shrink:0}
-.changelog-dismiss{width:100%;margin-top:1.25rem;font-family:var(--font-h);font-size:1rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:var(--bg);border:none;padding:.7rem;border-radius:6px;cursor:pointer;transition:all .15s}
-.changelog-dismiss:hover{opacity:.85}
+.modal-dismiss{width:100%;margin-top:1.25rem;font-family:var(--font-h);font-size:1rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;padding:.7rem;border-radius:6px;cursor:pointer;transition:all .15s}
+.modal-dismiss:hover{opacity:.85}
 
+/* ── BOOKMARK MODAL ── */
+#bookmarks-modal .modal-box{max-width:620px}
+.bm-empty{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);text-align:center;padding:2rem}
+.bm-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;margin-bottom:.6rem}
+.bm-deck{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);letter-spacing:1px;margin-bottom:.3rem}
+.bm-q{font-size:.88rem;line-height:1.5;margin-bottom:.5rem}
+.bm-a{font-size:.82rem;color:var(--green);line-height:1.45;padding:.4rem .6rem;background:rgba(0,230,118,.06);border-left:2px solid var(--green);border-radius:2px}
+.bm-rm{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:3px;padding:.15rem .4rem;cursor:pointer;margin-top:.5rem;transition:all .15s}
+.bm-rm:hover{border-color:var(--red);color:var(--red)}
+
+/* ── DAILY CHALLENGE MODAL ── */
+.dc-streak-display{text-align:center;padding:.75rem;margin-bottom:1rem;background:linear-gradient(135deg,rgba(255,193,7,.08),rgba(255,109,0,.08));border:1px solid rgba(255,193,7,.3);border-radius:8px}
+.dc-streak-num{font-family:var(--font-h);font-size:2.5rem;font-weight:700;color:var(--gold);line-height:1}
+.dc-streak-lbl{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:2px}
+.dc-done-msg{font-family:var(--font-mono);font-size:.78rem;color:var(--green);text-align:center;padding:1rem;background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.25);border-radius:8px}
 
 /* ── SCREENS ── */
 .screen{display:none;min-height:100vh;flex-direction:column}
@@ -121,36 +168,36 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .xp-row{display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
 .xp-label{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:1px}
 .xp-val{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan)}
-.xp-bar-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:.4rem;position:relative}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--rank-color,var(--blue)),var(--cyan));border-radius:4px;transition:width .6s ease}
-.xp-glow{position:absolute;top:0;height:100%;width:30px;background:rgba(255,255,255,.3);border-radius:4px;animation:xp-shimmer 2s infinite;pointer-events:none}
-@keyframes xp-shimmer{0%{left:-30px}100%{left:110%}}
+.xp-bar-track{margin-top:.4rem;height:8px;background:var(--border);border-radius:4px;overflow:hidden;position:relative}
+.xp-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--rank-color,var(--blue)),var(--cyan));transition:width .8s ease;position:relative}
+.xp-glow{position:absolute;right:0;top:0;bottom:0;width:20px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3));animation:xp-glow-anim 2s ease infinite}
+@keyframes xp-glow-anim{0%,100%{opacity:.3}50%{opacity:1}}
+/* prestige cosmetics */
+[data-prestige="1"] .xp-bar-fill{background:linear-gradient(90deg,#b388ff,#00d4ff)}
+[data-prestige="2"] .xp-bar-fill{background:linear-gradient(90deg,#ffd700,#ff9800)}
+[data-prestige="3"] .xp-bar-fill{background:linear-gradient(90deg,#ff3d5a,#ff9800,#ffd700)}
+[data-prestige="1"] .site-header::before{background:linear-gradient(90deg,#b388ff,#00d4ff,#b388ff);background-size:200% 100%;animation:header-shine 3s linear infinite}
+[data-prestige="2"] .site-header::before{background:linear-gradient(90deg,#ffd700,#ff9800,#ffd700);background-size:200% 100%;animation:header-shine 2.5s linear infinite}
+[data-prestige="3"] .site-header::before{background:linear-gradient(90deg,#ff3d5a,#ff9800,#ffd700,#ff9800,#ff3d5a);background-size:200% 100%;animation:header-shine 2s linear infinite}
 
 /* ── QUICK STATS ── */
-.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
-.qs{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.9rem;text-align:center}
-.qs-val{font-family:var(--font-h);font-size:1.6rem;font-weight:700;display:block;color:var(--cyan)}
-.qs-lbl{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:1px;margin-top:.2rem}
+.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1.5rem}
+.qs{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center}
+.qs-val{font-family:var(--font-h);font-size:1.6rem;font-weight:700;color:var(--cyan);display:block}
+.qs-lbl{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:1px}
 
-/* ── SECTION HEADERS ── */
-.section-hdr{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:2px;margin-bottom:.75rem;margin-top:1.5rem;display:flex;align-items:center;gap:.75rem}
-.section-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
+/* ── SECTION HEADER ── */
+.section-hdr{font-family:var(--font-mono);font-size:.7rem;letter-spacing:2px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin-bottom:.75rem;margin-top:1.5rem}
+.section-hdr:first-child{margin-top:0}
 
-/* ── DAILY BOX ── */
-.daily-box{background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem}
-.daily-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
-.daily-title{font-family:var(--font-h);font-size:1.1rem;font-weight:700;letter-spacing:1px;color:var(--gold)}
-.daily-reset{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);letter-spacing:1px}
+/* ── DAILY SCORES ── */
 .daily-scores{display:grid;gap:.4rem}
-.daily-row{display:flex;align-items:center;gap.75rem;padding:.4rem 0;border-bottom:1px solid var(--border)}
-.daily-row:last-child{border-bottom:none}
-.daily-pos{font-family:var(--font-mono);font-size:.75rem;color:var(--muted);min-width:24px}
-.daily-pos.gold-pos{color:var(--gold)}
-.daily-pos.silver-pos{color:#c0c0c0}
-.daily-pos.bronze-pos{color:#cd7f32}
-.daily-name{flex:1;font-size:.85rem;font-family:var(--font-mono);color:var(--text);letter-spacing:.5px}
-.daily-score{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan)}
-.daily-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);min-width:40px;text-align:right}
+.daily-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem}
+.daily-pos{font-family:var(--font-h);font-size:1rem;font-weight:700;min-width:30px}
+.gold-pos{color:var(--gold)}.silver-pos{color:var(--muted2)}.bronze-pos{color:var(--orange)}
+.daily-name{flex:1;font-size:.82rem;color:var(--muted2)}
+.daily-score{font-family:var(--font-mono);font-size:.72rem;color:var(--text)}
+.daily-pct{font-family:var(--font-h);font-size:1rem;font-weight:700;min-width:45px;text-align:right}
 
 /* ── ACHIEVEMENTS ── */
 .achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:1.5rem}
@@ -163,12 +210,26 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 
 /* ── TOPIC PERFORMANCE ── */
 .topic-table{display:grid;gap:.5rem}
-.topic-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:.75rem 1rem;display:flex;align-items:center;gap.75rem;gap:.75rem}
+.topic-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
 .topic-name{font-size:.85rem;font-weight:500;min-width:160px}
-.topic-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.topic-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;min-width:60px}
 .topic-fill{height:100%;border-radius:3px}
 .topic-pct{font-family:var(--font-mono);font-size:.72rem;min-width:38px;text-align:right}
 .topic-count{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);min-width:50px;text-align:right}
+/* trend mini-chart */
+.topic-trend{font-family:var(--font-mono);font-size:.65rem;min-width:40px;text-align:right}
+.trend-up{color:var(--green)}.trend-dn{color:var(--red)}.trend-flat{color:var(--muted)}
+/* weekly sparkline */
+.sparkline-wrap{width:100%;margin-top:.4rem}
+.sparkline-canvas{width:100%;height:32px;display:block}
+
+/* ── HARDEST QUESTIONS ── */
+.hard-q-list{display:grid;gap:.5rem;margin-bottom:1.5rem}
+.hard-q-item{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:6px;padding:.75rem 1rem}
+.hard-q-rank{font-family:var(--font-mono);font-size:.65rem;color:var(--red);letter-spacing:1px;margin-bottom:.25rem}
+.hard-q-text{font-size:.85rem;line-height:1.45;margin-bottom:.25rem}
+.hard-q-deck{font-family:var(--font-mono);font-size:.6rem;color:var(--muted)}
+.hard-q-stat{font-family:var(--font-mono);font-size:.65rem;color:var(--orange);float:right}
 
 /* ── SCORE HISTORY ── */
 .score-history{display:grid;gap:.4rem}
@@ -190,10 +251,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .play-section{margin-bottom:1.25rem}
 .play-label{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:2px;margin-bottom:.6rem}
 .pill-row{display:flex;flex-wrap:wrap;gap:.4rem}
-.pill{font-family:var(--font-mono);font-size:.72rem;padding:.35rem .8rem;border-radius:4px;border:1px solid var(--border2);background:var(--panel);color:var(--muted2);cursor:pointer;transition:all .15s;letter-spacing:.5px}
+.pill{font-family:var(--font-mono);font-size:.72rem;padding:.35rem .8rem;border-radius:4px;border:1px solid var(--border2);background:var(--panel);color:var(--muted2);cursor:pointer;transition:all .15s;letter-spacing:.5px;position:relative}
 .pill:hover{border-color:var(--blue);color:var(--text)}
 .pill.sel{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.08)}
 .pill.all-pill.sel{border-color:var(--blue);color:var(--blue);background:rgba(30,144,255,.1)}
+/* best score badge on pill */
+.pill-best{position:absolute;top:-6px;right:-4px;font-family:var(--font-mono);font-size:.5rem;background:var(--gold);color:#000;border-radius:3px;padding:1px 3px;letter-spacing:.5px;pointer-events:none}
 
 .mode-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1rem}
 @media(min-width:600px){.mode-cards{grid-template-columns:repeat(4,1fr)}}
@@ -204,7 +267,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .mode-name{font-family:var(--font-h);font-size:.9rem;font-weight:700;letter-spacing:1px}
 .mode-desc{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.2rem;letter-spacing:.5px}
 
-.btn-start-big{width:100%;font-family:var(--font-h);font-size:1.4rem;font-weight:700;letter-spacing:3px;color:var(--bg);
+.btn-start-big{width:100%;font-family:var(--font-h);font-size:1.4rem;font-weight:700;letter-spacing:3px;color:#fff;
   background:linear-gradient(135deg,var(--blue),var(--cyan));border:none;padding:1rem;border-radius:8px;
   cursor:pointer;transition:all .2s;box-shadow:0 0 30px rgba(30,144,255,.3);position:relative;overflow:hidden;margin-top:.5rem}
 .btn-start-big::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
@@ -212,6 +275,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .btn-start-big:hover::after{left:150%}
 .btn-start-big:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(30,144,255,.5)}
 .btn-start-big:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+
+/* daily challenge button strip */
+.action-strip{display:flex;gap:.5rem;margin-top:.75rem}
+.btn-daily{flex:1;font-family:var(--font-h);font-size:.85rem;font-weight:700;letter-spacing:1.5px;
+  background:linear-gradient(135deg,rgba(255,193,7,.15),rgba(255,109,0,.15));color:var(--gold);
+  border:1px solid rgba(255,193,7,.4);padding:.65rem;border-radius:7px;cursor:pointer;transition:all .2s}
+.btn-daily:hover{background:linear-gradient(135deg,rgba(255,193,7,.25),rgba(255,109,0,.25));transform:translateY(-1px)}
+.btn-bookmarks{flex:1;font-family:var(--font-h);font-size:.85rem;font-weight:700;letter-spacing:1.5px;
+  background:rgba(179,136,255,.1);color:var(--purple);
+  border:1px solid rgba(179,136,255,.3);padding:.65rem;border-radius:7px;cursor:pointer;transition:all .2s}
+.btn-bookmarks:hover{background:rgba(179,136,255,.2);transform:translateY(-1px)}
 
 /* ── QUIZ SCREEN ── */
 #screen-quiz{padding:0}
@@ -222,9 +296,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .timer-bar-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:.3rem}
 .timer-bar-fill{height:100%;border-radius:2px;transition:width .1s linear,background .5s;background:var(--cyan)}
 .qtb-row2{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.65rem;color:var(--muted)}
-.qtb-right{display:flex;gap:.75rem;align-items:center;flex-shrink:0}
+.qtb-right{display:flex;gap:.5rem;align-items:center;flex-shrink:0}
 .streak-badge{font-family:var(--font-h);font-size:1rem;font-weight:700;color:var(--gold);white-space:nowrap}
 .xp-badge{font-family:var(--font-mono);font-size:.7rem;color:var(--purple);white-space:nowrap}
+/* bookmark & time display in topbar */
+.btn-bookmark-q{font-size:1rem;background:none;border:none;cursor:pointer;padding:.1rem .2rem;transition:all .15s;color:var(--muted);line-height:1}
+.btn-bookmark-q:hover{color:var(--gold)}
+.btn-bookmark-q.starred{color:var(--gold)}
+.qtb-time{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);white-space:nowrap}
 
 .quiz-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 1rem;max-width:780px;margin:0 auto;width:100%}
 .q-meta{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:.75rem}
@@ -256,6 +335,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .feedback-bar.correct-fb .fb-label{color:var(--green)}
 .feedback-bar.wrong-fb .fb-label{color:var(--red)}
 .xp-gained{font-family:var(--font-mono);font-size:.68rem;color:var(--purple);margin-top:.3rem}
+/* explanation block */
+.fb-explanation{margin-top:.55rem;padding:.5rem .7rem;background:rgba(30,144,255,.07);border-left:2px solid var(--blue);border-radius:2px;font-size:.82rem;color:var(--muted2);line-height:1.5}
+
+/* hint button */
+.btn-hint{font-family:var(--font-mono);font-size:.68rem;color:var(--gold);background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.3);border-radius:4px;padding:.25rem .65rem;cursor:pointer;transition:all .15s;margin-top:.6rem;display:inline-block;letter-spacing:.5px}
+.btn-hint:hover{background:rgba(255,193,7,.16)}
+.btn-hint:disabled{opacity:.4;cursor:default}
+.hint-text{font-family:var(--font-mono);font-size:.75rem;color:var(--gold);margin-top:.5rem;padding:.4rem .6rem;background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.2);border-radius:4px;display:none}
+
+/* I don't know button */
+.btn-idk{width:100%;font-family:var(--font-h);font-size:.85rem;font-weight:600;letter-spacing:1px;
+  background:var(--panel2);color:var(--muted2);border:1px solid var(--border);
+  padding:.6rem;border-radius:7px;cursor:pointer;transition:all .15s;margin-top:.5rem}
+.btn-idk:hover{border-color:var(--orange);color:var(--orange)}
+.btn-idk:disabled{display:none}
 
 .btn-next{margin-top:1rem;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:var(--blue);color:white;border:none;padding:.65rem 2.5rem;border-radius:6px;cursor:pointer;transition:all .15s;display:none}
 .btn-next:hover{background:var(--cyan);color:var(--bg);transform:translateY(-1px)}
@@ -273,11 +367,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .rs{text-align:center;border:1px solid var(--border);border-radius:6px;padding:.65rem;background:var(--panel2)}
 .rs-val{font-family:var(--font-h);font-size:1.5rem;font-weight:700;display:block}
 .rs-lbl{font-family:var(--font-mono);font-size:.58rem;color:var(--muted);letter-spacing:1px}
-/* XP rank up in results */
 .rank-up-box{background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.3);border-radius:8px;padding:.9rem;text-align:center;margin-bottom:1.25rem;display:none}
 .rank-up-box .ru-label{font-family:var(--font-mono);font-size:.65rem;color:var(--gold);letter-spacing:2px}
 .rank-up-box .ru-rank{font-family:var(--font-h);font-size:1.6rem;font-weight:700;color:var(--gold);letter-spacing:2px}
-/* breakdown */
 .breakdown{margin-bottom:1.25rem}
 .breakdown-title{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);letter-spacing:2px;margin-bottom:.6rem}
 .breakdown-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.4rem}
@@ -285,9 +377,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .br-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .br-fill{height:100%;border-radius:3px;transition:width .8s ease}
 .br-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);min-width:34px;text-align:right}
-/* results buttons */
+/* avg time on results */
+.results-time-row{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:1rem;letter-spacing:.5px}
 .results-btns{display:flex;gap:.6rem;flex-wrap:wrap}
-.btn-ra{flex:1;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:var(--bg);border:none;padding:.65rem;border-radius:6px;cursor:pointer;transition:all .15s;min-width:120px}
+.btn-ra{flex:1;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;padding:.65rem;border-radius:6px;cursor:pointer;transition:all .15s;min-width:120px}
 .btn-ra:hover{opacity:.85;transform:translateY(-1px)}
 .btn-rb{flex:1;font-family:var(--font-h);font-size:.95rem;font-weight:700;letter-spacing:2px;background:var(--panel2);color:var(--text);border:1px solid var(--border2);padding:.65rem;border-radius:6px;cursor:pointer;transition:all .15s;min-width:120px}
 .btn-rb:hover{border-color:var(--blue)}
@@ -321,15 +414,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 /* ── MISC ── */
 .empty-state{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);text-align:center;padding:2rem;letter-spacing:1px}
 .badge-chip{font-family:var(--font-mono);font-size:.62rem;padding:.15rem .5rem;border-radius:3px;letter-spacing:.5px}
+/* spaced rep indicator */
+.srs-due-badge{font-family:var(--font-mono);font-size:.55rem;background:rgba(255,61,90,.2);color:var(--red);border:1px solid rgba(255,61,90,.4);border-radius:3px;padding:.1rem .35rem;margin-left:.4rem;letter-spacing:.5px;vertical-align:middle}
 
 @media(max-width:600px){
   .quick-stats{grid-template-columns:repeat(2,1fr)}
   .results-stats{grid-template-columns:repeat(2,1fr)}
   .rank-title{font-size:1.4rem}
-  .quiz-topbar{gap:.4rem}
+  .quiz-topbar{gap:.3rem}
   .question-box{font-size:.88rem;padding:1.1rem}
   .opt-btn{padding:.7rem .9rem;font-size:.84rem}
+  .action-strip{flex-direction:column}
 }
+
+/* ── REPORTED QUESTIONS PANEL ── */
+.reported-panel{background:rgba(255,61,90,.05);border:1px solid rgba(255,61,90,.2);border-radius:8px;padding:1rem;margin-bottom:1rem}
+.reported-panel-hdr{font-family:var(--font-mono);font-size:.68rem;color:var(--red);letter-spacing:1px;margin-bottom:.6rem;display:flex;align-items:center;justify-content:space-between}
+.reported-item{background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:.6rem .8rem;margin-bottom:.4rem;display:flex;align-items:flex-start;gap:.6rem}
+.reported-item-q{flex:1;font-size:.82rem;line-height:1.4;color:var(--muted2)}
+.reported-item-deck{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);display:block;margin-top:.2rem}
+.btn-unquarantine{font-family:var(--font-mono);font-size:.6rem;background:none;border:1px solid var(--green);color:var(--green);border-radius:3px;padding:.2rem .45rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.btn-unquarantine:hover{background:rgba(0,230,118,.12)}
+.btn-clear-all-reported{font-family:var(--font-mono);font-size:.6rem;background:none;border:1px solid var(--red);color:var(--red);border-radius:3px;padding:.2rem .5rem;cursor:pointer;transition:all .15s}
+.btn-clear-all-reported:hover{background:rgba(255,61,90,.1)}
 </style>
 </head>
 <body>
@@ -348,23 +455,53 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 
 <!-- ══ CHANGELOG MODAL ══ -->
 <div class="modal-overlay hidden" id="changelog-modal">
-  <div class="changelog-box">
+  <div class="modal-box">
     <div class="changelog-title">WHAT'S NEW</div>
-    <div class="changelog-version">VERSION 2.13 — NZ POLICE SGT CPK SIMULATOR</div>
-    <div class="changelog-section-title">NEW IN VERSION 2.13</div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Live 538+ question count banner added to the home screen — animated shimmer display showing the total CPK bank size, deck count, and syllabus version</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Bug fix: s88 (road closure) and s89 (vehicle removal) CDEM Act questions were missing despite being listed in the syllabus — both added to Chapter 10 deck</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span>Bug fix: s104 CDEM Act wrong answer incorrectly stated body corporate fine was "doubled" — corrected to reflect the actual penalty ($50,000 for a body corporate) per s104(b)</span></div>
+    <div class="changelog-version">VERSION 2.14 — NZ POLICE SGT CPK SIMULATOR</div>
+    <div class="changelog-section-title">NEW IN VERSION 2.14</div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>"I Don't Know" button</strong> — skip to the answer without guessing. No XP penalty, no streak break. Pure study mode.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Bookmarks</strong> — star any question mid-quiz with ☆. Review all flagged questions from the home screen at any time.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Spaced Repetition System</strong> — questions you get wrong resurface at 1 day → 3 days → 7 days intervals. A dedicated "SRS Review" mode on the play screen surfaces only your due cards.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Trend lines on Analysis tab</strong> — weekly sparkline chart per topic showing improvement or plateau over time. ↑ ↓ trend arrows next to each topic percentage.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Hardest Questions list</strong> — your personal 10 most-missed questions, ranked by wrong count. Now on the Analysis tab.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Time per question tracking</strong> — even in non-timed mode, each answer is logged. Avg response time shown on results screen and Analysis tab.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Daily Challenge</strong> — fixed 20-question set resets at midnight. Consecutive days streak tracked. Launch from the home screen.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Beat Your Best mode</strong> — each deck pill shows your personal best %. A new "Beat Your Best" game mode challenges you to top it.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Topic-specific achievements</strong> — CDEM Expert, Evidence Scholar, Road Policing Pro, OT Specialist, and more. Earned by hitting 90%+ on a topic 5+ times.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Prestige cosmetics</strong> — Prestige I shifts your XP bar and header glow to purple/cyan. Prestige II to gold/orange. Prestige III to a full fire gradient.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Hint system</strong> — spend 25 XP to reveal a one-line hint on any question before answering.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Explanations on wrong answers</strong> — a brief context paragraph now appears when you get a question wrong or click "I Don't Know", helping you understand why.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Light / Dark mode toggle</strong> — ☀️ in the header switches to a clean light theme. Your preference saves automatically.</span></div>
     <div style="margin-top:1rem" class="changelog-section-title">PREVIOUSLY ADDED</div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.12: Chapter 10 Command &amp; Control / Emergency Management — 50 questions across Command principles, TENR, CIMS, AFCO/GSMEAC, CDEM Act ss86–104, Radio &amp; Dispatch Protocols</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.11: Chapter 9 Risk Management &amp; Health and Safety — 47 questions across organisational risk, three lines model, HSWA 2015, critical risks, notifiable events &amp; critical incidents</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapter 8: Evidence — 55 questions (Burden/Standard of Proof, Trial Process, Eligibility/Privilege, Veracity &amp; Propensity, Hearsay, Identification, Unreliable/Improperly Obtained)</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapter 7: Strategic Awareness &amp; Staff Management — 67 questions (Our Business, Te Huringa o Te Tai, Police Values, Policing Act, Code of Conduct, Kia Tū, IPCA Act)</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapter 6: Road Policing — 54 questions (Safe System, RIDS, general deterrence, urgent duty driving, pursuit policy)</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapter 5: Managing Suspects &amp; Hate Crime — 43 questions · Chapter 4: Search &amp; Surveillance — 43 questions · Chapter 3: Drugs, MH &amp; Alcohol — 50 questions</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapter 2: Firearms &amp; TASER — 38 questions · Chapter 1: Family Violence &amp; PSO — 28 questions · OT Act — 31 questions · Sudden Death — 13 questions · Policing/Victims — 19 questions</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Full XP &amp; NZ Police rank progression system, prestige, achievements, scores, and topic analysis</span></div>
-    <button class="changelog-dismiss" onclick="dismissChangelog()">LET'S GO →</button>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.13: Animated 538+ question count banner · s88/s89 CDEM bug fixes · s104 body corporate penalty fix</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.12: Chapter 10 Command &amp; Control / Emergency Management — 50 questions</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.11: Chapter 9 Risk Management &amp; Health and Safety — 47 questions</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapters 1–8: OT Act, FV/PSO, Firearms, Drugs/MH/Alc, Search &amp; Surv, Suspects/Hate, Road Policing, Strat Awareness, Evidence, Sudden Death, Policing/Victims</span></div>
+    <button class="modal-dismiss" onclick="dismissChangelog()">LET'S GO →</button>
+  </div>
+</div>
+
+<!-- ══ BOOKMARKS MODAL ══ -->
+<div class="modal-overlay hidden" id="bookmarks-modal">
+  <div class="modal-box" style="max-width:640px">
+    <div class="changelog-title">⭐ BOOKMARKED QUESTIONS</div>
+    <div class="changelog-version" id="bm-count-lbl">0 QUESTIONS FLAGGED</div>
+    <div id="bm-list"></div>
+    <button class="modal-dismiss" onclick="closeBookmarks()">CLOSE</button>
+  </div>
+</div>
+
+<!-- ══ DAILY CHALLENGE MODAL ══ -->
+<div class="modal-overlay hidden" id="daily-modal">
+  <div class="modal-box">
+    <div class="changelog-title">📅 DAILY CHALLENGE</div>
+    <div class="dc-streak-display">
+      <div class="dc-streak-num" id="dc-streak-num">0</div>
+      <div class="dc-streak-lbl">DAY STREAK 🔥</div>
+    </div>
+    <div id="dc-status"></div>
+    <button class="modal-dismiss" id="dc-start-btn" onclick="startDailyChallenge()">START TODAY'S CHALLENGE →</button>
+    <button class="modal-dismiss" style="margin-top:.5rem;background:var(--panel2);color:var(--text);border:1px solid var(--border2)" onclick="closeDailyModal()">CLOSE</button>
   </div>
 </div>
 
@@ -374,10 +511,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
   <!-- SITE HEADER -->
   <div class="site-header">
     <div class="site-header-inner">
-      <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.13</button>
+      <div class="header-controls">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="theme-btn">☀️</button>
+        <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.14</button>
+      </div>
       <div class="site-badge">NEW ZEALAND POLICE · SERGEANT PROMOTION</div>
       <div class="site-title">NZ Police <span class="accent">Sergeants</span> CPK Simulator</div>
-      <div class="site-sub">CORE POLICING KNOWLEDGE · MULTI-CHOICE EXAM PRACTICE · 800+ QUESTIONS ACROSS 22 TOPICS</div>
+      <div class="site-sub">CORE POLICING KNOWLEDGE · MULTI-CHOICE EXAM PRACTICE · 538+ QUESTIONS ACROSS 13 TOPICS</div>
     </div>
   </div>
 
@@ -431,9 +571,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
           <div class="mode-name">WEAK SPOTS</div>
           <div class="mode-desc">Your worst topics first</div>
         </div>
+        <div class="mode-card" data-mode="srs" onclick="selectMode(this)">
+          <div class="mode-icon">🧠</div>
+          <div class="mode-name">SRS REVIEW</div>
+          <div class="mode-desc">Spaced repetition due cards</div>
+        </div>
+        <div class="mode-card" data-mode="beat" onclick="selectMode(this)">
+          <div class="mode-icon">🏆</div>
+          <div class="mode-name">BEAT YOUR BEST</div>
+          <div class="mode-desc">Top your personal record</div>
+        </div>
       </div>
     </div>
     <button class="btn-start-big" id="btn-start" onclick="startQuiz()">START QUIZ →</button>
+    <div class="action-strip">
+      <button class="btn-daily" onclick="openDailyModal()">📅 DAILY CHALLENGE <span id="dc-streak-pill"></span></button>
+      <button class="btn-bookmarks" onclick="openBookmarks()">⭐ MY BOOKMARKS <span id="bm-pill"></span></button>
+    </div>
     <div class="q-count-banner">
       <span class="qcb-pill">● LIVE QUESTION COUNT</span>
       <div class="qcb-number">538+ QUESTIONS</div>
@@ -463,20 +617,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
   <div class="main-wrap" id="tab-scores" style="display:none">
     <div class="section-hdr">TODAY'S SESSIONS <span id="daily-reset-lbl" style="color:var(--muted);font-size:.6rem;margin-left:.5rem"></span></div>
     <div class="daily-box" id="daily-box"></div>
-
     <div class="section-hdr">ALL-TIME BEST BY QUIZ SIZE</div>
     <div class="size-records" id="size-records"></div>
-
     <div class="section-hdr">RECENT HISTORY</div>
     <div class="score-history" id="score-history"></div>
   </div>
 
   <!-- ANALYSIS TAB -->
   <div class="main-wrap" id="tab-stats" style="display:none">
-    <div class="section-hdr">TOPIC PERFORMANCE</div>
+    <div class="section-hdr">TOPIC PERFORMANCE &amp; TRENDS</div>
     <div class="topic-table" id="topic-table"></div>
+    <div class="section-hdr">YOUR 10 HARDEST QUESTIONS</div>
+    <div class="hard-q-list" id="hard-q-list"></div>
     <div class="section-hdr">RECOMMENDED FOCUS</div>
     <div id="focus-box"></div>
+    <div class="section-hdr" id="reported-section-hdr" style="display:none">⚑ QUARANTINED QUESTIONS <span style="color:var(--muted);font-size:.6rem;margin-left:.4rem">— removed from your pool after reporting</span></div>
+    <div id="reported-questions-panel"></div>
   </div>
 
   <!-- SITE FOOTER -->
@@ -502,8 +658,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
       </div>
     </div>
     <div class="qtb-right">
+      <span class="qtb-time" id="qtb-time-display"></span>
       <div class="xp-badge" id="xp-display">0 XP</div>
       <div class="streak-badge">🔥<span id="streak-display">0</span></div>
+      <button class="btn-bookmark-q" id="btn-bookmark-q" onclick="toggleBookmark()" title="Bookmark this question">☆</button>
     </div>
   </div>
   <div class="quiz-body">
@@ -515,7 +673,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
       <div id="question-box" style="padding-bottom:1.2rem"></div>
       <button class="btn-report" onclick="reportQuestion()">⚑ Report error</button>
     </div>
+    <div id="hint-area">
+      <button class="btn-hint" id="btn-hint" onclick="showHint()">💡 HINT (25 XP)</button>
+      <div class="hint-text" id="hint-text"></div>
+    </div>
     <div class="options-grid" id="options-grid"></div>
+    <button class="btn-idk" id="btn-idk" onclick="iDontKnow()">🤷 I DON'T KNOW — SHOW ME THE ANSWER</button>
     <div class="feedback-bar" id="feedback-bar"></div>
     <div class="report-sent" id="report-sent">✓ Thank you — report sent to MJQD53</div>
     <button class="btn-next" id="btn-next" onclick="nextQuestion()">NEXT →</button>
@@ -528,6 +691,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
     <div class="new-best" id="new-best">⭐ NEW PERSONAL BEST!</div>
     <span class="results-grade" id="results-grade"></span>
     <div class="results-pct" id="results-pct"></div>
+    <div class="results-time-row" id="results-time-row"></div>
     <div class="rank-up-box" id="rank-up-box">
       <div class="ru-label">RANK UP!</div>
       <div class="ru-rank" id="ru-rank-name"></div>
@@ -548,83 +712,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// RANK & XP SYSTEM
-// ═══════════════════════════════════════════════════
-const RANKS = [
-  // Every 10 levels = rank up in Police hierarchy
-  // level 1-9 → Recruit; 10-19 → Probationary Constable; etc.
-  {level:1,  title:"Recruit",                  icon:"👤", color:"#6b80a0", xpPerLevel:100},
-  {level:10, title:"Probationary Constable",   icon:"🔵", color:"#4a9eff", xpPerLevel:200},
-  {level:20, title:"Constable",                icon:"🔵", color:"#1e90ff", xpPerLevel:350},
-  {level:30, title:"Senior Constable",         icon:"🟦", color:"#00c4ff", xpPerLevel:550},
-  {level:40, title:"Sergeant",                 icon:"🟨", color:"#ffc107", xpPerLevel:800},
-  {level:50, title:"Senior Sergeant",          icon:"🟧", color:"#ff9800", xpPerLevel:1100},
-  {level:60, title:"Inspector",                icon:"🔶", color:"#ff6d00", xpPerLevel:1500},
-  {level:70, title:"Superintendent",           icon:"🔴", color:"#f44336", xpPerLevel:2000},
-  {level:80, title:"Assistant Commissioner",   icon:"⭐", color:"#e91e63", xpPerLevel:2800},
-  {level:90, title:"Deputy Commissioner",      icon:"🌟", color:"#d4af37", xpPerLevel:3800},
-  {level:100,title:"Commissioner",             icon:"👑", color:"#ffd700", xpPerLevel:5000},
-];
-
-const ACHIEVEMENTS = [
-  // ── GETTING STARTED ──
-  {id:"first_quiz",    icon:"🎯", name:"First Steps",         desc:"Complete your first quiz",                        check:s=>s.played>=1},
-  {id:"played5",       icon:"📋", name:"Showing Up",          desc:"Complete 5 quizzes",                              check:s=>s.played>=5},
-  {id:"played10",      icon:"📚", name:"Studious",            desc:"Complete 10 quizzes",                             check:s=>s.played>=10},
-  {id:"played25",      icon:"📖", name:"Dedicated",           desc:"Complete 25 quizzes",                             check:s=>s.played>=25},
-  {id:"played50",      icon:"🎓", name:"Student of the Law",  desc:"Complete 50 quizzes",                             check:s=>s.played>=50},
-  {id:"played100",     icon:"🏛️", name:"Century",             desc:"Complete 100 quizzes",                            check:s=>s.played>=100},
-  // ── SCORES ──
-  {id:"score60",       icon:"✅", name:"Pass Mark",           desc:"Score 60%+ on a 20+ question quiz",               check:s=>s.has60on20},
-  {id:"score80",       icon:"🥈", name:"Sharp Mind",          desc:"Score 80%+ on a 20+ question quiz",               check:s=>s.has80on20},
-  {id:"score90",       icon:"🥇", name:"Gold Standard",       desc:"Score 90%+ on a 20+ question quiz",               check:s=>s.has90on20},
-  {id:"perfect",       icon:"💎", name:"Flawless",            desc:"Score 100% on a quiz of 10+ questions",           check:s=>s.hasPerfect},
-  {id:"perfect20",     icon:"💠", name:"Perfect Deposition",  desc:"Score 100% on a 20+ question quiz",               check:s=>s.hasPerfect20},
-  // ── STREAKS ──
-  {id:"streak5",       icon:"🔥", name:"On Fire",             desc:"Get a 5-question streak in one quiz",             check:s=>s.bestStreak>=5},
-  {id:"streak10",      icon:"🔥", name:"Inferno",             desc:"Get a 10-question streak in one quiz",            check:s=>s.bestStreak>=10},
-  {id:"streak20",      icon:"🌋", name:"Unstoppable",         desc:"Get a 20-question streak in one quiz",            check:s=>s.bestStreak>=20},
-  {id:"streak30",      icon:"☄️", name:"Legendary Run",       desc:"Get a 30-question streak in one quiz",            check:s=>s.bestStreak>=30},
-  // ── XP & RANK ──
-  {id:"xp500",         icon:"⚡", name:"First Charge",        desc:"Earn 500 total XP",                               check:s=>s.totalXP>=500},
-  {id:"xp2500",        icon:"⚡", name:"XP Hunter",           desc:"Earn 2,500 total XP",                             check:s=>s.totalXP>=2500},
-  {id:"xp10000",       icon:"⚡", name:"XP Master",           desc:"Earn 10,000 total XP",                            check:s=>s.totalXP>=10000},
-  {id:"xp50000",       icon:"🌟", name:"XP Legend",           desc:"Earn 50,000 total XP",                            check:s=>s.totalXP>=50000},
-  {id:"rank_sgt",      icon:"🟨", name:"Sergeant",            desc:"Reach the rank of Sergeant (Level 40)",           check:s=>s.level>=40},
-  {id:"rank_insp",     icon:"🔶", name:"Inspector",           desc:"Reach the rank of Inspector (Level 60)",          check:s=>s.level>=60},
-  {id:"commissioner",  icon:"👑", name:"Commissioner",        desc:"Reach the rank of Commissioner (Level 100)",      check:s=>s.level>=100},
-  {id:"prestige1",     icon:"🌠", name:"Prestige I",          desc:"Prestige for the first time",                     check:s=>s.prestige>=1},
-  {id:"prestige3",     icon:"🌌", name:"Legend",              desc:"Prestige 3 times",                                check:s=>s.prestige>=3},
-  // ── SPECIALIST UNITS (require meaningful attempt) ──
-  {id:"aos",           icon:"🔫", name:"A.O.S. Trained",      desc:"Score 80%+ on 10+ Firearms questions in one quiz", check:s=>s.firearms80},
-  {id:"delta",         icon:"🐕", name:"Delta Handler",        desc:"Score 100% on 10+ Drugs questions in one quiz",   check:s=>s.drugsPerfect},
-  {id:"soco",          icon:"🔬", name:"SOCO",                 desc:"Score 90%+ on 10+ Evidence questions in one quiz", check:s=>s.evidence90},
-  {id:"fv_expert",     icon:"🛡️", name:"FV Specialist",        desc:"Score 90%+ on 10+ Family Violence questions",     check:s=>s.fv90},
-  {id:"ot_expert",     icon:"👶", name:"Youth Aid",            desc:"Score 90%+ on 10+ OT Act questions",              check:s=>s.ot90},
-  // ── GAME MODES ──
-  {id:"speed",         icon:"⚡", name:"Speed Demon",          desc:"Answer 20 timed questions correctly",              check:s=>s.timedCorrect>=20},
-  {id:"speed50",       icon:"🏎️", name:"Rapid Response",       desc:"Answer 50 timed questions correctly",              check:s=>s.timedCorrect>=50},
-  {id:"exam_pass",     icon:"📝", name:"Exam Ready",           desc:"Score 70%+ in Exam Sim mode (20+ questions)",      check:s=>s.examPass},
-  {id:"exam_ace",      icon:"🎓", name:"Top of the Class",     desc:"Score 90%+ in Exam Sim mode (20+ questions)",      check:s=>s.examAce},
-  {id:"comeback",      icon:"🔁", name:"Never Give Up",        desc:"Retry wrong answers and get 100%",                 check:s=>s.comingBack},
-  // ── NZ POLICE AWARDS ──
-  {id:"qsm",           icon:"🎖️", name:"Queen's Service Medal", desc:"Complete 30 quizzes with an average score of 75%+", check:s=>s.qsmEarned},
-  {id:"gcm",           icon:"🏅", name:"General Conduct Medal", desc:"Complete 20 consecutive quizzes without scoring below 60%", check:s=>s.gcmEarned},
-  {id:"lsm",           icon:"🏆", name:"Long Service Medal",    desc:"Complete 75 quizzes total",                        check:s=>s.played>=75},
-  {id:"bravery",       icon:"⭐", name:"Bravery Award",         desc:"Score 100% on a 40+ question quiz",                check:s=>s.bravery},
-  {id:"commendation",  icon:"📜", name:"Commissioner's Comm.",  desc:"Achieve a 15+ question streak in timed mode",      check:s=>s.timedStreak15},
-  // ── FUN / HIDDEN ──
-  {id:"nightshift",    icon:"🌙", name:"Night Shift",           desc:"Complete a quiz after 10pm",                       check:s=>s.nightShift},
-  {id:"earlybird",     icon:"🌅", name:"Early Bird",            desc:"Complete a quiz before 7am",                       check:s=>s.earlyBird},
-  {id:"weekend",       icon:"📅", name:"Weekend Warrior",       desc:"Complete a quiz on a Saturday or Sunday",          check:s=>s.weekendWarrior},
-  {id:"century_qs",    icon:"💯", name:"The Full CPK",          desc:"Complete a 100-question quiz",                     check:s=>s.done100q},
-  {id:"all_qs",        icon:"🗂️", name:"Read the Manual",       desc:"Complete an ALL questions quiz",                   check:s=>s.doneAllQ},
-];
-
-// ═══════════════════════════════════════════════════
-// DATA (all questions)
-// ═══════════════════════════════════════════════════
 const DECKS = [
   {id:0,name:"Oranga Tamariki",short:"OT Act",color:"#00d4ff",cards:[
     // ── s39 Place of Safety Warrants ──
@@ -3439,6 +3526,174 @@ const DECKS = [
   ]},
 ];
 
+// ═══════════════════════════════════════════════════
+// RANK & XP SYSTEM
+// ═══════════════════════════════════════════════════
+const RANKS = [
+  {level:1,  title:"Recruit",                  icon:"👤", color:"#6b80a0", xpPerLevel:100},
+  {level:10, title:"Probationary Constable",   icon:"🔵", color:"#4a9eff", xpPerLevel:200},
+  {level:20, title:"Constable",                icon:"🔵", color:"#1e90ff", xpPerLevel:350},
+  {level:30, title:"Senior Constable",         icon:"🟦", color:"#00c4ff", xpPerLevel:550},
+  {level:40, title:"Sergeant",                 icon:"🟨", color:"#ffc107", xpPerLevel:800},
+  {level:50, title:"Senior Sergeant",          icon:"🟧", color:"#ff9800", xpPerLevel:1100},
+  {level:60, title:"Inspector",                icon:"🔶", color:"#ff6d00", xpPerLevel:1500},
+  {level:70, title:"Superintendent",           icon:"🔴", color:"#f44336", xpPerLevel:2000},
+  {level:80, title:"Assistant Commissioner",   icon:"⭐", color:"#e91e63", xpPerLevel:2800},
+  {level:90, title:"Deputy Commissioner",      icon:"🌟", color:"#d4af37", xpPerLevel:3800},
+  {level:100,title:"Commissioner",             icon:"👑", color:"#ffd700", xpPerLevel:5000},
+];
+
+// ═══════════════════════════════════════════════════
+// ACHIEVEMENTS — including new topic-specific ones
+// ═══════════════════════════════════════════════════
+const ACHIEVEMENTS = [
+  // Getting started
+  {id:"first_quiz",    icon:"🎯", name:"First Steps",          desc:"Complete your first quiz",                         check:s=>s.played>=1},
+  {id:"played5",       icon:"📋", name:"Showing Up",           desc:"Complete 5 quizzes",                               check:s=>s.played>=5},
+  {id:"played10",      icon:"📚", name:"Studious",             desc:"Complete 10 quizzes",                              check:s=>s.played>=10},
+  {id:"played25",      icon:"📖", name:"Dedicated",            desc:"Complete 25 quizzes",                              check:s=>s.played>=25},
+  {id:"played50",      icon:"🎓", name:"Student of the Law",   desc:"Complete 50 quizzes",                              check:s=>s.played>=50},
+  {id:"played100",     icon:"🏛️", name:"Century",              desc:"Complete 100 quizzes",                             check:s=>s.played>=100},
+  // Scores
+  {id:"score60",       icon:"✅", name:"Pass Mark",            desc:"Score 60%+ on a 20+ question quiz",                check:s=>s.has60on20},
+  {id:"score80",       icon:"🥈", name:"Sharp Mind",           desc:"Score 80%+ on a 20+ question quiz",                check:s=>s.has80on20},
+  {id:"score90",       icon:"🥇", name:"Gold Standard",        desc:"Score 90%+ on a 20+ question quiz",                check:s=>s.has90on20},
+  {id:"perfect",       icon:"💎", name:"Flawless",             desc:"Score 100% on a quiz of 10+ questions",            check:s=>s.hasPerfect},
+  {id:"perfect20",     icon:"💠", name:"Perfect Deposition",   desc:"Score 100% on a 20+ question quiz",                check:s=>s.hasPerfect20},
+  // Streaks
+  {id:"streak5",       icon:"🔥", name:"On Fire",              desc:"Get a 5-question streak in one quiz",              check:s=>s.bestStreak>=5},
+  {id:"streak10",      icon:"🔥", name:"Inferno",              desc:"Get a 10-question streak in one quiz",             check:s=>s.bestStreak>=10},
+  {id:"streak20",      icon:"🌋", name:"Unstoppable",          desc:"Get a 20-question streak in one quiz",             check:s=>s.bestStreak>=20},
+  {id:"streak30",      icon:"☄️", name:"Legendary Run",        desc:"Get a 30-question streak in one quiz",             check:s=>s.bestStreak>=30},
+  // XP & rank
+  {id:"xp500",         icon:"⚡", name:"First Charge",         desc:"Earn 500 total XP",                                check:s=>s.totalXP>=500},
+  {id:"xp2500",        icon:"⚡", name:"XP Hunter",            desc:"Earn 2,500 total XP",                              check:s=>s.totalXP>=2500},
+  {id:"xp10000",       icon:"⚡", name:"XP Master",            desc:"Earn 10,000 total XP",                             check:s=>s.totalXP>=10000},
+  {id:"xp50000",       icon:"🌟", name:"XP Legend",            desc:"Earn 50,000 total XP",                             check:s=>s.totalXP>=50000},
+  {id:"rank_sgt",      icon:"🟨", name:"Sergeant",             desc:"Reach the rank of Sergeant (Level 40)",            check:s=>s.level>=40},
+  {id:"rank_insp",     icon:"🔶", name:"Inspector",            desc:"Reach the rank of Inspector (Level 60)",           check:s=>s.level>=60},
+  {id:"commissioner",  icon:"👑", name:"Commissioner",         desc:"Reach the rank of Commissioner (Level 100)",       check:s=>s.level>=100},
+  {id:"prestige1",     icon:"🌠", name:"Prestige I",           desc:"Prestige for the first time",                      check:s=>s.prestige>=1},
+  {id:"prestige3",     icon:"🌌", name:"Legend",               desc:"Prestige 3 times",                                 check:s=>s.prestige>=3},
+  // Specialist units
+  {id:"aos",           icon:"🔫", name:"A.O.S. Trained",       desc:"Score 80%+ on 10+ Firearms questions in one quiz",  check:s=>s.firearms80},
+  {id:"drugsbust",     icon:"💊", name:"Drugs Unit",           desc:"Score 100% on a Drugs/MH/Alc quiz (10+ questions)", check:s=>s.drugsPerfect},
+  {id:"lawsoc",        icon:"⚖️", name:"Evidence Scholar",     desc:"Score 90%+ on 10+ Evidence questions",              check:s=>s.evidence90},
+  {id:"fvunit",        icon:"🛡️", name:"FV Specialist",        desc:"Score 90%+ on 10+ FV/PSO questions",                check:s=>s.fv90},
+  {id:"ot_spec",       icon:"👶", name:"OT Specialist",        desc:"Score 90%+ on 10+ OT Act questions",                check:s=>s.ot90},
+  // New topic-specific achievements
+  {id:"cdem_expert",   icon:"🚨", name:"CDEM Expert",          desc:"Score 90%+ on Cmd & Control 5 times (10+ Qs)",      check:s=>s.cdemExpert},
+  {id:"road_pro",      icon:"🚗", name:"Road Policing Pro",    desc:"Score 90%+ on Road Policing 5 times (10+ Qs)",      check:s=>s.roadPro},
+  {id:"search_ace",    icon:"🔍", name:"Search & Surv Ace",    desc:"Score 90%+ on Search & Surveillance 5 times",       check:s=>s.searchAce},
+  {id:"risk_mgr",      icon:"⚠️", name:"Risk Manager",         desc:"Score 90%+ on Risk/H&S 5 times (10+ Qs)",           check:s=>s.riskMgr},
+  // Mode achievements
+  {id:"speed",         icon:"⚡", name:"Speed Demon",          desc:"Answer 20 timed questions correctly",               check:s=>s.timedCorrect>=20},
+  {id:"speed50",       icon:"🏎️", name:"Rapid Response",       desc:"Answer 50 timed questions correctly",               check:s=>s.timedCorrect>=50},
+  {id:"exam_pass",     icon:"📝", name:"Exam Ready",           desc:"Score 70%+ in Exam Sim mode (20+ questions)",       check:s=>s.examPass},
+  {id:"exam_ace",      icon:"🎓", name:"Top of the Class",     desc:"Score 90%+ in Exam Sim mode (20+ questions)",       check:s=>s.examAce},
+  {id:"comeback",      icon:"🔁", name:"Never Give Up",        desc:"Retry wrong answers and get 100%",                  check:s=>s.comingBack},
+  {id:"beat_best",     icon:"🏆", name:"Beat Your Best",       desc:"Top your personal best score in Beat Your Best mode",check:s=>s.beatBest},
+  // Daily challenge
+  {id:"daily1",        icon:"📅", name:"Day One",              desc:"Complete your first Daily Challenge",               check:s=>s.dcStreak>=1},
+  {id:"daily7",        icon:"🗓️", name:"Week Warrior",         desc:"Complete 7 consecutive Daily Challenges",           check:s=>s.dcStreak>=7},
+  {id:"daily30",       icon:"🏅", name:"Monthly Grind",        desc:"Complete 30 consecutive Daily Challenges",          check:s=>s.dcStreak>=30},
+  // SRS
+  {id:"srs_first",     icon:"🧠", name:"Spaced Out",           desc:"Complete your first SRS Review session",            check:s=>s.srsCompleted>=1},
+  {id:"srs10",         icon:"🔬", name:"Memory Lab",           desc:"Complete 10 SRS Review sessions",                   check:s=>s.srsCompleted>=10},
+  // Bookmarks
+  {id:"bookmark1",     icon:"⭐", name:"Flagged",              desc:"Bookmark your first question",                      check:s=>s.totalBookmarks>=1},
+  // NZ Police awards
+  {id:"qsm",           icon:"🎖️", name:"Queen's Service Medal",desc:"Complete 30 quizzes with an average score of 75%+", check:s=>s.qsmEarned},
+  {id:"gcm",           icon:"🏅", name:"General Conduct Medal",desc:"Complete 20 consecutive quizzes without scoring below 60%",check:s=>s.gcmEarned},
+  {id:"lsm",           icon:"🏆", name:"Long Service Medal",   desc:"Complete 75 quizzes total",                         check:s=>s.played>=75},
+  {id:"bravery",       icon:"⭐", name:"Bravery Award",        desc:"Score 100% on a 40+ question quiz",                 check:s=>s.bravery},
+  {id:"commendation",  icon:"📜", name:"Commissioner's Comm.", desc:"Achieve a 15+ question streak in timed mode",       check:s=>s.timedStreak15},
+  // Fun / hidden
+  {id:"nightshift",    icon:"🌙", name:"Night Shift",          desc:"Complete a quiz after 10pm",                        check:s=>s.nightShift},
+  {id:"earlybird",     icon:"🌅", name:"Early Bird",           desc:"Complete a quiz before 7am",                        check:s=>s.earlyBird},
+  {id:"weekend",       icon:"📅", name:"Weekend Warrior",      desc:"Complete a quiz on a Saturday or Sunday",           check:s=>s.weekendWarrior},
+  {id:"century_qs",    icon:"💯", name:"The Full CPK",         desc:"Complete a 100-question quiz",                      check:s=>s.done100q},
+  {id:"all_qs",        icon:"🗂️", name:"Read the Manual",      desc:"Complete an ALL questions quiz",                    check:s=>s.doneAllQ},
+  {id:"hint_user",     icon:"💡", name:"Lifeline",             desc:"Use a hint for the first time",                     check:s=>s.hintsUsed>=1},
+  {id:"idk_user",      icon:"🤷", name:"Honest Learner",       desc:"Use I Don't Know 10 times",                        check:s=>s.idkUsed>=10},
+];
+
+// ═══════════════════════════════════════════════════
+// HINTS — keyed by question text (first 60 chars)
+// ═══════════════════════════════════════════════════
+function getHint(q) {
+  // Generate a generic hint from deck name + question structure
+  const qText = q.q || '';
+  if (qText.includes('s86') || qText.includes('s87') || qText.includes('s88') || qText.includes('s89') || qText.includes('s90') || qText.includes('s91') || qText.includes('s92') || qText.includes('s93')) return 'Hint: This is a power granted under the Civil Defence Emergency Management Act 2002, active during a state of emergency.';
+  if (qText.includes('s95') || qText.includes('s98') || qText.includes('s104')) return 'Hint: This relates to an offence or penalty under the CDEM Act 2002.';
+  if (qText.includes('TENR')) return 'Hint: TENR is the Police threat assessment model — Threat, Exposure, Necessity, Response.';
+  if (qText.includes('GSMEAC') || qText.includes('Operation Order')) return 'Hint: GSMEAC stands for Ground, Situation, Mission, Execution, Administration & Logistics, Command & Signals.';
+  if (qText.includes('AFCO') || qText.includes('appreciation')) return 'Hint: The AFCO model stands for Aim, Factors, Courses of Action, Outline Plan.';
+  if (qText.includes('CIMS')) return 'Hint: CIMS is the Coordinated Incident Management System — used for multi-agency responses.';
+  if (qText.includes('span of control') || qText.includes('span of command')) return 'Hint: The recommended span involves a range between 2 and 7 direct reports.';
+  if (qText.includes('s39') || qText.includes('Place of Safety')) return 'Hint: This relates to Place of Safety Warrants under the Oranga Tamariki Act.';
+  if (qText.includes('s42')) return 'Hint: Section 42 OT Act is an emergency provision with a very high threshold — critically necessary to protect from injury or death.';
+  if (qText.includes('s214') && qText.includes('OT')) return 'Hint: This relates to arrest powers under the Oranga Tamariki Act for CYPs.';
+  if (qText.includes('PSO') || qText.includes('police safety order')) return 'Hint: Police Safety Orders are issued under the Family Violence Act 2018.';
+  if (qText.includes('protection order')) return 'Hint: This relates to protection orders under the Family Violence Act 2018.';
+  if (qText.includes('HSWA') || qText.includes('Health and Safety at Work')) return 'Hint: The Health and Safety at Work Act 2015 applies to NZ Police as a PCBU.';
+  if (qText.includes('notifiable')) return 'Hint: Notifiable events include death, notifiable injury/illness, and serious near misses — all arising from work.';
+  if (qText.includes('critical incident')) return 'Hint: A critical incident involves death or life-threatening injury during Police activity, or an intentional firearm discharge at a person.';
+  if (qText.includes('RIDS') || qText.includes('Road Policing')) return 'Hint: RIDS stands for Road Infrastructure, Impairment, Driver behaviour, Speed.';
+  if (qText.includes('pursuit')) return 'Hint: Pursuit policy considers safety of officers, offenders, and the public — proportionality is key.';
+  if (qText.includes('s93') && qText.includes('Search')) return 'Hint: Section 93 of the Search and Surveillance Act relates to consent searches.';
+  if (qText.includes('hearsay')) return 'Hint: Hearsay is an out-of-court statement offered to prove the truth of its contents.';
+  if (qText.includes('veracity') || qText.includes('propensity')) return 'Hint: Veracity relates to truthfulness; propensity relates to tendency to act in a certain way.';
+  if (qText.includes('standard of proof')) return 'Hint: Criminal standard is beyond reasonable doubt; civil standard is balance of probabilities.';
+  if (qText.includes('coroner') || qText.includes('Coroners Act')) return 'Hint: The Coroners Act 2006 governs how deaths are reported and investigated.';
+  if (q.deckName && q.deckName.includes('Firearms')) return 'Hint: This relates to the Arms Act 1983 or NZ Police firearms policy.';
+  if (q.deckName && q.deckName.includes('Drugs')) return 'Hint: This relates to the Misuse of Drugs Act, Mental Health (CAT) Act, or Sale and Supply of Alcohol Act.';
+  return 'Hint: Think carefully about the exact wording — the correct answer will be the most specific and accurate description from the source legislation or policy.';
+}
+
+// ═══════════════════════════════════════════════════
+// EXPLANATIONS — brief "why" for each wrong answer
+// Generated contextually from deck + question content
+// ═══════════════════════════════════════════════════
+function getExplanation(q) {
+  const qText = q.q || '';
+  const dn = q.deckName || '';
+  if (qText.includes('TENR') && qText.includes("'T'")) return 'The T in TENR stands for Threat — any individual, act, or thing likely to cause harm or hinder Police duties. TENR drives all Police intervention decisions.';
+  if (qText.includes('TENR') && qText.includes("'E'")) return 'Exposure refers to managing potential harm — physical or otherwise — to people, or the security of places or things. It is distinct from the threat itself.';
+  if (qText.includes('TENR') && qText.includes("'N'")) return 'Necessity asks whether Police need to intervene now, later, or at all. Timing of intervention is a core command decision.';
+  if (qText.includes('TENR') && qText.includes("'R'")) return 'Response must always be proportionate, based on a considered assessment of Threat, Exposure and Necessity combined.';
+  if (qText.includes('span of control') || qText.includes('span of command')) return 'The recommended span of control is 2–7 direct reports. Too many direct reports overwhelms the Commander; too few wastes leadership capacity.';
+  if (qText.includes('GSMEAC')) return 'GSMEAC is the standard format for Operation Orders: Ground, Situation, Mission, Execution, Administration & Logistics, Command & Signals. Following this structure ensures nothing is missed.';
+  if (qText.includes('Mission') && qText.includes('GSMEAC')) return 'The Mission section is always one sentence starting with "To..." — it mirrors the Aim from the AFCO appreciation and tells staff exactly what Police are there to do.';
+  if (qText.includes('AFCO')) return 'The AFCO model — Aim, Factors, Courses of Action, Outline Plan — is the structured appreciation process Police use before planning any operation.';
+  if (qText.includes('s86') && qText.includes('CDEM')) return 'Section 86 allows evacuation or exclusion during a state of emergency, but only when necessary for the preservation of human life. The Controller or any constable can exercise this power.';
+  if (qText.includes('s87') && qText.includes('CDEM')) return 'Section 87 permits entry and break-in on reasonable grounds — for saving life, preventing injury, or facilitating urgent relief. It requires reasonable grounds, not mere suspicion.';
+  if (qText.includes('s90') && qText.includes('requisition')) return 'Section 90 requisitioning requires a state of emergency and that the action is necessary for the preservation of human life. A written statement must always be given to the owner.';
+  if (qText.includes('s104') && qText.includes('CDEM')) return 'Section 104 penalties: individuals face up to 3 months imprisonment or a $5,000 fine (or both). Body corporates face up to $50,000. Both penalties can apply simultaneously.';
+  if (qText.includes('s95') && qText.includes('CDEM')) return 'Section 95 creates an offence for intentionally failing to comply with a requirement in a civil defence emergency management plan — not just any direction.';
+  if (qText.includes('s98') && qText.includes('CDEM')) return 'Section 98 targets obstruction — threatening, assaulting, or intentionally hindering anyone exercising a function under the Act during a state of emergency or transition period.';
+  if (qText.includes('rising tide')) return 'A rising tide incident develops gradually from steady state — like flooding. This is distinct from a spontaneous incident (no warning) and requires careful monitoring of escalation.';
+  if (qText.includes('delegation')) return 'Delegation in command means centralised command but decentralised execution — commanders implement their part of the plan with direction, resources, and freedom to act.';
+  if (qText.includes('freedom of action') || qText.includes('disciplined initiative')) return 'Freedom of Action allows commanders to exercise disciplined initiative — acting within the higher commander\'s intent even in unanticipated situations, without waiting for specific orders.';
+  if (qText.includes('unity of command')) return 'Unity of command means there can only be one command structure at any time. All units must know their chain of command — multiple parallel command structures cause confusion and risk.';
+  if (qText.includes('tactical') && qText.includes('command level')) return 'The tactical level is where almost all policing occurs — single officers, calls for service, AOS/SAR specialist groups. Operational and Strategic levels exist for more complex events.';
+  if (qText.includes('CIMS')) return 'CIMS — Coordinated Incident Management System — provides a common framework across all agencies, allowing each to retain its own command structure while working toward a shared goal.';
+  if (qText.includes('debrief')) return 'A debrief is about learning, not blame. It focuses on policy, practice, and procedure to improve future responses. All staff who participated should be able to contribute.';
+  if (qText.includes('Community Impact Assessment') || qText.includes('CIA')) return 'A CIA identifies how Police actions affect community trust and confidence. It ensures the response is proportionate and considers impacts on specific community groups.';
+  if (qText.includes('Dispatch') && qText.includes('P1')) return 'P1 events must always be dispatched in full by radio. P2 events may be alerted by radio and directed to mobile responder. This ensures staff have real-time situational awareness.';
+  if (qText.includes('Forward Commander')) return 'A Forward Commander is task-specific and may not have overall incident awareness. Multiple Forward Commanders from different agencies can operate simultaneously under the Incident Controller.';
+  if (dn.includes('OT') || qText.includes('OT Act') || qText.includes('CYP')) return 'The Oranga Tamariki Act 1989 governs how Police deal with children and young people. The threshold for intervention is generally higher than for adults, reflecting the welfare focus.';
+  if (dn.includes('Evidence') || qText.includes('hearsay') || qText.includes('veracity')) return 'The Evidence Act 2006 governs admissibility of evidence in NZ courts. The rules are designed to ensure fairness and reliability of the evidence considered by the fact-finder.';
+  if (dn.includes('FV') || qText.includes('protection order') || qText.includes('PSO')) return 'Family violence law under the Family Violence Act 2018 is designed to protect victims. Police have significant powers and obligations — including mandatory consideration of firearms.';
+  if (dn.includes('Road') || qText.includes('pursuit') || qText.includes('RIDS')) return 'Road policing in NZ uses the Safe System approach — accepting human error and designing systems to prevent fatal outcomes. Proportionality and safety are paramount in all decisions.';
+  if (dn.includes('Risk') || qText.includes('HSWA') || qText.includes('notifiable')) return 'The Health and Safety at Work Act 2015 makes NZ Police a PCBU with a primary duty of care. Notifiable events must be reported to WorkSafe through the District Health and Safety Advisor.';
+  if (dn.includes('Firearms') || qText.includes('Arms Act')) return 'The Arms Act 1983 governs firearms licensing, possession, and use in NZ. Police also have specific internal policies on use of force and firearms deployment.';
+  if (dn.includes('Drugs')) return 'The Misuse of Drugs Act 1975, Mental Health (Compulsory Assessment and Treatment) Act 1992, and Sale and Supply of Alcohol Act 2012 each create distinct powers and obligations for Police.';
+  if (dn.includes('Search') || qText.includes('surveillance')) return 'The Search and Surveillance Act 2012 governs when and how Police can search people, places, and vehicles. Most searches require a warrant or specific statutory power.';
+  return 'Review the correct answer carefully — the distinction from the wrong options often lies in precise wording drawn directly from the legislation or policy document.';
+}
+
+
 // ═══════════════════════════════════════════
 // STORAGE HELPERS
 // ═══════════════════════════════════════════
@@ -3453,54 +3708,74 @@ function save(key, val) {
 // PLAYER DATA
 // ═══════════════════════════════════════════
 let P = load('cpk_player2', {
-  totalXP: 0,
-  level: 1,
-  prestige: 0,
-  played: 0,
-  bestPct: 0,
-  bestStreak: 0,
-  // score achievements
-  hasPerfect: false,
-  hasPerfect20: false,
-  has60on20: false,
-  has80on20: false,
-  has90on20: false,
-  bravery: false,
-  // specialist units (require 10+ Qs from that topic)
-  firearms80: false,
-  drugsPerfect: false,
-  evidence90: false,
-  fv90: false,
-  ot90: false,
-  // mode achievements
-  nightShift: false,
-  earlyBird: false,
-  weekendWarrior: false,
-  timedCorrect: 0,
-  timedStreak15: false,
-  examPass: false,
-  examAce: false,
-  comingBack: false,
-  // quiz size
-  done100q: false,
-  doneAllQ: false,
-  // NZ Police awards
-  qsmEarned: false,
-  gcmEarned: false,
-  // internal trackers
-  qsmQuizCount: 0,
-  qsmScoreSum: 0,
-  gcmStreak: 0,      // consecutive quizzes >= 60%
+  totalXP: 0, level: 1, prestige: 0, played: 0, bestPct: 0, bestStreak: 0,
+  hasPerfect: false, hasPerfect20: false, has60on20: false, has80on20: false, has90on20: false, bravery: false,
+  firearms80: false, drugsPerfect: false, evidence90: false, fv90: false, ot90: false,
+  // new topic achievements
+  cdemExpert: false, roadPro: false, searchAce: false, riskMgr: false,
+  topicExpert90Count: {},  // {deckId: count of times >=90% with 10+ qs}
+  nightShift: false, earlyBird: false, weekendWarrior: false,
+  timedCorrect: 0, timedStreak15: false, examPass: false, examAce: false, comingBack: false,
+  done100q: false, doneAllQ: false,
+  qsmEarned: false, gcmEarned: false,
+  gcmStreak: 0, qsmQuizCount: 0, qsmScoreSum: 0,
   unlockedAchievements: [],
-  topicStats: {},   // {deckId: {correct, total}}
-  history: [],      // last 50 sessions
-  sizeRecords: {},  // {questionCount: {pct, date}}
-  recentSeen: [],   // recently shown question indices (global pool)
-  dailyKey: '',
-  dailySessions: [],
+  topicStats: {},
+  // new: weekly history per topic {deckId: [{week:'2025-W01',correct,total},...]}
+  topicWeekly: {},
+  // hardest questions {uid: {wrong:n, q, deckName, deckId}}
+  hardQuestions: {},
+  // time per question (ms) — rolling avg per deck
+  avgTimeMs: {},
+  history: [],
+  sizeRecords: {},
+  recentSeen: [],
+  dailyKey: '', dailySessions: [],
+  // spaced repetition {uid: {nextDate:'YYYY-MM-DD', interval:1, wrongCount:n}}
+  srsData: {},
+  // bookmarks [{uid, q, a, deckName, deckId}]
+  bookmarks: [],
+  totalBookmarks: 0,
+  // daily challenge
+  dcKey: '',       // date string of last completion
+  dcStreak: 0,
+  dcLastStreak: 0,
+  dcDoneToday: false,
+  // beat your best
+  beatBest: false,
+  topicBest: {},   // {deckId: bestPct}
+  // hints & idk
+  hintsUsed: 0,
+  idkUsed: 0,
+  // srs sessions completed
+  srsCompleted: 0,
+  // theme
+  theme: 'dark',
+  // quarantine — set of _uids reported by user, excluded from pool until cleared
+  reportedQuestions: [],
 });
 
+// Migration — add any missing keys from default
+const PDEFAULT = {topicWeekly:{},hardQuestions:{},avgTimeMs:{},srsData:{},bookmarks:[],totalBookmarks:0,
+  dcKey:'',dcStreak:0,dcLastStreak:0,dcDoneToday:false,beatBest:false,topicBest:{},hintsUsed:0,idkUsed:0,
+  srsCompleted:0,theme:'dark',topicExpert90Count:{},cdemExpert:false,roadPro:false,searchAce:false,riskMgr:false,
+  reportedQuestions:[]};
+Object.keys(PDEFAULT).forEach(k=>{ if(P[k]===undefined) P[k]=PDEFAULT[k]; });
+
 function saveP() { save('cpk_player2', P); }
+
+// ═══════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('theme-btn').textContent = t === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  P.theme = P.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(P.theme);
+  saveP();
+}
 
 // ═══════════════════════════════════════════
 // LEVEL / RANK CALC
@@ -3510,32 +3785,26 @@ function getRankForLevel(level) {
   for (let r of RANKS) { if (level >= r.level) rank = r; }
   return rank;
 }
-
 function getXPForLevel(level) {
   const rank = getRankForLevel(level);
-  // Progressive: base xpPerLevel * (level within tier)
   const levelInTier = (level - rank.level);
   return rank.xpPerLevel + levelInTier * Math.floor(rank.xpPerLevel * 0.3);
 }
-
 function getTotalXPForLevel(targetLevel) {
   let total = 0;
   for (let l = 1; l < targetLevel; l++) total += getXPForLevel(l);
   return total;
 }
-
 function getLevelFromXP(totalXP) {
   let xp = totalXP, level = 1;
   while (true) {
     const needed = getXPForLevel(level);
     if (xp < needed) break;
-    xp -= needed;
-    level++;
-    if (level > 110) break; // cap
+    xp -= needed; level++;
+    if (level > 110) break;
   }
   return { level, xpInLevel: xp, xpForLevel: getXPForLevel(level) };
 }
-
 function addXP(amount) {
   const before = getLevelFromXP(P.totalXP);
   P.totalXP += amount;
@@ -3549,12 +3818,73 @@ function addXP(amount) {
 // ═══════════════════════════════════════════
 function todayKey() {
   const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
 function checkDaily() {
   const key = todayKey();
   if (P.dailyKey !== key) { P.dailyKey = key; P.dailySessions = []; }
+}
+
+// ═══════════════════════════════════════════
+// SPACED REPETITION
+// ═══════════════════════════════════════════
+const SRS_INTERVALS = [1, 3, 7, 14, 30]; // days
+function srsMarkWrong(uid, q) {
+  const existing = P.srsData[uid] || {interval:0, wrongCount:0};
+  existing.wrongCount = (existing.wrongCount || 0) + 1;
+  existing.interval = 1; // reset to 1 day on wrong
+  const due = new Date(); due.setDate(due.getDate() + 1);
+  existing.nextDate = due.toISOString().split('T')[0];
+  existing.q = q.q; existing.deckName = q.deckName;
+  P.srsData[uid] = existing;
+}
+function srsMarkCorrect(uid) {
+  const existing = P.srsData[uid];
+  if (!existing) return;
+  // Advance interval
+  const idx = SRS_INTERVALS.indexOf(existing.interval);
+  const nextInterval = idx >= 0 && idx < SRS_INTERVALS.length-1 ? SRS_INTERVALS[idx+1] : 30;
+  existing.interval = nextInterval;
+  const due = new Date(); due.setDate(due.getDate() + nextInterval);
+  existing.nextDate = due.toISOString().split('T')[0];
+  P.srsData[uid] = existing;
+}
+function getSrsDueCards() {
+  const today = todayKey();
+  return Object.entries(P.srsData)
+    .filter(([uid, data]) => data.nextDate && data.nextDate <= today)
+    .map(([uid]) => uid);
+}
+function getSrsDueCount() { return getSrsDueCards().length; }
+
+// ═══════════════════════════════════════════
+// HARDEST QUESTIONS tracking
+// ═══════════════════════════════════════════
+function trackHardQuestion(q, correct) {
+  const uid = q._uid;
+  if (!uid) return;
+  if (!P.hardQuestions[uid]) P.hardQuestions[uid] = {wrong:0, q:q.q, deckName:q.deckName, deckId:q.deckId};
+  if (!correct) P.hardQuestions[uid].wrong++;
+}
+
+// ═══════════════════════════════════════════
+// WEEKLY TOPIC TRACKING
+// ═══════════════════════════════════════════
+function weekKey() {
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const wk = Math.ceil((((d - jan1) / 86400000) + jan1.getDay() + 1) / 7);
+  return `${d.getFullYear()}-W${String(wk).padStart(2,'0')}`;
+}
+function recordWeeklyTopic(deckId, correct) {
+  if (!P.topicWeekly[deckId]) P.topicWeekly[deckId] = [];
+  const wk = weekKey();
+  let entry = P.topicWeekly[deckId].find(e => e.week === wk);
+  if (!entry) { entry = {week:wk, correct:0, total:0}; P.topicWeekly[deckId].push(entry); }
+  entry.total++;
+  if (correct) entry.correct++;
+  // keep last 8 weeks only
+  P.topicWeekly[deckId] = P.topicWeekly[deckId].slice(-8);
 }
 
 // ═══════════════════════════════════════════
@@ -3576,43 +3906,68 @@ let GS = {
   wrongAnswers: [],
   deckPerf: {},
   rankUpTo: null,
+  isRetry: false,
+  isDailyChallenge: false,
+  isSRS: false,
+  qStartTime: 0,
+  sessionTimes: [],   // ms per question
+  hintUsedThisQ: false,
+  idkThisQ: false,
 };
 
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
-const CURRENT_VERSION = 'v2.13';
+const CURRENT_VERSION = 'v2.14';
 
 function init() {
+  applyTheme(P.theme);
+  // Apply prestige cosmetics
+  document.body.setAttribute('data-prestige', P.prestige || 0);
   checkDaily();
   renderDeckPills();
   renderProfileTab();
   renderScoresTab();
   renderStatsTab();
   homeTab('play');
+  updateHomeButtons();
   checkChangelog();
 }
 
 function checkChangelog() {
   const seen = load('cpk_changelog_seen', '');
-  if (seen !== CURRENT_VERSION) {
-    setTimeout(() => showChangelog(), 600);
-  }
+  if (seen !== CURRENT_VERSION) setTimeout(() => showChangelog(), 600);
 }
-
-function showChangelog() {
-  document.getElementById('changelog-modal').classList.remove('hidden');
-}
-
+function showChangelog() { document.getElementById('changelog-modal').classList.remove('hidden'); }
 function dismissChangelog() {
   document.getElementById('changelog-modal').classList.add('hidden');
   save('cpk_changelog_seen', CURRENT_VERSION);
 }
 
+function updateHomeButtons() {
+  // Daily challenge pill
+  const dcEl = document.getElementById('dc-streak-pill');
+  if (dcEl) dcEl.textContent = P.dcStreak > 0 ? ` 🔥${P.dcStreak}` : '';
+  // Bookmarks pill
+  const bmEl = document.getElementById('bm-pill');
+  if (bmEl) bmEl.textContent = P.bookmarks.length > 0 ? ` (${P.bookmarks.length})` : '';
+  // SRS due count on mode card
+  const due = getSrsDueCount();
+  const srsCard = document.querySelector('[data-mode="srs"] .mode-desc');
+  if (srsCard) srsCard.textContent = due > 0 ? `${due} cards due for review` : 'No cards due right now';
+}
+
+// ═══════════════════════════════════════════
+// DECK PILLS
+// ═══════════════════════════════════════════
 function renderDeckPills() {
   const el = document.getElementById('deck-pills');
   el.innerHTML = `<button class="pill all-pill sel" data-id="all" onclick="toggleDeck(this,'all')">ALL TOPICS</button>` +
-    DECKS.map(d => `<button class="pill" data-id="${d.id}" onclick="toggleDeck(this,'${d.id}')">${d.short}</button>`).join('');
+    DECKS.map(d => {
+      const best = P.topicBest[d.id];
+      const badge = best ? `<span class="pill-best">${best}%</span>` : '';
+      return `<button class="pill" data-id="${d.id}" onclick="toggleDeck(this,'${d.id}')">${d.short}${badge}</button>`;
+    }).join('');
 }
 
 function toggleDeck(btn, id) {
@@ -3671,6 +4026,8 @@ function renderProfileTab() {
   const pct = Math.round(lvlInfo.xpInLevel / lvlInfo.xpForLevel * 100);
   const prestige = P.prestige;
 
+  document.body.setAttribute('data-prestige', prestige || 0);
+
   const hero = document.getElementById('rank-hero');
   hero.style.setProperty('--rank-color', rank.color);
   hero.innerHTML = `
@@ -3704,8 +4061,8 @@ function doPrestige() {
   const lvlInfo = getLevelFromXP(P.totalXP);
   if (lvlInfo.level < 100) return;
   P.prestige++;
-  P.totalXP = 0;
-  P.level = 1;
+  P.totalXP = 0; P.level = 1;
+  document.body.setAttribute('data-prestige', P.prestige);
   saveP();
   checkAchievements();
   renderProfileTab();
@@ -3752,7 +4109,6 @@ function renderScoresTab() {
   const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
   document.getElementById('daily-reset-lbl').textContent = `Resets in ${h}h ${m}m`;
 
-  // Daily
   const daily = document.getElementById('daily-box');
   if (!P.dailySessions.length) {
     daily.innerHTML = '<div class="empty-state">No sessions today. Start a quiz!</div>';
@@ -3770,7 +4126,6 @@ function renderScoresTab() {
     }).join('') + '</div>';
   }
 
-  // Size records
   const srEl = document.getElementById('size-records');
   const sizes = [10,20,30,40,50,75,100,150,'all'];
   srEl.innerHTML = sizes.map(sz => {
@@ -3782,12 +4137,11 @@ function renderScoresTab() {
     </div>`;
   }).join('');
 
-  // History
   const histEl = document.getElementById('score-history');
   if (!P.history.length) {
     histEl.innerHTML = '<div class="empty-state">No quiz history yet.</div>';
   } else {
-    const modeColors = {practice:'var(--blue)',timed:'var(--gold)',exam:'var(--purple)',weak:'var(--orange)'};
+    const modeColors = {practice:'var(--blue)',timed:'var(--gold)',exam:'var(--purple)',weak:'var(--orange)',srs:'var(--green)',beat:'var(--red)',daily:'var(--cyan)'};
     histEl.innerHTML = P.history.slice().reverse().slice(0,30).map(s => `
       <div class="score-row">
         <div class="score-date">${s.date}</div>
@@ -3809,6 +4163,7 @@ function renderStatsTab() {
   if (!Object.keys(P.topicStats).length) {
     table.innerHTML = '<div class="empty-state">Play some quizzes to see your topic analysis!</div>';
     focusEl.innerHTML = '';
+    document.getElementById('hard-q-list').innerHTML = '<div class="empty-state">No data yet — answer some questions first!</div>';
     return;
   }
 
@@ -3816,16 +4171,62 @@ function renderStatsTab() {
     const ts = P.topicStats[d.id] || {correct:0,total:0};
     const pct = ts.total ? Math.round(ts.correct/ts.total*100) : null;
     const color = pct===null?'var(--muted)':pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
-    return { d, pct, ts, color };
+    // trend: compare last 2 weeks
+    const weekly = P.topicWeekly[d.id] || [];
+    let trend = null, trendLabel = '';
+    if (weekly.length >= 2) {
+      const last = weekly[weekly.length-1];
+      const prev = weekly[weekly.length-2];
+      const lastPct = last.total ? Math.round(last.correct/last.total*100) : 0;
+      const prevPct = prev.total ? Math.round(prev.correct/prev.total*100) : 0;
+      trend = lastPct - prevPct;
+      trendLabel = trend > 0 ? `<span class="trend-up">↑${trend}%</span>` : trend < 0 ? `<span class="trend-dn">↓${Math.abs(trend)}%</span>` : `<span class="trend-flat">→</span>`;
+    }
+    // SRS due count
+    const srsCount = Object.values(P.srsData).filter(s=>s.deckId===d.id && s.nextDate<=todayKey()).length;
+    const srsBadge = srsCount ? `<span class="srs-due-badge">${srsCount} DUE</span>` : '';
+    return { d, pct, ts, color, trendLabel, weekly, srsBadge };
   });
 
-  table.innerHTML = rows.map(r => `
-    <div class="topic-row">
-      <div class="topic-name" style="color:${r.d.color}">${r.d.name}</div>
+  table.innerHTML = rows.map(r => {
+    // Sparkline SVG
+    let spark = '';
+    if (r.weekly.length >= 2) {
+      const pts = r.weekly.map(w => w.total ? Math.round(w.correct/w.total*100) : 0);
+      const max = Math.max(...pts, 1);
+      const w = 100 / (pts.length - 1);
+      const coords = pts.map((p,i) => `${i*w},${28 - p/max*24}`).join(' ');
+      spark = `<div class="sparkline-wrap"><svg class="sparkline-canvas" viewBox="0 0 100 32" preserveAspectRatio="none">
+        <polyline points="${coords}" fill="none" stroke="${r.color}" stroke-width="1.5" opacity=".7"/>
+        ${pts.map((p,i)=>`<circle cx="${i*w}" cy="${28-p/max*24}" r="1.5" fill="${r.color}" opacity=".9"/>`).join('')}
+      </svg></div>`;
+    }
+    return `<div class="topic-row">
+      <div class="topic-name" style="color:${r.d.color}">${r.d.name}${r.srsBadge}</div>
       <div class="topic-bar"><div class="topic-fill" style="width:${r.pct??0}%;background:${r.color}"></div></div>
       <div class="topic-pct" style="color:${r.color}">${r.pct!==null?r.pct+'%':'—'}</div>
+      <div class="topic-trend">${r.trendLabel}</div>
       <div class="topic-count">${r.ts.correct||0}/${r.ts.total||0}</div>
-    </div>`).join('');
+      ${spark}
+    </div>`;
+  }).join('');
+
+  // Hardest questions
+  const hardEl = document.getElementById('hard-q-list');
+  const hardList = Object.entries(P.hardQuestions)
+    .filter(([,v]) => v.wrong > 0)
+    .sort(([,a],[,b]) => b.wrong - a.wrong)
+    .slice(0, 10);
+  if (!hardList.length) {
+    hardEl.innerHTML = '<div class="empty-state">No wrong answers yet — keep going!</div>';
+  } else {
+    hardEl.innerHTML = hardList.map(([uid, data], i) => `
+      <div class="hard-q-item">
+        <div class="hard-q-rank">#{${i+1}} HARDEST <span class="hard-q-stat">❌ ${data.wrong}×</span></div>
+        <div class="hard-q-text">${data.q ? data.q.slice(0,120)+(data.q.length>120?'…':'') : '—'}</div>
+        <div class="hard-q-deck">${data.deckName || ''}</div>
+      </div>`).join('');
+  }
 
   // Focus recommendations
   const weak = rows.filter(r => r.pct !== null && r.pct < 70).sort((a,b) => a.pct - b.pct);
@@ -3856,16 +4257,257 @@ function renderStatsTab() {
       </div>`;
     }
   }
+
+  renderReportedQuestions();
 }
 
 // ═══════════════════════════════════════════
-// QUIZ START
+// REPORTED / QUARANTINED QUESTIONS
+// ═══════════════════════════════════════════
+function renderReportedQuestions() {
+  const panel = document.getElementById('reported-questions-panel');
+  const hdr = document.getElementById('reported-section-hdr');
+  const reported = P.reportedQuestions || [];
+
+  if (!reported.length) {
+    hdr.style.display = 'none';
+    panel.innerHTML = '';
+    return;
+  }
+
+  hdr.style.display = 'block';
+
+  // Build a lookup of uid → question text from DECKS
+  const lookup = {};
+  DECKS.forEach(d => d.cards.forEach((c,i) => {
+    lookup[`${d.id}_${i}`] = {q: c.q, deckName: d.name};
+  }));
+
+  panel.innerHTML = `<div class="reported-panel">
+    <div class="reported-panel-hdr">
+      <span>⚑ ${reported.length} QUESTION${reported.length!==1?'S':''} IN QUARANTINE</span>
+      <button class="btn-clear-all-reported" onclick="clearAllReported()">RESTORE ALL</button>
+    </div>
+    ${reported.map((uid,i) => {
+      const info = lookup[uid] || {q:'(question not found)', deckName:'Unknown'};
+      return `<div class="reported-item">
+        <div class="reported-item-q">
+          ${info.q.slice(0,100)}${info.q.length>100?'…':''}
+          <span class="reported-item-deck">${info.deckName}</span>
+        </div>
+        <button class="btn-unquarantine" onclick="unquarantineQuestion('${uid}')">✓ Restore</button>
+      </div>`;
+    }).join('')}
+    <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--muted);margin-top:.6rem;line-height:1.5">
+      These questions are hidden from all quizzes. Restore them once corrected, or leave in quarantine.
+    </div>
+  </div>`;
+}
+
+function unquarantineQuestion(uid) {
+  P.reportedQuestions = (P.reportedQuestions || []).filter(u => u !== uid);
+  saveP();
+  renderReportedQuestions();
+}
+
+function clearAllReported() {
+  if (!confirm(`Restore all ${(P.reportedQuestions||[]).length} quarantined questions? Do this only after you have verified they are correct.`)) return;
+  P.reportedQuestions = [];
+  saveP();
+  renderReportedQuestions();
+}
+function openDailyModal() {
+  checkDailyChallenge();
+  document.getElementById('dc-streak-num').textContent = P.dcStreak;
+  const statusEl = document.getElementById('dc-status');
+  const startBtn = document.getElementById('dc-start-btn');
+  if (P.dcDoneToday) {
+    statusEl.innerHTML = `<div class="dc-done-msg">✓ Today's challenge complete! Come back tomorrow to keep your streak.<br><br>Streak: 🔥 ${P.dcStreak} days</div>`;
+    startBtn.style.display = 'none';
+  } else {
+    statusEl.innerHTML = `<p style="font-family:var(--font-mono);font-size:.78rem;color:var(--muted2);text-align:center;margin-bottom:.75rem;line-height:1.6">20 fixed questions · same for everyone · resets at midnight<br>Complete daily to build your streak!</p>`;
+    startBtn.style.display = 'block';
+  }
+  document.getElementById('daily-modal').classList.remove('hidden');
+}
+function closeDailyModal() { document.getElementById('daily-modal').classList.add('hidden'); }
+
+function checkDailyChallenge() {
+  const today = todayKey();
+  if (P.dcKey !== today) {
+    // New day — check if streak continues or breaks
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    const yKey = yesterday.toISOString().split('T')[0];
+    if (P.dcKey !== yKey && P.dcKey !== '') P.dcStreak = 0; // streak broken
+    P.dcDoneToday = false;
+    // don't reset dcKey yet — do it when they actually complete
+  }
+}
+
+function getDailySeed() {
+  // Deterministic seed from today's date
+  const d = todayKey().replace(/-/g,'');
+  return parseInt(d);
+}
+
+function seededShuffle(arr, seed) {
+  const a = [...arr];
+  let s = seed;
+  for (let i = a.length-1; i > 0; i--) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i+1);
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startDailyChallenge() {
+  closeDailyModal();
+  // Build daily pool from all questions, seeded by today's date
+  let allCards = [];
+  DECKS.forEach(d => d.cards.forEach((c,i) => allCards.push({...c, deckName:d.name, deckId:d.id, _uid:`${d.id}_${i}`})));
+  const shuffled = seededShuffle(allCards, getDailySeed());
+  const dailyQs = shuffled.slice(0, 20);
+
+  GS.questions = dailyQs;
+  GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
+  GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
+  GS.isRetry = false; GS.isDailyChallenge = true; GS.isSRS = false;
+  GS.sessionTimes = [];
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ═══════════════════════════════════════════
+// BOOKMARKS
+// ═══════════════════════════════════════════
+function toggleBookmark() {
+  const q = GS.questions[GS.currentQ];
+  if (!q) return;
+  const uid = q._uid;
+  const idx = P.bookmarks.findIndex(b => b.uid === uid);
+  const btn = document.getElementById('btn-bookmark-q');
+  if (idx >= 0) {
+    P.bookmarks.splice(idx, 1);
+    btn.textContent = '☆'; btn.classList.remove('starred');
+  } else {
+    P.bookmarks.push({uid, q:q.q, a:q.a, deckName:q.deckName, deckId:q.deckId});
+    P.totalBookmarks++;
+    btn.textContent = '★'; btn.classList.add('starred');
+    popXP(0); // visual cue — no XP for bookmark
+  }
+  saveP();
+  checkAchievements();
+  updateHomeButtons();
+}
+
+function openBookmarks() {
+  const listEl = document.getElementById('bm-list');
+  const countEl = document.getElementById('bm-count-lbl');
+  countEl.textContent = `${P.bookmarks.length} QUESTION${P.bookmarks.length !== 1 ? 'S' : ''} FLAGGED`;
+  if (!P.bookmarks.length) {
+    listEl.innerHTML = '<div class="bm-empty">No bookmarks yet. Star questions during a quiz with the ☆ button.</div>';
+  } else {
+    listEl.innerHTML = P.bookmarks.map((b,i) => `
+      <div class="bm-item">
+        <div class="bm-deck">${b.deckName || ''}</div>
+        <div class="bm-q">${b.q}</div>
+        <div class="bm-a">${b.a}</div>
+        <button class="bm-rm" onclick="removeBookmark(${i})">✕ Remove</button>
+      </div>`).join('');
+  }
+  document.getElementById('bookmarks-modal').classList.remove('hidden');
+}
+function closeBookmarks() { document.getElementById('bookmarks-modal').classList.add('hidden'); }
+function removeBookmark(i) {
+  P.bookmarks.splice(i, 1);
+  saveP();
+  updateHomeButtons();
+  openBookmarks();
+}
+
+// ═══════════════════════════════════════════
+// HINT SYSTEM
+// ═══════════════════════════════════════════
+function showHint() {
+  if (GS.hintUsedThisQ || GS.answered) return;
+  if (P.totalXP < 25 && P.prestige === 0) {
+    const hintEl = document.getElementById('hint-text');
+    hintEl.textContent = 'You need at least 25 XP to use a hint!';
+    hintEl.style.display = 'block';
+    return;
+  }
+  GS.hintUsedThisQ = true;
+  P.totalXP = Math.max(0, P.totalXP - 25);
+  P.hintsUsed = (P.hintsUsed || 0) + 1;
+  saveP();
+  checkAchievements();
+  document.getElementById('xp-display').textContent = GS.sessionXP + ' XP';
+  const q = GS.questions[GS.currentQ];
+  const hintEl = document.getElementById('hint-text');
+  hintEl.textContent = getHint(q);
+  hintEl.style.display = 'block';
+  document.getElementById('btn-hint').disabled = true;
+}
+
+// ═══════════════════════════════════════════
+// I DON'T KNOW
+// ═══════════════════════════════════════════
+function iDontKnow() {
+  if (GS.answered) return;
+  GS.answered = true;
+  GS.idkThisQ = true;
+  clearInterval(GS.timer);
+  P.idkUsed = (P.idkUsed || 0) + 1;
+
+  const q = GS.questions[GS.currentQ];
+  recordTime();
+
+  document.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
+  });
+  document.getElementById('btn-idk').disabled = true;
+
+  // Don't count as wrong for score, don't break streak, but do track for SRS
+  srsMarkWrong(q._uid, q);
+  trackHardQuestion(q, false);
+  recordDeckPerf(q.deckId, false);
+  GS.wrongAnswers.push(q);
+
+  const fb = document.getElementById('feedback-bar');
+  fb.className = 'feedback-bar wrong-fb';
+  fb.style.display = 'block';
+  const explanation = getExplanation(q);
+  fb.innerHTML = `<span class="fb-label">📖 CORRECT ANSWER</span><strong>${q.a}</strong><div class="fb-explanation">${explanation}</div>`;
+  document.getElementById('btn-next').classList.add('vis');
+  saveP();
+  checkAchievements();
+}
+
+// ═══════════════════════════════════════════
+// QUIZ START — BUILD QUESTIONS
 // ═══════════════════════════════════════════
 function buildQuestions() {
   const useAll = GS.selectedDecks.has('all');
 
-  // Build full pool with stable unique IDs
+  if (GS.mode === 'srs') {
+    // SRS mode: only due cards
+    const dueUids = new Set(getSrsDueCards());
+    if (!dueUids.size) { alert('No SRS cards due right now! Play normally and get questions wrong to add them to your review queue.'); return []; }
+    const reported = new Set(P.reportedQuestions || []);
+    let pool = [];
+    DECKS.forEach(d => d.cards.forEach((c,i) => {
+      const uid = `${d.id}_${i}`;
+      if (dueUids.has(uid) && !reported.has(uid)) pool.push({...c, deckName:d.name, deckId:d.id, _uid:uid});
+    }));
+    pool.sort(() => Math.random() - 0.5);
+    const count = GS.questionCount === 0 ? pool.length : Math.min(GS.questionCount, pool.length);
+    return pool.slice(0, count);
+  }
+
   let fullPool = [];
+  const reported = new Set(P.reportedQuestions || []);
   const sorted = GS.mode === 'weak'
     ? DECKS.slice().sort((a,b) => {
         const sa = P.topicStats[a.id]||{correct:0,total:1};
@@ -3876,26 +4518,33 @@ function buildQuestions() {
 
   sorted.forEach(d => {
     if (!useAll && !GS.selectedDecks.has(String(d.id))) return;
-    d.cards.forEach((c,i) => fullPool.push({...c, deckName:d.name, deckId:d.id, _uid:`${d.id}_${i}`}));
+    d.cards.forEach((c,i) => {
+      const uid = `${d.id}_${i}`;
+      if (!reported.has(uid)) fullPool.push({...c, deckName:d.name, deckId:d.id, _uid:uid});
+    });
   });
 
   if (!fullPool.length) return [];
 
-  // Separate unseen from recently seen
   if (!P.recentSeen) P.recentSeen = [];
   const unseenPool = fullPool.filter(c => !P.recentSeen.includes(c._uid));
   const seenPool   = fullPool.filter(c =>  P.recentSeen.includes(c._uid));
 
-  // Shuffle each group independently
+  // For "beat your best" — prioritise the selected single deck
+  if (GS.mode === 'beat' && !useAll && GS.selectedDecks.size === 1) {
+    // Just use all questions from that deck, shuffled
+    fullPool.sort(() => Math.random() - 0.5);
+    const count = GS.questionCount === 0 ? fullPool.length : Math.min(GS.questionCount, fullPool.length);
+    return fullPool.slice(0, count);
+  }
+
   unseenPool.sort(() => Math.random() - 0.5);
   seenPool.sort(()   => Math.random() - 0.5);
 
-  // Prefer unseen, then top up with seen if needed
   const combined = [...unseenPool, ...seenPool];
   const count = GS.questionCount === 0 ? combined.length : Math.min(GS.questionCount, combined.length);
   const selected = combined.slice(0, count);
 
-  // Update recentSeen buffer — keep last (poolSize * 0.6) so ~60% won't repeat
   const bufferSize = Math.max(10, Math.floor(fullPool.length * 0.6));
   const newSeen = selected.map(c => c._uid);
   P.recentSeen = [...P.recentSeen, ...newSeen].slice(-bufferSize);
@@ -3905,18 +4554,15 @@ function buildQuestions() {
 }
 
 function startQuiz() {
+  GS.isDailyChallenge = false;
+  GS.isSRS = GS.mode === 'srs';
   GS.questions = buildQuestions();
   if (!GS.questions.length) return;
-  GS.currentQ = 0;
-  GS.score = 0;
-  GS.sessionXP = 0;
-  GS.streak = 0;
-  GS.bestStreak = 0;
-  GS.answered = false;
-  GS.wrongAnswers = [];
-  GS.deckPerf = {};
-  GS.rankUpTo = null;
-  GS.isRetry = false;
+  GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
+  GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
+  GS.isRetry = false; GS.sessionTimes = [];
+
+  if (GS.mode === 'srs') P.srsCompleted = (P.srsCompleted || 0); // will increment on finish
 
   showScreen('quiz');
   renderQuestion();
@@ -3929,6 +4575,9 @@ function renderQuestion() {
   const q = GS.questions[GS.currentQ];
   const total = GS.questions.length;
   GS.answered = false;
+  GS.hintUsedThisQ = false;
+  GS.idkThisQ = false;
+  GS.qStartTime = Date.now();
 
   const options = [q.a, ...q.w].sort(() => Math.random() - 0.5);
   const letters = ['A','B','C','D'];
@@ -3939,6 +4588,23 @@ function renderQuestion() {
   document.getElementById('q-number').textContent = `QUESTION ${GS.currentQ+1}`;
   document.getElementById('q-category').textContent = q.deckName || '';
   document.getElementById('question-box').textContent = q.q;
+  document.getElementById('qtb-time-display').textContent = '';
+
+  // Bookmark state
+  const bmBtn = document.getElementById('btn-bookmark-q');
+  const isBookmarked = P.bookmarks.some(b => b.uid === q._uid);
+  bmBtn.textContent = isBookmarked ? '★' : '☆';
+  bmBtn.classList.toggle('starred', isBookmarked);
+
+  // Hint reset
+  document.getElementById('btn-hint').disabled = false;
+  document.getElementById('hint-text').style.display = 'none';
+  document.getElementById('hint-text').textContent = '';
+
+  // IDK button
+  const idkBtn = document.getElementById('btn-idk');
+  idkBtn.disabled = false;
+  idkBtn.style.display = (GS.mode === 'exam') ? 'none' : 'block';
 
   const grid = document.getElementById('options-grid');
   grid.innerHTML = options.map((opt,i) => `
@@ -3980,21 +4646,43 @@ function updateTimerBar() {
   bar.style.background = GS.timeLeft < 10 ? 'var(--red)' : GS.timeLeft < 20 ? 'var(--gold)' : 'var(--cyan)';
 }
 
+function recordTime() {
+  const ms = Date.now() - GS.qStartTime;
+  GS.sessionTimes.push(ms);
+  const q = GS.questions[GS.currentQ];
+  if (q) {
+    const dk = q.deckId;
+    if (!P.avgTimeMs[dk]) P.avgTimeMs[dk] = [];
+    P.avgTimeMs[dk].push(ms);
+    if (P.avgTimeMs[dk].length > 50) P.avgTimeMs[dk].shift();
+  }
+  // Show time in topbar
+  const display = document.getElementById('qtb-time-display');
+  if (display) display.textContent = (ms/1000).toFixed(1) + 's';
+}
+
 function timeUp() {
   if (GS.answered) return;
   GS.answered = true;
+  clearInterval(GS.timer);
+  recordTime();
+  const q = GS.questions[GS.currentQ];
   document.querySelectorAll('.opt-btn').forEach(b => {
     b.disabled = true;
     if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
   });
+  document.getElementById('btn-idk').disabled = true;
   GS.streak = 0;
   document.getElementById('streak-display').textContent = 0;
-  recordDeckPerf(GS.questions[GS.currentQ].deckId, false);
-  GS.wrongAnswers.push(GS.questions[GS.currentQ]);
+  srsMarkWrong(q._uid, q);
+  trackHardQuestion(q, false);
+  recordDeckPerf(q.deckId, false);
+  recordWeeklyTopic(q.deckId, false);
+  GS.wrongAnswers.push(q);
   const fb = document.getElementById('feedback-bar');
   fb.className = 'feedback-bar wrong-fb';
   fb.style.display = 'block';
-  fb.innerHTML = `<span class="fb-label">⏰ TIME'S UP</span>See the correct answer highlighted above.`;
+  fb.innerHTML = `<span class="fb-label">⏰ TIME'S UP</span>Correct answer: <strong>${q.a}</strong><div class="fb-explanation">${getExplanation(q)}</div>`;
   document.getElementById('btn-next').classList.add('vis');
 }
 
@@ -4005,6 +4693,7 @@ function answer(btn, isCorrect) {
   if (GS.answered) return;
   GS.answered = true;
   clearInterval(GS.timer);
+  recordTime();
 
   const q = GS.questions[GS.currentQ];
 
@@ -4012,6 +4701,7 @@ function answer(btn, isCorrect) {
     b.disabled = true;
     if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
   });
+  document.getElementById('btn-idk').disabled = true;
 
   const fb = document.getElementById('feedback-bar');
 
@@ -4039,7 +4729,10 @@ function answer(btn, isCorrect) {
     }
 
     if (GS.mode === 'timed') P.timedCorrect = (P.timedCorrect||0) + 1;
+    srsMarkCorrect(q._uid);
+    trackHardQuestion(q, true);
     recordDeckPerf(q.deckId, true);
+    recordWeeklyTopic(q.deckId, true);
     popXP(xp);
     if (GS.streak === 5 || GS.streak === 10 || GS.streak === 20) popStreak(GS.streak);
 
@@ -4051,10 +4744,14 @@ function answer(btn, isCorrect) {
     if (GS.mode !== 'exam') {
       fb.className = 'feedback-bar wrong-fb';
       fb.style.display = 'block';
-      fb.innerHTML = `<span class="fb-label">✗ INCORRECT</span>Correct answer: <strong>${q.a}</strong>`;
+      const explanation = getExplanation(q);
+      fb.innerHTML = `<span class="fb-label">✗ INCORRECT</span>Correct answer: <strong>${q.a}</strong><div class="fb-explanation">${explanation}</div>`;
     }
+    srsMarkWrong(q._uid, q);
+    trackHardQuestion(q, false);
     GS.wrongAnswers.push(q);
     recordDeckPerf(q.deckId, false);
+    recordWeeklyTopic(q.deckId, false);
   }
 
   document.getElementById('btn-next').classList.add('vis');
@@ -4064,8 +4761,6 @@ function recordDeckPerf(deckId, correct) {
   if (!GS.deckPerf[deckId]) GS.deckPerf[deckId] = {correct:0,total:0};
   GS.deckPerf[deckId].total++;
   if (correct) GS.deckPerf[deckId].correct++;
-
-  // Update persistent topic stats
   if (!P.topicStats[deckId]) P.topicStats[deckId] = {correct:0,total:0};
   P.topicStats[deckId].total++;
   if (correct) P.topicStats[deckId].correct++;
@@ -4086,6 +4781,11 @@ function showResults() {
   const pct = Math.round(GS.score/total*100);
   const isNewBest = pct > P.bestPct;
 
+  // Avg time
+  const avgMs = GS.sessionTimes.length ? GS.sessionTimes.reduce((a,b)=>a+b,0)/GS.sessionTimes.length : 0;
+  const avgSec = (avgMs/1000).toFixed(1);
+  document.getElementById('results-time-row').textContent = avgMs > 0 ? `Avg response time: ${avgSec}s per question` : '';
+
   // Grade
   let grade, gc;
   if (pct>=95){grade='A+';gc='var(--green)'}
@@ -4105,15 +4805,48 @@ function showResults() {
   document.getElementById('rs-xp').textContent = '+' + GS.sessionXP;
   document.getElementById('new-best').style.display = isNewBest ? 'block' : 'none';
 
-  // Update player stats
   if (isNewBest && !GS.isRetry) P.bestPct = pct;
   if (GS.bestStreak > P.bestStreak) P.bestStreak = GS.bestStreak;
   if (!GS.isRetry) P.played++;
 
-  // comeback achievement — got 100% on a retry session
   if (GS.isRetry && pct === 100 && total >= 2) P.comingBack = true;
 
-  // Size records (only for real quizzes)
+  // Beat your best tracking
+  if (GS.mode === 'beat' && !GS.isRetry) {
+    const deckIds = [...GS.selectedDecks];
+    if (deckIds.length === 1 && deckIds[0] !== 'all') {
+      const did = deckIds[0];
+      const prev = P.topicBest[did] || 0;
+      if (pct > prev) { P.topicBest[did] = pct; if (prev > 0) P.beatBest = true; }
+    }
+  }
+
+  // Topic best tracking for all modes
+  Object.keys(GS.deckPerf).forEach(id => {
+    const dp = GS.deckPerf[id];
+    if (dp.total >= 5) {
+      const dpPct = Math.round(dp.correct/dp.total*100);
+      if (!P.topicBest[id] || dpPct > P.topicBest[id]) P.topicBest[id] = dpPct;
+    }
+  });
+
+  // SRS session complete
+  if (GS.isSRS && !GS.isRetry) P.srsCompleted = (P.srsCompleted||0) + 1;
+
+  // Daily challenge complete
+  if (GS.isDailyChallenge && !GS.isRetry) {
+    const today = todayKey();
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    const yKey = yesterday.toISOString().split('T')[0];
+    if (!P.dcDoneToday) {
+      if (P.dcKey === yKey) P.dcStreak++;
+      else if (P.dcKey !== today) P.dcStreak = 1;
+      P.dcKey = today;
+      P.dcDoneToday = true;
+    }
+  }
+
+  // Size records
   if (!GS.isRetry) {
     const sizeKey = GS.questionCount === 0 ? 'all' : GS.questionCount;
     if (!P.sizeRecords[sizeKey] || pct > P.sizeRecords[sizeKey].pct) {
@@ -4121,10 +4854,10 @@ function showResults() {
     }
   }
 
-  // ── Score achievements (require real quiz, not retry)
+  // Score achievements
   if (!GS.isRetry) {
     const h = new Date().getHours();
-    const dow = new Date().getDay(); // 0=Sun,6=Sat
+    const dow = new Date().getDay();
     if (pct === 100 && total >= 10) P.hasPerfect = true;
     if (pct === 100 && total >= 20) P.hasPerfect20 = true;
     if (pct >= 60  && total >= 20) P.has60on20 = true;
@@ -4139,31 +4872,36 @@ function showResults() {
     if (GS.mode === 'exam' && pct >= 70 && total >= 20) P.examPass = true;
     if (GS.mode === 'exam' && pct >= 90 && total >= 20) P.examAce = true;
 
-    // GCM — consecutive quizzes >= 60%
     if (!P.gcmStreak) P.gcmStreak = 0;
     if (pct >= 60) { P.gcmStreak++; if (P.gcmStreak >= 20) P.gcmEarned = true; }
     else P.gcmStreak = 0;
 
-    // QSM — 30 quizzes averaging 75%+
     if (!P.qsmQuizCount) { P.qsmQuizCount = 0; P.qsmScoreSum = 0; }
-    P.qsmQuizCount++;
-    P.qsmScoreSum += pct;
+    P.qsmQuizCount++; P.qsmScoreSum += pct;
     if (P.qsmQuizCount >= 30 && (P.qsmScoreSum / P.qsmQuizCount) >= 75) P.qsmEarned = true;
 
-    // Best timed streak
     if (GS.mode === 'timed' && GS.bestStreak >= 15) P.timedStreak15 = true;
 
-    // ── Specialist unit achievements — require 10+ questions from that topic
+    // Specialist & topic expert achievements
+    if (!P.topicExpert90Count) P.topicExpert90Count = {};
     Object.keys(GS.deckPerf).forEach(id => {
       const d = DECKS.find(x => x.id == id);
       const dp = GS.deckPerf[id];
-      if (!d || dp.total < 10) return; // MINIMUM 10 questions from topic
+      if (!d || dp.total < 10) return;
       const dp_pct = Math.round(dp.correct / dp.total * 100);
       if (d.name === 'Firearms & Taser' && dp_pct >= 80) P.firearms80 = true;
-      if (d.name === 'Drugs'            && dp_pct === 100) P.drugsPerfect = true;
-      if (d.name === 'Evidence'         && dp_pct >= 90) P.evidence90 = true;
+      if ((d.name === 'Drugs, Mental Health & Alcohol' || d.name.includes('Drugs')) && dp_pct === 100) P.drugsPerfect = true;
+      if (d.name === 'Evidence' && dp_pct >= 90) P.evidence90 = true;
       if (d.name === 'Family Violence & PSO' && dp_pct >= 90) P.fv90 = true;
-      if (d.name === 'Oranga Tamariki'  && dp_pct >= 90) P.ot90 = true;
+      if (d.name === 'Oranga Tamariki' && dp_pct >= 90) P.ot90 = true;
+      // Topic expert 90% x5
+      if (dp_pct >= 90) {
+        P.topicExpert90Count[id] = (P.topicExpert90Count[id]||0) + 1;
+        if (d.name.includes('Command') && P.topicExpert90Count[id] >= 5) P.cdemExpert = true;
+        if (d.name.includes('Road Policing') && P.topicExpert90Count[id] >= 5) P.roadPro = true;
+        if (d.name.includes('Search') && P.topicExpert90Count[id] >= 5) P.searchAce = true;
+        if (d.name.includes('Risk') && P.topicExpert90Count[id] >= 5) P.riskMgr = true;
+      }
     });
   }
 
@@ -4174,31 +4912,33 @@ function showResults() {
   GS.rankUpTo = rankAfter.title !== rankBefore.title ? rankAfter : null;
 
   const ruBox = document.getElementById('rank-up-box');
-  const ruName = document.getElementById('ru-rank-name');
   if (GS.rankUpTo) {
     ruBox.style.display = 'block';
-    ruName.textContent = GS.rankUpTo.icon + ' ' + GS.rankUpTo.title;
+    document.getElementById('ru-rank-name').textContent = GS.rankUpTo.icon + ' ' + GS.rankUpTo.title;
     setTimeout(() => popRank('RANK UP: ' + GS.rankUpTo.title), 800);
-  } else {
-    ruBox.style.display = 'none';
-  }
+  } else { ruBox.style.display = 'none'; }
 
-  // History entry (skip for retry sessions)
+  // History
   const useAll = GS.selectedDecks.has('all');
-  const topicLabel = useAll ? 'All Topics' : DECKS.filter(d => GS.selectedDecks.has(String(d.id))).map(d=>d.short).join(', ');
+  const topicLabel = GS.isDailyChallenge ? 'Daily Challenge' :
+    useAll ? 'All Topics' : DECKS.filter(d => GS.selectedDecks.has(String(d.id))).map(d=>d.short).join(', ');
+  const modeLabel = GS.isDailyChallenge ? 'daily' : GS.mode;
+
   if (!GS.isRetry) {
     const histEntry = {
       date: new Date().toLocaleString('en-NZ',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),
-      pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP
+      pct, correct:GS.score, size:total, mode:modeLabel, topic:topicLabel, xp:GS.sessionXP
     };
     P.history.push(histEntry);
     if (P.history.length > 50) P.history.shift();
     checkDaily();
-    P.dailySessions.push({pct, correct:GS.score, size:total, mode:GS.mode, topic:topicLabel, xp:GS.sessionXP});
+    P.dailySessions.push({pct, correct:GS.score, size:total, mode:modeLabel, topic:topicLabel, xp:GS.sessionXP});
   }
 
   checkAchievements();
   saveP();
+  updateHomeButtons();
+  renderDeckPills();
 
   // Breakdown
   const bdEl = document.getElementById('breakdown');
@@ -4219,7 +4959,6 @@ function showResults() {
   } else { bdEl.innerHTML = ''; }
 
   document.getElementById('btn-wrong-only').style.display = GS.wrongAnswers.length ? 'block' : 'none';
-
   if (pct >= 70) launchConfetti();
   showScreen('results');
 }
@@ -4231,14 +4970,12 @@ function tryQuit() {
   clearInterval(GS.timer);
   document.getElementById('quit-overlay').classList.add('vis');
 }
-
 function closeQuit() {
   document.getElementById('quit-overlay').classList.remove('vis');
   if (GS.mode === 'timed' && !GS.answered) {
     GS.timer = setInterval(tickTimer, 100);
   }
 }
-
 function confirmQuit() {
   clearInterval(GS.timer);
   document.getElementById('quit-overlay').classList.remove('vis');
@@ -4248,21 +4985,14 @@ function confirmQuit() {
 // ═══════════════════════════════════════════
 // RETRY
 // ═══════════════════════════════════════════
-function retryQuiz() { startQuiz(); }
+function retryQuiz() { GS.isDailyChallenge = false; startQuiz(); }
 
 function retryWrong() {
   const wrong = [...GS.wrongAnswers];
   GS.questions = wrong;
-  GS.currentQ = 0;
-  GS.score = 0;
-  GS.sessionXP = 0;
-  GS.streak = 0;
-  GS.bestStreak = 0;
-  GS.answered = false;
-  GS.wrongAnswers = [];
-  GS.deckPerf = {};
-  GS.rankUpTo = null;
-  GS.isRetry = true; // flag — no achievements, minimal XP, not counted in played
+  GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
+  GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
+  GS.isRetry = true; GS.isDailyChallenge = false; GS.sessionTimes = [];
   showScreen('quiz');
   renderQuestion();
 }
@@ -4279,6 +5009,7 @@ function goHome() {
 // FX
 // ═══════════════════════════════════════════
 function popXP(amount) {
+  if (!amount) return;
   const el = document.createElement('div');
   el.className = 'xp-pop';
   el.textContent = '+' + amount + ' XP';
@@ -4287,7 +5018,6 @@ function popXP(amount) {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1400);
 }
-
 function popStreak(n) {
   const el = document.createElement('div');
   el.className = 'streak-pop';
@@ -4298,7 +5028,6 @@ function popStreak(n) {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1600);
 }
-
 function popRank(msg) {
   const el = document.createElement('div');
   el.className = 'rank-pop';
@@ -4309,7 +5038,6 @@ function popRank(msg) {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 2500);
 }
-
 function launchConfetti() {
   const colors=['#1e90ff','#00d4ff','#00e676','#ffc107','#ff6d00','#b388ff','#ff3d5a'];
   for (let i=0;i<60;i++) {
@@ -4331,19 +5059,34 @@ function launchConfetti() {
 function reportQuestion() {
   const q = GS.questions[GS.currentQ];
   if (!q) return;
-  const deck = GS.currentDeck || (GS.questions[0] ? GS.questions[0].deckName : 'Unknown');
+
+  // Quarantine immediately — remove from pool until Matthew clears it
+  const uid = q._uid;
+  if (uid && !P.reportedQuestions.includes(uid)) {
+    P.reportedQuestions.push(uid);
+    saveP();
+  }
+
   const subject = encodeURIComponent('CPK Quiz - Question Error Report');
   const body = encodeURIComponent(
     'Hi Matthew,\n\nI would like to report a potential error in the following quiz question:\n\n' +
     'DECK: ' + (q.deckName || 'Unknown') + '\n' +
+    'QUESTION ID: ' + (uid || 'unknown') + '\n' +
     'QUESTION: ' + q.q + '\n' +
     'ANSWER SHOWN: ' + q.a + '\n\n' +
     'ISSUE:\n[Please describe what you believe is incorrect and what the correct answer should be]\n\n' +
+    '— This question has been automatically removed from this user\'s quiz pool until you clear it.\n' +
+    '   To restore it, they can go to Settings → Reported Questions in the app.\n\n' +
     'Kind regards'
   );
   window.open('mailto:matthew.johnstone@police.govt.nz?subject=' + subject + '&body=' + body);
+
   const sentEl = document.getElementById('report-sent');
-  if (sentEl) { sentEl.style.display = 'block'; setTimeout(() => sentEl.style.display = 'none', 4000); }
+  if (sentEl) {
+    sentEl.textContent = '✓ Reported — question removed from your pool until corrected';
+    sentEl.style.display = 'block';
+    setTimeout(() => { sentEl.style.display = 'none'; sentEl.textContent = '✓ Thank you — report sent to MJQD53'; }, 5000);
+  }
 }
 
 function showScreen(name) {
