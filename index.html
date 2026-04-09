@@ -444,6 +444,103 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .btn-unquarantine:hover{background:rgba(0,230,118,.12)}
 .btn-clear-all-reported{font-family:var(--font-mono);font-size:.6rem;background:none;border:1px solid var(--red);color:var(--red);border-radius:3px;padding:.2rem .5rem;cursor:pointer;transition:all .15s}
 .btn-clear-all-reported:hover{background:rgba(255,61,90,.1)}
+
+/* ── SKIP BUTTON (all modes) ── */
+.btn-skip-universal{width:100%;font-family:var(--font-h);font-size:.82rem;font-weight:600;letter-spacing:1px;
+  background:rgba(179,136,255,.08);color:var(--purple);border:1px solid rgba(179,136,255,.25);
+  padding:.55rem;border-radius:7px;cursor:pointer;transition:all .15s;margin-top:.4rem}
+.btn-skip-universal:hover{background:rgba(179,136,255,.16);border-color:rgba(179,136,255,.5)}
+.btn-skip-universal:disabled{opacity:.25;cursor:default}
+.mock-exam-bar{display:none;background:linear-gradient(90deg,rgba(255,61,90,.1),rgba(179,136,255,.1));border-bottom:2px solid var(--red);padding:.5rem 1rem;align-items:center;justify-content:space-between;gap:.75rem;position:sticky;top:0;z-index:11;flex-wrap:wrap}
+.mock-exam-bar.vis{display:flex}
+.mock-clock{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--red);letter-spacing:2px;min-width:70px}
+.mock-clock.warn{color:var(--gold);animation:pulse-gold 1s ease infinite alternate}
+.mock-clock.crit{color:var(--red);animation:pulse-gold .4s ease infinite alternate}
+.mock-progress-info{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:.5px}
+.btn-skip-q{font-family:var(--font-h);font-size:.8rem;font-weight:700;letter-spacing:1px;background:rgba(179,136,255,.15);color:var(--purple);border:1px solid rgba(179,136,255,.4);border-radius:5px;padding:.3rem .75rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-skip-q:hover{background:rgba(179,136,255,.25)}
+.btn-skip-q:disabled{opacity:.35;cursor:default}
+.btn-submit-exam{font-family:var(--font-h);font-size:.8rem;font-weight:700;letter-spacing:1px;background:rgba(255,61,90,.15);color:var(--red);border:1px solid rgba(255,61,90,.4);border-radius:5px;padding:.3rem .75rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-submit-exam:hover{background:rgba(255,61,90,.25)}
+
+/* ── MOCK EXAM QUESTION MAP ── */
+.mock-q-map{display:flex;flex-wrap:wrap;gap:.3rem;padding:.75rem 1rem;background:var(--panel);border-bottom:1px solid var(--border)}
+.mock-q-dot{width:24px;height:24px;border-radius:4px;border:1px solid var(--border2);background:var(--panel2);font-family:var(--font-mono);font-size:.58rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;color:var(--muted);flex-shrink:0}
+.mock-q-dot:hover{border-color:var(--blue);color:var(--text)}
+.mock-q-dot.answered{background:rgba(0,230,118,.15);border-color:var(--green);color:var(--green)}
+.mock-q-dot.skipped{background:rgba(255,193,7,.1);border-color:var(--gold);color:var(--gold)}
+.mock-q-dot.current{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.12);box-shadow:0 0 6px rgba(0,212,255,.3)}
+.mock-q-map-label{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);width:100%;margin-bottom:.2rem;letter-spacing:1px}
+
+/* ── PROGRESS DOTS ── */
+.progress-dots{display:flex;gap:3px;flex-wrap:wrap;padding:.2rem 0;max-width:100%;overflow:hidden}
+.p-dot{width:8px;height:8px;border-radius:2px;background:var(--border);transition:background .2s;flex-shrink:0}
+.p-dot.correct{background:var(--green)}
+.p-dot.wrong{background:var(--red)}
+.p-dot.current{background:var(--cyan);animation:pulse-dot .8s ease infinite alternate}
+.p-dot.skipped{background:var(--gold)}
+@keyframes pulse-dot{from{opacity:.5}to{opacity:1}}
+
+/* ── DAILY STREAK HOME ── */
+.home-streak-bar{display:flex;align-items:center;gap:.6rem;background:linear-gradient(90deg,rgba(255,193,7,.07),rgba(255,109,0,.07));border:1px solid rgba(255,193,7,.25);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem}
+.home-streak-flame{font-size:1.4rem;line-height:1}
+.home-streak-info{flex:1}
+.home-streak-num{font-family:var(--font-h);font-size:1.3rem;font-weight:700;color:var(--gold);line-height:1}
+.home-streak-lbl{font-family:var(--font-mono);font-size:.6rem;color:var(--muted);letter-spacing:1px;margin-top:.1rem}
+.home-streak-today{font-family:var(--font-mono);font-size:.65rem;color:var(--green)}
+
+/* ── ANIMATED SCORE COUNTER ── */
+.results-grade-wrap{text-align:center;margin-bottom:.5rem}
+@keyframes grade-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.grade-animate{animation:grade-pop .5s cubic-bezier(.17,.67,.35,1.2) forwards}
+
+/* ── SHARE CARD ── */
+.btn-share{width:100%;font-family:var(--font-h);font-size:.85rem;font-weight:700;letter-spacing:1.5px;background:rgba(0,212,255,.08);color:var(--cyan);border:1px solid rgba(0,212,255,.3);padding:.55rem;border-radius:6px;cursor:pointer;transition:all .15s;margin-top:.5rem}
+.btn-share:hover{background:rgba(0,212,255,.15)}
+.share-copied{font-family:var(--font-mono);font-size:.65rem;color:var(--green);text-align:center;display:none;margin-top:.3rem}
+
+/* ── MOCK EXAM REVIEW SCREEN ── */
+#screen-mock-review{align-items:center;justify-content:flex-start;padding:1.5rem 1rem;min-height:100vh}
+.mock-review-card{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:1.5rem;max-width:680px;width:100%;position:relative;overflow:hidden;margin:0 auto}
+.mock-review-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--purple),var(--red))}
+.mock-review-hdr{font-family:var(--font-h);font-size:1.4rem;font-weight:700;letter-spacing:2px;color:var(--red);margin-bottom:.3rem}
+.mock-review-sub{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:1px;margin-bottom:1.25rem}
+.mock-review-grid{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem}
+.mock-review-dot{width:36px;height:36px;border-radius:6px;border:1px solid var(--border2);background:var(--panel2);font-family:var(--font-mono);font-size:.65rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;color:var(--muted)}
+.mock-review-dot:hover{border-color:var(--cyan);transform:scale(1.05)}
+.mock-review-dot.answered{background:rgba(0,230,118,.12);border-color:var(--green);color:var(--green)}
+.mock-review-dot.skipped{background:rgba(255,193,7,.1);border-color:var(--gold);color:var(--gold)}
+.mock-legend{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.mock-legend-item{display:flex;align-items:center;gap:.35rem;font-family:var(--font-mono);font-size:.62rem;color:var(--muted)}
+.mock-legend-dot{width:10px;height:10px;border-radius:2px}
+.btn-submit-final{width:100%;font-family:var(--font-h);font-size:1.1rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--red),var(--purple));color:#fff;border:none;padding:.85rem;border-radius:8px;cursor:pointer;transition:all .2s;box-shadow:0 0 20px rgba(255,61,90,.3)}
+.btn-submit-final:hover{opacity:.9;transform:translateY(-1px)}
+.btn-back-exam{width:100%;font-family:var(--font-h);font-size:.9rem;font-weight:600;letter-spacing:1px;background:var(--panel2);color:var(--muted2);border:1px solid var(--border2);padding:.65rem;border-radius:6px;cursor:pointer;margin-top:.5rem;transition:all .15s}
+.btn-back-exam:hover{border-color:var(--blue);color:var(--text)}
+
+/* ── ONBOARDING ── */
+.onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem}
+.onboard-overlay.hidden{display:none}
+.onboard-card{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:2rem;max-width:420px;width:100%;position:relative;overflow:hidden;text-align:center}
+.onboard-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green))}
+.onboard-step-dots{display:flex;gap:.4rem;justify-content:center;margin-bottom:1.25rem}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s}
+.ob-dot.active{background:var(--cyan);width:20px;border-radius:4px}
+.onboard-icon{font-size:2.8rem;margin-bottom:.75rem;display:block}
+.onboard-title{font-family:var(--font-h);font-size:1.5rem;font-weight:700;letter-spacing:2px;color:var(--cyan);margin-bottom:.4rem}
+.onboard-body{font-size:.9rem;color:var(--muted2);line-height:1.65;margin-bottom:1.5rem}
+.onboard-body strong{color:var(--text)}
+.btn-onboard-next{width:100%;font-family:var(--font-h);font-size:1rem;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border:none;padding:.75rem;border-radius:7px;cursor:pointer;transition:all .15s}
+.btn-onboard-next:hover{opacity:.88}
+.btn-onboard-skip{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:.75rem;letter-spacing:.5px;display:block;width:100%}
+.btn-onboard-skip:hover{color:var(--muted2)}
+
+/* ── SAVE/LOAD ── */
+.save-strip{display:flex;gap:.5rem;margin-top:.5rem}
+.btn-export{flex:1;font-family:var(--font-mono);font-size:.68rem;background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.3);border-radius:5px;padding:.45rem .5rem;cursor:pointer;transition:all .15s;letter-spacing:.5px}
+.btn-export:hover{background:rgba(0,230,118,.16)}
+.btn-import{flex:1;font-family:var(--font-mono);font-size:.68rem;background:rgba(30,144,255,.08);color:var(--blue);border:1px solid rgba(30,144,255,.3);border-radius:5px;padding:.45rem .5rem;cursor:pointer;transition:all .15s;letter-spacing:.5px}
+.btn-import:hover{background:rgba(30,144,255,.16)}
 </style>
 </head>
 <body>
@@ -464,26 +561,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 <div class="modal-overlay hidden" id="changelog-modal">
   <div class="modal-box">
     <div class="changelog-title">WHAT'S NEW</div>
-    <div class="changelog-version">VERSION 2.14 — NZ POLICE SGT CPK SIMULATOR</div>
-    <div class="changelog-section-title">NEW IN VERSION 2.14</div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>"I Don't Know" button</strong> — skip to the answer without guessing. No XP penalty, no streak break. Pure study mode.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Bookmarks</strong> — star any question mid-quiz with ☆. Review all flagged questions from the home screen at any time.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Spaced Repetition System</strong> — questions you get wrong resurface at 1 day → 3 days → 7 days intervals. A dedicated "SRS Review" mode on the play screen surfaces only your due cards.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Trend lines on Analysis tab</strong> — weekly sparkline chart per topic showing improvement or plateau over time. ↑ ↓ trend arrows next to each topic percentage.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Hardest Questions list</strong> — your personal 10 most-missed questions, ranked by wrong count. Now on the Analysis tab.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Time per question tracking</strong> — even in non-timed mode, each answer is logged. Avg response time shown on results screen and Analysis tab.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Daily Challenge</strong> — fixed 20-question set resets at midnight. Consecutive days streak tracked. Launch from the home screen.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Beat Your Best mode</strong> — each deck pill shows your personal best %. A new "Beat Your Best" game mode challenges you to top it.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Topic-specific achievements</strong> — CDEM Expert, Evidence Scholar, Road Policing Pro, OT Specialist, and more. Earned by hitting 90%+ on a topic 5+ times.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Prestige cosmetics</strong> — Prestige I shifts your XP bar and header glow to purple/cyan. Prestige II to gold/orange. Prestige III to a full fire gradient.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Hint system</strong> — spend 25 XP to reveal a one-line hint on any question before answering.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Explanations on wrong answers</strong> — a brief context paragraph now appears when you get a question wrong or click "I Don't Know", helping you understand why.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Light / Dark mode toggle</strong> — ☀️ in the header switches to a clean light theme. Your preference saves automatically.</span></div>
+    <div class="changelog-version">VERSION 2.15 — NZ POLICE SGT CPK SIMULATOR</div>
+    <div class="changelog-section-title">NEW IN VERSION 2.15</div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Mock Exam</strong> — 69 random questions, 90 minute countdown, skip &amp; flag questions to revisit, review screen before final submission. No feedback until the end. Closest thing to the real thing.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Animated score counter</strong> — grade and percentage now tick up dramatically on the results screen rather than appearing instantly.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Export / Import save data</strong> — download your full progress as a JSON file and reload it on any device. Switch between phone and laptop without losing rank or stats.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Daily streak on Profile tab</strong> — your consecutive Daily Challenge streak is now displayed prominently on the Profile tab so it's always visible.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Progress dots in quiz topbar</strong> — a row of green/red dots tracks every answered question spatially so you always know where you are.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Share result</strong> — one tap copies your score as formatted text ready to paste into a team chat or group.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Welcome onboarding</strong> — first-time users see a brief 4-step intro explaining the key features before their first quiz.</span></div>
     <div style="margin-top:1rem" class="changelog-section-title">PREVIOUSLY ADDED</div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.13: Animated 538+ question count banner · s88/s89 CDEM bug fixes · s104 body corporate penalty fix</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.12: Chapter 10 Command &amp; Control / Emergency Management — 50 questions</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.11: Chapter 9 Risk Management &amp; Health and Safety — 47 questions</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapters 1–8: OT Act, FV/PSO, Firearms, Drugs/MH/Alc, Search &amp; Surv, Suspects/Hate, Road Policing, Strat Awareness, Evidence, Sudden Death, Policing/Victims</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.14: Font size control · Sequential achievement toasts with full descriptions</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.14: I Don't Know · Bookmarks · SRS Review · Trend lines · Hardest Questions · Time tracking · Daily Challenge · Beat Your Best · Hints · Explanations · Light/Dark mode · Prestige cosmetics</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.13: 538+ question count banner · CDEM bug fixes</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapters 1–10: All 538 CPK questions across 13 topic decks · March 2026 Sgt Syllabus</span></div>
     <button class="modal-dismiss" onclick="dismissChangelog()">LET'S GO →</button>
   </div>
 </div>
@@ -525,7 +616,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
           <button class="font-btn" onclick="adjustFont(1)" aria-label="Increase font size">A+</button>
         </div>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="theme-btn">☀️</button>
-        <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.14</button>
+        <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.15</button>
       </div>
       <div class="site-badge">NEW ZEALAND POLICE · SERGEANT PROMOTION</div>
       <div class="site-title">NZ Police <span class="accent">Sergeants</span> CPK Simulator</div>
@@ -593,12 +684,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
           <div class="mode-name">BEAT YOUR BEST</div>
           <div class="mode-desc">Top your personal record</div>
         </div>
+        <div class="mode-card" data-mode="mock" onclick="selectMode(this)">
+          <div class="mode-icon">📋</div>
+          <div class="mode-name">MOCK EXAM</div>
+          <div class="mode-desc">69 Qs · 90 min · skip &amp; review</div>
+        </div>
       </div>
     </div>
     <button class="btn-start-big" id="btn-start" onclick="startQuiz()">START QUIZ →</button>
     <div class="action-strip">
       <button class="btn-daily" onclick="openDailyModal()">📅 DAILY CHALLENGE <span id="dc-streak-pill"></span></button>
       <button class="btn-bookmarks" onclick="openBookmarks()">⭐ MY BOOKMARKS <span id="bm-pill"></span></button>
+    </div>
+    <div class="save-strip">
+      <button class="btn-export" onclick="exportSave()">⬇ EXPORT SAVE</button>
+      <label class="btn-import" style="cursor:pointer">⬆ IMPORT SAVE<input type="file" accept=".json" style="display:none" onchange="importSave(event)"></label>
     </div>
     <div class="q-count-banner">
       <span class="qcb-pill">● LIVE QUESTION COUNT</span>
@@ -614,6 +714,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 
   <!-- PROFILE TAB -->
   <div class="main-wrap" id="tab-profile" style="display:none">
+    <div id="home-streak-bar-wrap"></div>
     <div class="rank-hero" id="rank-hero"></div>
     <div class="quick-stats">
       <div class="qs"><span class="qs-val" id="qs-played">0</span><div class="qs-lbl">QUIZZES</div></div>
@@ -660,6 +761,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 
 <!-- ══════════════ QUIZ SCREEN ══════════════ -->
 <div id="screen-quiz" class="screen">
+  <!-- Mock exam special topbar -->
+  <div class="mock-exam-bar" id="mock-exam-bar">
+    <div class="mock-clock" id="mock-clock">90:00</div>
+    <div class="mock-progress-info" id="mock-progress-info">0 / 69 answered</div>
+    <button class="btn-skip-q" id="btn-skip-q" onclick="mockSkipQuestion()">SKIP →</button>
+    <button class="btn-submit-exam" onclick="mockOpenReview()">SUBMIT EXAM</button>
+  </div>
+  <!-- Mock exam question map -->
+  <div class="mock-q-map" id="mock-q-map" style="display:none"></div>
   <div class="quiz-topbar">
     <button class="qtb-back" onclick="tryQuit()">✕ QUIT</button>
     <div class="qtb-center">
@@ -668,6 +778,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
         <span id="q-progress-txt">Q 1 / 20</span>
         <span id="timer-txt"></span>
       </div>
+      <!-- Progress dots -->
+      <div class="progress-dots" id="progress-dots" style="display:none"></div>
     </div>
     <div class="qtb-right">
       <span class="qtb-time" id="qtb-time-display"></span>
@@ -691,6 +803,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
     </div>
     <div class="options-grid" id="options-grid"></div>
     <button class="btn-idk" id="btn-idk" onclick="iDontKnow()">🤷 I DON'T KNOW — SHOW ME THE ANSWER</button>
+    <button class="btn-skip-universal" id="btn-skip-universal" onclick="skipQuestion()">⏭ SKIP THIS QUESTION</button>
     <div class="feedback-bar" id="feedback-bar"></div>
     <div class="report-sent" id="report-sent">✓ Thank you — report sent to MJQD53</div>
     <button class="btn-next" id="btn-next" onclick="nextQuestion()">NEXT →</button>
@@ -701,7 +814,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 <div id="screen-results" class="screen">
   <div class="results-card">
     <div class="new-best" id="new-best">⭐ NEW PERSONAL BEST!</div>
-    <span class="results-grade" id="results-grade"></span>
+    <div class="results-grade-wrap">
+      <span class="results-grade" id="results-grade"></span>
+    </div>
     <div class="results-pct" id="results-pct"></div>
     <div class="results-time-row" id="results-time-row"></div>
     <div class="rank-up-box" id="rank-up-box">
@@ -720,6 +835,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
       <button class="btn-rb" onclick="goHome()">MENU</button>
     </div>
     <button class="btn-wrong-only" id="btn-wrong-only" onclick="retryWrong()">🔁 RETRY WRONG ANSWERS</button>
+    <button class="btn-share" id="btn-share" onclick="shareResult()">📤 SHARE RESULT</button>
+    <div class="share-copied" id="share-copied">✓ Copied to clipboard!</div>
+  </div>
+</div>
+
+<!-- ══════════════ SKIPPED REVIEW SCREEN ══════════════ -->
+<div id="screen-skipped-review" class="screen">
+  <div style="max-width:680px;margin:2rem auto;padding:0 1rem;width:100%">
+    <div class="mock-review-card">
+      <div class="mock-review-hdr" style="color:var(--gold)">⏭ SKIPPED QUESTIONS</div>
+      <div class="mock-review-sub" id="skipped-review-sub">You skipped some questions — answer them now or submit as-is.</div>
+      <div class="mock-review-grid" id="skipped-review-grid" style="margin-bottom:1.25rem"></div>
+      <button class="btn-submit-final" style="background:linear-gradient(135deg,var(--gold),var(--orange))" onclick="finishSkippedReview()">FINISH &amp; SEE RESULTS →</button>
+      <button class="btn-back-exam" onclick="backToSkippedQuestion()">← ANSWER NEXT SKIPPED</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MOCK EXAM REVIEW SCREEN ══════════════ -->
+<div id="screen-mock-review" class="screen">
+  <div class="mock-review-card">
+    <div class="mock-review-hdr">📋 EXAM REVIEW</div>
+    <div class="mock-review-sub" id="mock-review-sub">Review your answers before submitting</div>
+    <div class="mock-legend">
+      <div class="mock-legend-item"><div class="mock-legend-dot" style="background:rgba(0,230,118,.4);border:1px solid var(--green)"></div>Answered</div>
+      <div class="mock-legend-item"><div class="mock-legend-dot" style="background:rgba(255,193,7,.3);border:1px solid var(--gold)"></div>Skipped</div>
+      <div class="mock-legend-item"><div class="mock-legend-dot" style="background:var(--border2)"></div>Not reached</div>
+    </div>
+    <div class="mock-review-grid" id="mock-review-grid"></div>
+    <button class="btn-submit-final" onclick="mockSubmitExam()">SUBMIT EXAM →</button>
+    <button class="btn-back-exam" onclick="mockBackToExam()">← CONTINUE ANSWERING</button>
+  </div>
+</div>
+
+<!-- ══════════════ ONBOARDING ══════════════ -->
+<div class="onboard-overlay hidden" id="onboard-overlay">
+  <div class="onboard-card">
+    <div class="onboard-step-dots" id="ob-dots"></div>
+    <span class="onboard-icon" id="ob-icon">🎯</span>
+    <div class="onboard-title" id="ob-title">Welcome!</div>
+    <div class="onboard-body" id="ob-body"></div>
+    <button class="btn-onboard-next" id="ob-next-btn" onclick="onboardNext()">NEXT →</button>
+    <button class="btn-onboard-skip" onclick="onboardDismiss()">Skip intro</button>
   </div>
 </div>
 
@@ -3605,6 +3763,10 @@ const ACHIEVEMENTS = [
   {id:"exam_ace",      icon:"🎓", name:"Top of the Class",     desc:"Score 90%+ in Exam Sim mode (20+ questions)",       check:s=>s.examAce},
   {id:"comeback",      icon:"🔁", name:"Never Give Up",        desc:"Retry wrong answers and get 100%",                  check:s=>s.comingBack},
   {id:"beat_best",     icon:"🏆", name:"Beat Your Best",       desc:"Top your personal best score in Beat Your Best mode",check:s=>s.beatBest},
+  // Mock exam
+  {id:"mock_complete", icon:"📋", name:"Examined",             desc:"Complete your first Mock Exam (69 questions)",       check:s=>s.mockCompleted>=1},
+  {id:"mock_pass",     icon:"🏛️", name:"Mock Pass",            desc:"Score 70%+ on a Mock Exam",                         check:s=>s.mockPassed},
+  {id:"mock_merit",    icon:"🎖️", name:"Mock Merit",           desc:"Score 85%+ on a Mock Exam",                         check:s=>s.mockMerit},
   // Daily challenge
   {id:"daily1",        icon:"📅", name:"Day One",              desc:"Complete your first Daily Challenge",               check:s=>s.dcStreak>=1},
   {id:"daily7",        icon:"🗓️", name:"Week Warrior",         desc:"Complete 7 consecutive Daily Challenges",           check:s=>s.dcStreak>=7},
@@ -3771,7 +3933,8 @@ let P = load('cpk_player2', {
 const PDEFAULT = {topicWeekly:{},hardQuestions:{},avgTimeMs:{},srsData:{},bookmarks:[],totalBookmarks:0,
   dcKey:'',dcStreak:0,dcLastStreak:0,dcDoneToday:false,beatBest:false,topicBest:{},hintsUsed:0,idkUsed:0,
   srsCompleted:0,theme:'dark',topicExpert90Count:{},cdemExpert:false,roadPro:false,searchAce:false,riskMgr:false,
-  reportedQuestions:[],fontScale:1};
+  reportedQuestions:[],fontScale:1,
+  mockCompleted:0,mockPassed:false,mockMerit:false};
 Object.keys(PDEFAULT).forEach(k=>{ if(P[k]===undefined) P[k]=PDEFAULT[k]; });
 
 function saveP() { save('cpk_player2', P); }
@@ -3950,16 +4113,21 @@ let GS = {
   isRetry: false,
   isDailyChallenge: false,
   isSRS: false,
+  isMock: false,
+  mockTimeLeft: 90 * 60,
+  mockTimer: null,
   qStartTime: 0,
   sessionTimes: [],   // ms per question
   hintUsedThisQ: false,
   idkThisQ: false,
+  skippedQuestions: [], // indices of skipped questions for non-mock modes
+  answeredIndices: new Set(), // indices that have been answered
 };
 
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
-const CURRENT_VERSION = 'v2.14';
+const CURRENT_VERSION = 'v2.15';
 
 function init() {
   applyTheme(P.theme);
@@ -3974,6 +4142,10 @@ function init() {
   homeTab('play');
   updateHomeButtons();
   checkChangelog();
+  // Show onboarding for first-time users (after changelog)
+  if (!load('cpk_onboarded', null)) {
+    setTimeout(() => showOnboarding(), 1200);
+  }
 }
 
 function checkChangelog() {
@@ -4069,6 +4241,22 @@ function renderProfileTab() {
   const prestige = P.prestige;
 
   document.body.setAttribute('data-prestige', prestige || 0);
+
+  // Daily streak bar
+  const streakWrap = document.getElementById('home-streak-bar-wrap');
+  if (streakWrap && P.dcStreak > 0) {
+    const todayDone = P.dcDoneToday;
+    streakWrap.innerHTML = `<div class="home-streak-bar">
+      <div class="home-streak-flame">🔥</div>
+      <div class="home-streak-info">
+        <div class="home-streak-num">${P.dcStreak} Day Streak</div>
+        <div class="home-streak-lbl">DAILY CHALLENGE</div>
+      </div>
+      <div class="home-streak-today">${todayDone ? '✓ Done today' : '⏳ Not done yet'}</div>
+    </div>`;
+  } else if (streakWrap) {
+    streakWrap.innerHTML = '';
+  }
 
   const hero = document.getElementById('rank-hero');
   hero.style.setProperty('--rank-color', rank.color);
@@ -4553,6 +4741,8 @@ function iDontKnow() {
     if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
   });
   document.getElementById('btn-idk').disabled = true;
+  const univSkipIDK = document.getElementById('btn-skip-universal');
+  if (univSkipIDK) univSkipIDK.disabled = true;
 
   // Don't count as wrong for score, don't break streak, but do track for SRS
   srsMarkWrong(q._uid, q);
@@ -4641,13 +4831,25 @@ function buildQuestions() {
 function startQuiz() {
   GS.isDailyChallenge = false;
   GS.isSRS = GS.mode === 'srs';
+  GS.isMock = GS.mode === 'mock';
+
+  if (GS.isMock) {
+    startMockExam();
+    return;
+  }
+
   GS.questions = buildQuestions();
   if (!GS.questions.length) return;
   GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
   GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
   GS.isRetry = false; GS.sessionTimes = [];
+  GS.skippedQuestions = [];
+  GS.answeredIndices = new Set();
 
-  if (GS.mode === 'srs') P.srsCompleted = (P.srsCompleted || 0); // will increment on finish
+  if (GS.mode === 'srs') P.srsCompleted = (P.srsCompleted || 0);
+
+  // Show/hide progress dots (not in mock)
+  renderProgressDots();
 
   showScreen('quiz');
   renderQuestion();
@@ -4656,6 +4858,26 @@ function startQuiz() {
 // ═══════════════════════════════════════════
 // QUESTION RENDER
 // ═══════════════════════════════════════════
+function renderProgressDots() {
+  const dotsEl = document.getElementById('progress-dots');
+  if (!dotsEl) return;
+  const total = GS.questions.length;
+  if (GS.isMock || total === 0) { dotsEl.style.display = 'none'; return; }
+  if (total > 60) { dotsEl.style.display = 'none'; return; }
+  dotsEl.style.display = 'flex';
+  dotsEl.innerHTML = GS.questions.map((q,i) => {
+    let cls = 'p-dot';
+    if (i === GS.currentQ) {
+      cls += ' current';
+    } else if (GS.answeredIndices && GS.answeredIndices.has(i)) {
+      cls += GS.wrongAnswers.some(w => w._uid === q._uid) ? ' wrong' : ' correct';
+    } else if (GS.skippedQuestions && GS.skippedQuestions.includes(i)) {
+      cls += ' skipped';
+    }
+    return `<div class="${cls}" title="Q${i+1}"></div>`;
+  }).join('');
+}
+
 function renderQuestion() {
   const q = GS.questions[GS.currentQ];
   const total = GS.questions.length;
@@ -4664,10 +4886,18 @@ function renderQuestion() {
   GS.idkThisQ = false;
   GS.qStartTime = Date.now();
 
+  // Reset skip button
+  const univSkipReset = document.getElementById('btn-skip-universal');
+  if (univSkipReset) univSkipReset.disabled = false;
+
   const options = [q.a, ...q.w].sort(() => Math.random() - 0.5);
+  // Store shuffled options on q so mock can restore state when navigating back
+  q._lastOptions = options;
   const letters = ['A','B','C','D'];
 
-  document.getElementById('q-progress-txt').textContent = `Q ${GS.currentQ+1} / ${total}`;
+  document.getElementById('q-progress-txt').textContent = GS.isMock
+    ? `Q ${GS.currentQ+1} / ${total}`
+    : `Q ${GS.currentQ+1} / ${total}`;
   document.getElementById('xp-display').textContent = GS.sessionXP + ' XP';
   document.getElementById('streak-display').textContent = GS.streak;
   document.getElementById('q-number').textContent = `QUESTION ${GS.currentQ+1}`;
@@ -4675,34 +4905,91 @@ function renderQuestion() {
   document.getElementById('question-box').textContent = q.q;
   document.getElementById('qtb-time-display').textContent = '';
 
+  // Mock exam bar
+  const mockBar = document.getElementById('mock-exam-bar');
+  const mockMap = document.getElementById('mock-q-map');
+  if (GS.isMock) {
+    mockBar.classList.add('vis');
+    mockMap.style.display = 'flex';
+    renderMockMap();
+    updateMockProgress();
+  } else {
+    mockBar.classList.remove('vis');
+    mockMap.style.display = 'none';
+  }
+
   // Bookmark state
   const bmBtn = document.getElementById('btn-bookmark-q');
   const isBookmarked = P.bookmarks.some(b => b.uid === q._uid);
   bmBtn.textContent = isBookmarked ? '★' : '☆';
   bmBtn.classList.toggle('starred', isBookmarked);
 
-  // Hint reset
+  // Hint — hidden in mock/exam
+  const hintArea = document.getElementById('hint-area');
+  hintArea.style.display = (GS.isMock || GS.mode === 'exam') ? 'none' : 'block';
   document.getElementById('btn-hint').disabled = false;
   document.getElementById('hint-text').style.display = 'none';
   document.getElementById('hint-text').textContent = '';
 
-  // IDK button
+  // IDK button — Practice mode only
   const idkBtn = document.getElementById('btn-idk');
   idkBtn.disabled = false;
-  idkBtn.style.display = (GS.mode === 'exam') ? 'none' : 'block';
+  idkBtn.style.display = GS.mode === 'practice' ? 'block' : 'none';
+
+  // Universal skip — all modes except practice and mock (mock has its own skip in topbar)
+  const univSkip = document.getElementById('btn-skip-universal');
+  if (univSkip) {
+    univSkip.disabled = false;
+    const showSkip = !GS.isMock && GS.mode !== 'practice';
+    univSkip.style.display = showSkip ? 'block' : 'none';
+  }
 
   const grid = document.getElementById('options-grid');
-  grid.innerHTML = options.map((opt,i) => `
-    <button class="opt-btn" data-correct="${opt===q.a}" onclick="answer(this,${opt===q.a})">
-      <span class="opt-letter">${letters[i]}</span>
-      <span class="opt-text">${opt}</span>
-      <span class="result-icon"></span>
-    </button>`).join('');
+
+  // In mock mode, if question already answered — restore locked state with NO colour feedback
+  if (GS.isMock && q._answered) {
+    const opts = q._lastOptions || options;
+    grid.innerHTML = opts.map((opt,i) => {
+      // No correct/wrong styling — just mark chosen with neutral cyan border
+      const isChosen = opt === q._chosenAnswer;
+      return `<button class="opt-btn" data-correct="${opt===q.a}" disabled style="${isChosen ? 'border-color:var(--cyan)' : ''}">
+        <span class="opt-letter">${letters[i]}</span>
+        <span class="opt-text">${opt}</span>
+        <span class="result-icon">${isChosen ? '✓' : ''}</span>
+      </button>`;
+    }).join('');
+    document.getElementById('btn-next').classList.remove('vis');
+    const skipBtn = document.getElementById('btn-skip-q');
+    if (skipBtn) skipBtn.disabled = true;
+  } else if (GS.isMock && q._skipped) {
+    grid.innerHTML = options.map((opt,i) => `
+      <button class="opt-btn" data-correct="${opt===q.a}" onclick="mockAnswer(this,${opt===q.a})">
+        <span class="opt-letter">${letters[i]}</span>
+        <span class="opt-text">${opt}</span>
+        <span class="result-icon"></span>
+      </button>`).join('');
+    document.getElementById('btn-next').classList.remove('vis');
+    const skipBtn = document.getElementById('btn-skip-q');
+    if (skipBtn) skipBtn.disabled = false;
+  } else {
+    grid.innerHTML = options.map((opt,i) => `
+      <button class="opt-btn" data-correct="${opt===q.a}" onclick="${GS.isMock ? 'mockAnswer' : 'answer'}(this,${opt===q.a})">
+        <span class="opt-letter">${letters[i]}</span>
+        <span class="opt-text">${opt}</span>
+        <span class="result-icon"></span>
+      </button>`).join('');
+    document.getElementById('btn-next').classList.remove('vis');
+    const skipBtn = document.getElementById('btn-skip-q');
+    if (skipBtn) skipBtn.disabled = false;
+  }
 
   const fb = document.getElementById('feedback-bar');
   fb.className = 'feedback-bar';
   fb.style.display = 'none';
-  document.getElementById('btn-next').classList.remove('vis');
+  if (!GS.isMock && !q._answered) document.getElementById('btn-next').classList.remove('vis');
+
+  // Progress dots
+  renderProgressDots();
 
   clearInterval(GS.timer);
   if (GS.mode === 'timed') {
@@ -4712,7 +4999,7 @@ function renderQuestion() {
     document.getElementById('timer-txt').textContent = '30s';
   } else {
     document.getElementById('timer-bar').style.width = '100%';
-    document.getElementById('timer-bar').style.background = 'var(--cyan)';
+    document.getElementById('timer-bar').style.background = GS.isMock ? 'var(--red)' : 'var(--cyan)';
     document.getElementById('timer-txt').textContent = '';
   }
 }
@@ -4757,6 +5044,8 @@ function timeUp() {
     if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
   });
   document.getElementById('btn-idk').disabled = true;
+  const univSkipTU = document.getElementById('btn-skip-universal');
+  if (univSkipTU) univSkipTU.disabled = true;
   GS.streak = 0;
   document.getElementById('streak-display').textContent = 0;
   srsMarkWrong(q._uid, q);
@@ -4781,12 +5070,18 @@ function answer(btn, isCorrect) {
   recordTime();
 
   const q = GS.questions[GS.currentQ];
+  // Mark this index as answered so skip logic knows
+  GS.answeredIndices.add(GS.currentQ);
+  // Remove from skipped list if they came back to answer it
+  GS.skippedQuestions = GS.skippedQuestions.filter(i => i !== GS.currentQ);
 
   document.querySelectorAll('.opt-btn').forEach(b => {
     b.disabled = true;
     if (b.dataset.correct === 'true') { b.classList.add('reveal-correct'); b.querySelector('.result-icon').textContent = '✓'; }
   });
   document.getElementById('btn-idk').disabled = true;
+  const univSkipA = document.getElementById('btn-skip-universal');
+  if (univSkipA) univSkipA.disabled = true;
 
   const fb = document.getElementById('feedback-bar');
 
@@ -4852,9 +5147,534 @@ function recordDeckPerf(deckId, correct) {
 }
 
 function nextQuestion() {
+  if (GS.isMock) {
+    const next = findNextMockQuestion();
+    if (next !== -1) { GS.currentQ = next; renderQuestion(); }
+    else mockOpenReview();
+    return;
+  }
+
   GS.currentQ++;
-  if (GS.currentQ >= GS.questions.length) showResults();
-  else renderQuestion();
+
+  // If we've reached or passed the end, check for unanswered skipped questions
+  if (GS.currentQ >= GS.questions.length) {
+    const unansweredSkips = GS.skippedQuestions.filter(i => !GS.answeredIndices.has(i));
+    if (unansweredSkips.length > 0) {
+      openSkippedReview();
+    } else {
+      showResults();
+    }
+    return;
+  }
+
+  // If this question was skipped, skip over it and find the next non-skipped one
+  if (GS.skippedQuestions.includes(GS.currentQ) && !GS.answeredIndices.has(GS.currentQ)) {
+    const nextNonSkipped = findNextNonSkippedForward();
+    if (nextNonSkipped !== -1) {
+      GS.currentQ = nextNonSkipped;
+      renderQuestion();
+    } else {
+      const unansweredSkips = GS.skippedQuestions.filter(i => !GS.answeredIndices.has(i));
+      if (unansweredSkips.length > 0) openSkippedReview();
+      else showResults();
+    }
+    return;
+  }
+
+  renderQuestion();
+}
+
+function findNextNonSkippedForward() {
+  // Find next unanswered, non-skipped question from current position forward
+  const total = GS.questions.length;
+  for (let i = GS.currentQ; i < total; i++) {
+    if (!GS.skippedQuestions.includes(i) && !GS.answeredIndices.has(i)) return i;
+  }
+  return -1;
+}
+
+// ═══════════════════════════════════════════
+// UNIVERSAL SKIP
+// ═══════════════════════════════════════════
+function skipQuestion() {
+  if (GS.answered) return;
+
+  if (GS.isMock) {
+    mockSkipQuestion();
+    return;
+  }
+
+  // True skip — mark question, advance silently, no reveal, no penalty
+  const q = GS.questions[GS.currentQ];
+  clearInterval(GS.timer);
+
+  // Track this index as skipped if not already there
+  if (!GS.skippedQuestions.includes(GS.currentQ)) {
+    GS.skippedQuestions.push(GS.currentQ);
+  }
+
+  // Lock buttons without revealing anything
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  document.getElementById('btn-skip-universal').disabled = true;
+  document.getElementById('btn-idk').disabled = true;
+  document.getElementById('feedback-bar').className = 'feedback-bar';
+  document.getElementById('feedback-bar').style.display = 'none';
+
+  // Find next non-skipped unanswered question
+  const nextIdx = findNextNonSkipped();
+  if (nextIdx !== -1) {
+    GS.currentQ = nextIdx;
+    GS.answered = false;
+    renderQuestion();
+  } else {
+    // All remaining questions are either answered or skipped — go to skipped review
+    openSkippedReview();
+  }
+}
+
+function findNextNonSkipped() {
+  const total = GS.questions.length;
+  // Search forward from current + 1
+  for (let i = GS.currentQ + 1; i < total; i++) {
+    if (!GS.skippedQuestions.includes(i) && !GS.answeredIndices.has(i)) return i;
+  }
+  // Wrap around from start
+  for (let i = 0; i < GS.currentQ; i++) {
+    if (!GS.skippedQuestions.includes(i) && !GS.answeredIndices.has(i)) return i;
+  }
+  return -1;
+}
+
+function openSkippedReview() {
+  const skipped = GS.skippedQuestions.filter(i => !GS.answeredIndices.has(i));
+  const sub = document.getElementById('skipped-review-sub');
+  sub.textContent = `${skipped.length} skipped question${skipped.length !== 1 ? 's' : ''} — tap to answer any of them, or finish now.`;
+
+  const grid = document.getElementById('skipped-review-grid');
+  grid.innerHTML = GS.questions.map((q, i) => {
+    const isSkipped = skipped.includes(i);
+    const isAnswered = GS.answeredIndices.has(i);
+    let cls = 'mock-review-dot';
+    if (isAnswered) cls += ' answered';
+    else if (isSkipped) cls += ' skipped';
+    return `<div class="${cls}" onclick="${isSkipped ? `returnToSkipped(${i})` : ''}" title="Q${i+1}: ${q.deckName||''}">${i+1}</div>`;
+  }).join('');
+
+  showScreen('skipped-review');
+}
+
+function returnToSkipped(idx) {
+  // Remove from skipped list so they can answer it normally
+  GS.skippedQuestions = GS.skippedQuestions.filter(i => i !== idx);
+  GS.currentQ = idx;
+  GS.answered = false;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function backToSkippedQuestion() {
+  const skipped = GS.skippedQuestions.filter(i => !GS.answeredIndices.has(i));
+  if (skipped.length > 0) {
+    returnToSkipped(skipped[0]);
+  } else {
+    finishSkippedReview();
+  }
+}
+
+function finishSkippedReview() {
+  // Treat remaining skipped questions as not-answered (wrong for scoring)
+  const remaining = GS.skippedQuestions.filter(i => !GS.answeredIndices.has(i));
+  remaining.forEach(i => {
+    const q = GS.questions[i];
+    GS.wrongAnswers.push(q);
+    recordDeckPerf(q.deckId, false);
+    recordWeeklyTopic(q.deckId, false);
+    trackHardQuestion(q, false);
+    srsMarkWrong(q._uid, q);
+  });
+  showResults();
+}
+const MOCK_TOTAL = 69;
+const MOCK_DURATION = 90 * 60; // seconds
+
+function startMockExam() {
+  // Build 69 random questions from full pool
+  let allCards = [];
+  const reported = new Set(P.reportedQuestions || []);
+  DECKS.forEach(d => d.cards.forEach((c,i) => {
+    const uid = `${d.id}_${i}`;
+    if (!reported.has(uid)) allCards.push({...c, deckName:d.name, deckId:d.id, _uid:uid});
+  }));
+  allCards.sort(() => Math.random() - 0.5);
+  const selected = allCards.slice(0, MOCK_TOTAL);
+  // Initialise mock state on each question
+  selected.forEach(q => { q._answered = false; q._skipped = false; q._chosenAnswer = undefined; });
+
+  GS.questions = selected;
+  GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
+  GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
+  GS.isRetry = false; GS.isMock = true; GS.isDailyChallenge = false; GS.sessionTimes = [];
+  GS.mockTimeLeft = MOCK_DURATION;
+  GS.mockTimer = setInterval(tickMockTimer, 1000);
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function tickMockTimer() {
+  GS.mockTimeLeft--;
+  updateMockClock();
+  if (GS.mockTimeLeft <= 0) {
+    clearInterval(GS.mockTimer);
+    // Time's up — auto-submit
+    mockSubmitExam();
+  }
+}
+
+function updateMockClock() {
+  const t = Math.max(0, GS.mockTimeLeft);
+  const m = Math.floor(t / 60);
+  const s = t % 60;
+  const txt = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el = document.getElementById('mock-clock');
+  if (!el) return;
+  el.textContent = txt;
+  el.className = 'mock-clock' + (t < 300 ? ' crit' : t < 600 ? ' warn' : '');
+}
+
+function updateMockProgress() {
+  const answered = GS.questions.filter(q => q._answered).length;
+  const skipped = GS.questions.filter(q => q._skipped && !q._answered).length;
+  const el = document.getElementById('mock-progress-info');
+  if (el) el.textContent = `${answered} / ${MOCK_TOTAL} answered · ${skipped} skipped`;
+}
+
+function renderMockMap() {
+  const el = document.getElementById('mock-q-map');
+  if (!el) return;
+  el.innerHTML = '<div class="mock-q-map-label">QUESTION MAP — tap to jump</div>' +
+    GS.questions.map((q,i) => {
+      let cls = 'mock-q-dot';
+      if (i === GS.currentQ) cls += ' current';
+      else if (q._answered) cls += ' answered';
+      else if (q._skipped) cls += ' skipped';
+      return `<div class="${cls}" onclick="mockJumpTo(${i})" title="Q${i+1}: ${q._answered?'Answered':q._skipped?'Skipped':'Not answered'}">${i+1}</div>`;
+    }).join('');
+}
+
+function mockJumpTo(idx) {
+  GS.currentQ = idx;
+  renderQuestion();
+}
+
+function findNextMockQuestion() {
+  // Find next unanswered, non-skipped question after current
+  const total = GS.questions.length;
+  for (let i = GS.currentQ + 1; i < total; i++) {
+    if (!GS.questions[i]._answered) return i;
+  }
+  // Wrap around
+  for (let i = 0; i < GS.currentQ; i++) {
+    if (!GS.questions[i]._answered) return i;
+  }
+  return -1; // all answered
+}
+
+function mockSkipQuestion() {
+  const q = GS.questions[GS.currentQ];
+  if (q._answered) return;
+  q._skipped = true;
+  updateMockProgress();
+  renderMockMap();
+  const next = findNextMockQuestion();
+  if (next !== -1) { GS.currentQ = next; renderQuestion(); }
+  else mockOpenReview();
+}
+
+function mockAnswer(btn, isCorrect) {
+  if (GS.answered) return;
+  GS.answered = true;
+  recordTime();
+
+  const q = GS.questions[GS.currentQ];
+  q._answered = true;
+  q._skipped = false;
+  q._chosenAnswer = btn.querySelector('.opt-text').textContent;
+  q._correct = isCorrect;
+  // Store the option order so we can restore it on review
+  q._lastOptions = Array.from(document.querySelectorAll('.opt-btn')).map(b => b.querySelector('.opt-text').textContent);
+
+  // Lock all buttons — NO colour reveal, NO correct/wrong indication
+  document.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    // Only highlight the selected button with a neutral "chosen" style
+    if (b === btn) b.style.borderColor = 'var(--cyan)';
+  });
+
+  // Track stats silently (for SRS, hard questions etc)
+  recordDeckPerf(q.deckId, isCorrect);
+  recordWeeklyTopic(q.deckId, isCorrect);
+  trackHardQuestion(q, isCorrect);
+  if (isCorrect) { GS.score++; srsMarkCorrect(q._uid); }
+  else { srsMarkWrong(q._uid, q); GS.wrongAnswers.push(q); }
+
+  updateMockProgress();
+  renderMockMap();
+
+  // Brief pause then auto-advance — no feedback shown at all
+  setTimeout(() => {
+    if (!GS.isMock) return;
+    const next = findNextMockQuestion();
+    if (next !== -1) { GS.currentQ = next; renderQuestion(); }
+    else mockOpenReview();
+  }, 400);
+}
+
+function mockOpenReview() {
+  clearInterval(GS.timer);
+  const answered = GS.questions.filter(q => q._answered).length;
+  const skipped = GS.questions.filter(q => q._skipped && !q._answered).length;
+  const unanswered = GS.questions.filter(q => !q._answered && !q._skipped).length;
+
+  document.getElementById('mock-review-sub').textContent =
+    `${answered} answered · ${skipped} skipped · ${unanswered} not attempted · ${formatMockTime(MOCK_DURATION - GS.mockTimeLeft)} elapsed`;
+
+  const grid = document.getElementById('mock-review-grid');
+  grid.innerHTML = GS.questions.map((q,i) => {
+    let cls = 'mock-review-dot';
+    if (q._answered) cls += ' answered';
+    else if (q._skipped) cls += ' skipped';
+    return `<div class="${cls}" onclick="mockReviewJump(${i})" title="Q${i+1}: ${q.deckName||''}">${i+1}</div>`;
+  }).join('');
+
+  showScreen('mock-review');
+}
+
+function mockReviewJump(idx) {
+  GS.currentQ = idx;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function mockBackToExam() {
+  // Find first unanswered question
+  const next = findNextMockQuestion();
+  if (next !== -1) GS.currentQ = next;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function mockSubmitExam() {
+  clearInterval(GS.mockTimer);
+  GS.mockTimer = null;
+  GS.isMock = false;
+  // Clean up mock UI
+  document.getElementById('mock-exam-bar').classList.remove('vis');
+  document.getElementById('mock-q-map').style.display = 'none';
+  showResults();
+  // After results render, update the review grid to show full question-by-question breakdown
+  setTimeout(renderMockPostExamReview, 100);
+}
+
+function renderMockPostExamReview() {
+  // Replace the breakdown section in results with full mock exam review
+  const bdEl = document.getElementById('breakdown');
+  if (!bdEl) return;
+
+  const questions = GS.questions;
+  if (!questions || !questions.length) return;
+
+  // Build per-topic breakdown first
+  const deckIds = Object.keys(GS.deckPerf);
+  let breakdownHtml = '';
+  if (deckIds.length > 1) {
+    breakdownHtml = '<div class="breakdown-title">PERFORMANCE BY TOPIC</div>' +
+      deckIds.map(id => {
+        const deck = DECKS.find(d => d.id == id);
+        const dp = GS.deckPerf[id];
+        const p = Math.round(dp.correct/dp.total*100);
+        const color = p>=80?'var(--green)':p>=60?'var(--gold)':'var(--red)';
+        return `<div class="breakdown-row">
+          <div class="br-name" style="color:${deck?deck.color:'var(--muted)'}">${deck?deck.short:'Topic'}</div>
+          <div class="br-bar"><div class="br-fill" style="width:${p}%;background:${color}"></div></div>
+          <div class="br-pct">${p}%</div>
+        </div>`;
+      }).join('');
+  }
+
+  // Full question-by-question review
+  const reviewHtml = `
+    <div style="margin-top:1rem">
+      <div class="breakdown-title" style="margin-bottom:.75rem">FULL QUESTION REVIEW</div>
+      ${questions.map((q,i) => {
+        const answered = q._answered;
+        const correct = q._correct;
+        const skipped = q._skipped && !q._answered;
+        let statusColor = skipped ? 'var(--gold)' : !answered ? 'var(--muted)' : correct ? 'var(--green)' : 'var(--red)';
+        let statusIcon = skipped ? '⏭' : !answered ? '—' : correct ? '✓' : '✗';
+        let statusLabel = skipped ? 'SKIPPED' : !answered ? 'NOT ATTEMPTED' : correct ? 'CORRECT' : 'INCORRECT';
+        return `<div style="background:var(--panel2);border:1px solid var(--border);border-left:3px solid ${statusColor};border-radius:6px;padding:.75rem 1rem;margin-bottom:.5rem">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
+            <span style="font-family:var(--font-mono);font-size:.62rem;color:var(--muted)">Q${i+1}</span>
+            <span style="font-family:var(--font-mono);font-size:.6rem;background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44;border-radius:3px;padding:.1rem .4rem;letter-spacing:.5px">${statusIcon} ${statusLabel}</span>
+            <span style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-left:auto">${q.deckName||''}</span>
+          </div>
+          <div style="font-size:.85rem;line-height:1.5;margin-bottom:.4rem;color:var(--text)">${q.q}</div>
+          ${answered ? `
+            ${!correct ? `<div style="font-size:.8rem;color:var(--red);margin-bottom:.2rem">Your answer: <em>${q._chosenAnswer||'—'}</em></div>` : ''}
+            <div style="font-size:.8rem;color:var(--green)">✓ Correct answer: <strong>${q.a}</strong></div>
+          ` : skipped ? `<div style="font-size:.8rem;color:var(--gold)">Question was skipped — correct answer: <strong>${q.a}</strong></div>`
+          : `<div style="font-size:.8rem;color:var(--muted)">Not attempted — correct answer: <strong>${q.a}</strong></div>`}
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  bdEl.innerHTML = breakdownHtml + reviewHtml;
+}
+
+function formatMockTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}m ${s}s`;
+}
+
+// ═══════════════════════════════════════════
+// SHARE RESULT
+// ═══════════════════════════════════════════
+function shareResult() {
+  const pct = document.getElementById('results-pct').textContent;
+  const grade = document.getElementById('results-grade').textContent;
+  const mode = GS.isDailyChallenge ? 'Daily Challenge' : GS.mode.charAt(0).toUpperCase() + GS.mode.slice(1);
+  const useAll = GS.selectedDecks.has('all');
+  const topic = GS.isDailyChallenge ? 'All Topics' :
+    useAll ? 'All Topics' : DECKS.filter(d => GS.selectedDecks.has(String(d.id))).map(d=>d.short).join(', ');
+  const text = `NZ Police Sgt CPK Simulator\n${grade} — ${pct}\nTopic: ${topic} · Mode: ${mode}\nStudy at: cpk.nzpolice.study`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const el = document.getElementById('share-copied');
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 3000);
+    });
+  }
+}
+
+// ═══════════════════════════════════════════
+// ANIMATED SCORE COUNTER
+// ═══════════════════════════════════════════
+function animateCounter(el, from, to, duration, suffix, prefix) {
+  const start = Date.now();
+  const tick = () => {
+    const elapsed = Date.now() - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const val = Math.round(from + (to - from) * eased);
+    el.textContent = (prefix || '') + val + (suffix || '');
+    if (progress < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ═══════════════════════════════════════════
+// EXPORT / IMPORT SAVE
+// ═══════════════════════════════════════════
+function exportSave() {
+  const data = JSON.stringify(P, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cpk-save-${todayKey()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importSave(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (typeof imported !== 'object' || !imported.totalXP === undefined) throw new Error('Invalid save');
+      if (!confirm(`Import save? This will replace your current progress (Level ${P.level}, ${P.played} quizzes). This cannot be undone.`)) return;
+      // Merge imported over defaults to ensure all keys exist
+      Object.assign(P, imported);
+      saveP();
+      applyTheme(P.theme);
+      applyFontScale(P.fontScale || 1);
+      document.body.setAttribute('data-prestige', P.prestige || 0);
+      renderProfileTab();
+      renderDeckPills();
+      renderStatsTab();
+      updateHomeButtons();
+      alert('Save imported successfully! Welcome back.');
+    } catch(err) {
+      alert('Could not import save — file may be invalid or corrupted.');
+    }
+  };
+  reader.readAsText(file);
+  // Reset file input
+  event.target.value = '';
+}
+
+// ═══════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════
+const ONBOARD_STEPS = [
+  {
+    icon: '👮',
+    title: 'Welcome to CPK Sim',
+    body: 'This simulator covers <strong>all 10 chapters</strong> of the March 2026 NZ Police Sergeant syllabus — 538+ questions written directly from the legislation and policy documents.'
+  },
+  {
+    icon: '🎯',
+    title: 'Pick a Mode',
+    body: '<strong>Practice</strong> — instant feedback after every answer.<br><strong>Timed</strong> — 30 seconds per question, speed bonuses.<br><strong>Exam Sim</strong> — no feedback until the end.<br><strong>Mock Exam</strong> — 69 questions, 90 minutes, just like the real thing.'
+  },
+  {
+    icon: '🧠',
+    title: 'Study Smarter',
+    body: 'Questions you get wrong are added to <strong>SRS Review</strong> — spaced repetition surfaces them again at 1, 3, and 7 day intervals so you actually remember them. Bookmark questions with ⭐ to review later.'
+  },
+  {
+    icon: '📊',
+    title: 'Track Progress',
+    body: 'The <strong>Analysis tab</strong> shows your percentage per topic, weekly trend lines, and your 10 hardest questions. Use the font size controls (A− A+) in the header if text is too small. Good luck!'
+  }
+];
+let _onboardStep = 0;
+
+function showOnboarding() {
+  _onboardStep = 0;
+  renderOnboardStep();
+  document.getElementById('onboard-overlay').classList.remove('hidden');
+}
+
+function renderOnboardStep() {
+  const step = ONBOARD_STEPS[_onboardStep];
+  const total = ONBOARD_STEPS.length;
+  document.getElementById('ob-icon').textContent = step.icon;
+  document.getElementById('ob-title').textContent = step.title;
+  document.getElementById('ob-body').innerHTML = step.body;
+  document.getElementById('ob-next-btn').textContent = _onboardStep < total - 1 ? 'NEXT →' : "LET'S GO →";
+  // Dots
+  document.getElementById('ob-dots').innerHTML = ONBOARD_STEPS.map((_,i) =>
+    `<div class="ob-dot ${i===_onboardStep?'active':''}"></div>`).join('');
+}
+
+function onboardNext() {
+  if (_onboardStep < ONBOARD_STEPS.length - 1) {
+    _onboardStep++;
+    renderOnboardStep();
+  } else {
+    onboardDismiss();
+  }
+}
+
+function onboardDismiss() {
+  document.getElementById('onboard-overlay').classList.add('hidden');
+  save('cpk_onboarded', '1');
 }
 
 // ═══════════════════════════════════════════
@@ -4883,9 +5703,21 @@ function showResults() {
 
   document.getElementById('results-grade').textContent = grade;
   document.getElementById('results-grade').style.color = gc;
-  document.getElementById('results-pct').textContent = `${GS.score} / ${total} CORRECT · ${pct}%`;
-  document.getElementById('rs-correct').textContent = GS.score;
-  document.getElementById('rs-wrong').textContent = total - GS.score;
+  // Animate grade pop-in
+  const gradeEl = document.getElementById('results-grade');
+  gradeEl.classList.remove('grade-animate');
+  void gradeEl.offsetWidth; // reflow
+  gradeEl.classList.add('grade-animate');
+
+  // Animate counters
+  const pctDisplay = `${GS.score} / ${total} CORRECT · ${pct}%`;
+  document.getElementById('results-pct').textContent = pctDisplay;
+  const correctEl = document.getElementById('rs-correct');
+  const wrongEl = document.getElementById('rs-wrong');
+  correctEl.textContent = '0';
+  wrongEl.textContent = '0';
+  setTimeout(() => animateCounter(correctEl, 0, GS.score, 800, ''), 200);
+  setTimeout(() => animateCounter(wrongEl, 0, total - GS.score, 800, ''), 350);
   document.getElementById('rs-streak').textContent = GS.bestStreak;
   document.getElementById('rs-xp').textContent = '+' + GS.sessionXP;
   document.getElementById('new-best').style.display = isNewBest ? 'block' : 'none';
@@ -4957,6 +5789,13 @@ function showResults() {
     if (GS.mode === 'exam' && pct >= 70 && total >= 20) P.examPass = true;
     if (GS.mode === 'exam' && pct >= 90 && total >= 20) P.examAce = true;
 
+    // Mock exam achievements
+    if (GS.mode === 'mock' && total >= 60) {
+      P.mockCompleted = (P.mockCompleted || 0) + 1;
+      if (pct >= 70) P.mockPassed = true;
+      if (pct >= 85) P.mockMerit = true;
+    }
+
     if (!P.gcmStreak) P.gcmStreak = 0;
     if (pct >= 60) { P.gcmStreak++; if (P.gcmStreak >= 20) P.gcmEarned = true; }
     else P.gcmStreak = 0;
@@ -5007,17 +5846,18 @@ function showResults() {
   const useAll = GS.selectedDecks.has('all');
   const topicLabel = GS.isDailyChallenge ? 'Daily Challenge' :
     useAll ? 'All Topics' : DECKS.filter(d => GS.selectedDecks.has(String(d.id))).map(d=>d.short).join(', ');
-  const modeLabel = GS.isDailyChallenge ? 'daily' : GS.mode;
+  const modeLabel = GS.isDailyChallenge ? 'daily' : (GS.mode === 'mock' ? 'mock' : GS.mode);
+  const topicForHistory = GS.isDailyChallenge ? 'Daily Challenge' : (GS.mode === 'mock' ? 'Mock Exam (69 Qs)' : topicLabel);
 
   if (!GS.isRetry) {
     const histEntry = {
       date: new Date().toLocaleString('en-NZ',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),
-      pct, correct:GS.score, size:total, mode:modeLabel, topic:topicLabel, xp:GS.sessionXP
+      pct, correct:GS.score, size:total, mode:modeLabel, topic:topicForHistory, xp:GS.sessionXP
     };
     P.history.push(histEntry);
     if (P.history.length > 50) P.history.shift();
     checkDaily();
-    P.dailySessions.push({pct, correct:GS.score, size:total, mode:modeLabel, topic:topicLabel, xp:GS.sessionXP});
+    P.dailySessions.push({pct, correct:GS.score, size:total, mode:modeLabel, topic:topicForHistory, xp:GS.sessionXP});
   }
 
   checkAchievements();
@@ -5053,6 +5893,7 @@ function showResults() {
 // ═══════════════════════════════════════════
 function tryQuit() {
   clearInterval(GS.timer);
+  if (GS.isMock) clearInterval(GS.mockTimer);
   document.getElementById('quit-overlay').classList.add('vis');
 }
 function closeQuit() {
@@ -5060,10 +5901,18 @@ function closeQuit() {
   if (GS.mode === 'timed' && !GS.answered) {
     GS.timer = setInterval(tickTimer, 100);
   }
+  if (GS.isMock && GS.mockTimeLeft > 0) {
+    GS.mockTimer = setInterval(tickMockTimer, 1000);
+  }
 }
 function confirmQuit() {
   clearInterval(GS.timer);
+  clearInterval(GS.mockTimer);
+  GS.isMock = false;
   document.getElementById('quit-overlay').classList.remove('vis');
+  // Hide mock exam UI
+  document.getElementById('mock-exam-bar').classList.remove('vis');
+  document.getElementById('mock-q-map').style.display = 'none';
   showScreen('home');
 }
 
@@ -5078,6 +5927,8 @@ function retryWrong() {
   GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
   GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
   GS.isRetry = true; GS.isDailyChallenge = false; GS.sessionTimes = [];
+  GS.skippedQuestions = [];
+  GS.answeredIndices = new Set();
   showScreen('quiz');
   renderQuestion();
 }
