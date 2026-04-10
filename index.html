@@ -451,6 +451,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
   padding:.55rem;border-radius:7px;cursor:pointer;transition:all .15s;margin-top:.4rem}
 .btn-skip-universal:hover{background:rgba(179,136,255,.16);border-color:rgba(179,136,255,.5)}
 .btn-skip-universal:disabled{opacity:.25;cursor:default}
+
+/* ── SURVIVAL MODE ── */
+.lives-display{font-size:1.1rem;letter-spacing:2px;white-space:nowrap}
+.life-lost{opacity:.2;filter:grayscale(1)}
+@keyframes life-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* ── MOCK RESULT CLICKABLE GRID ── */
+.mock-result-grid{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem}
+.mock-result-box{width:32px;height:32px;border-radius:5px;border:1px solid transparent;font-family:var(--font-mono);font-size:.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-weight:700;flex-shrink:0}
+.mock-result-box:hover{transform:scale(1.1);filter:brightness(1.15)}
+.mock-result-box.correct{background:rgba(0,230,118,.2);border-color:var(--green);color:var(--green)}
+.mock-result-box.wrong{background:rgba(255,61,90,.2);border-color:var(--red);color:var(--red)}
+.mock-result-box.skipped{background:rgba(255,193,7,.15);border-color:var(--gold);color:var(--gold)}
+.mock-result-box.unattempted{background:rgba(74,96,128,.15);border-color:var(--muted);color:var(--muted)}
+.mock-result-box.active{box-shadow:0 0 0 2px var(--cyan)}
+.mock-result-detail{background:var(--panel2);border:1px solid var(--border2);border-radius:8px;padding:.85rem 1rem;margin-bottom:.5rem;display:none}
+.mock-result-detail.open{display:block;animation:fade-in-down .2s ease}
+@keyframes fade-in-down{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .mock-exam-bar{display:none;background:linear-gradient(90deg,rgba(255,61,90,.1),rgba(179,136,255,.1));border-bottom:2px solid var(--red);padding:.5rem 1rem;align-items:center;justify-content:space-between;gap:.75rem;position:sticky;top:0;z-index:11;flex-wrap:wrap}
 .mock-exam-bar.vis{display:flex}
 .mock-clock{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--red);letter-spacing:2px;min-width:70px}
@@ -561,19 +579,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 <div class="modal-overlay hidden" id="changelog-modal">
   <div class="modal-box">
     <div class="changelog-title">WHAT'S NEW</div>
-    <div class="changelog-version">VERSION 2.15 — NZ POLICE SGT CPK SIMULATOR</div>
-    <div class="changelog-section-title">NEW IN VERSION 2.15</div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Mock Exam</strong> — 69 random questions, 90 minute countdown, skip &amp; flag questions to revisit, review screen before final submission. No feedback until the end. Closest thing to the real thing.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Animated score counter</strong> — grade and percentage now tick up dramatically on the results screen rather than appearing instantly.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Export / Import save data</strong> — download your full progress as a JSON file and reload it on any device. Switch between phone and laptop without losing rank or stats.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Daily streak on Profile tab</strong> — your consecutive Daily Challenge streak is now displayed prominently on the Profile tab so it's always visible.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Progress dots in quiz topbar</strong> — a row of green/red dots tracks every answered question spatially so you always know where you are.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Share result</strong> — one tap copies your score as formatted text ready to paste into a team chat or group.</span></div>
-    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Welcome onboarding</strong> — first-time users see a brief 4-step intro explaining the key features before their first quiz.</span></div>
+    <div class="changelog-version">VERSION 2.16 — NZ POLICE SGT CPK SIMULATOR</div>
+    <div class="changelog-section-title">NEW IN VERSION 2.16</div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Mock Exam — 3 answer options (70/30 split)</strong> — 70% of Mock Exam questions show 3 options, 30% show 4. Matches the real exam format. Wrong answers rotate randomly so repeated attempts may show a different distractor.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Mock Exam result review — clickable colour grid</strong> — after submitting, a compact grid of numbered boxes shows green (correct), red (wrong) and gold (skipped). Tap any box to expand that question inline — your answer, the correct answer, and the deck. Tap again to collapse.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Survival Mode</strong> — start with 3 lives. Every wrong answer costs a life. See how far you can get before running out. Your personal best survival streak is saved and shown on the home screen. New achievements: First Blood, Survivor, Untouchable.</span></div>
+    <div class="changelog-item"><span class="ci-dot">●</span><span><strong>Duplicate check</strong> — confirmed zero duplicate questions across all 538. The Reid case law question appearing twice in a Mock Exam was a browser rendering quirk, not a data error — the build logic prevents it.</span></div>
     <div style="margin-top:1rem" class="changelog-section-title">PREVIOUSLY ADDED</div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.14: Font size control · Sequential achievement toasts with full descriptions</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.14: I Don't Know · Bookmarks · SRS Review · Trend lines · Hardest Questions · Time tracking · Daily Challenge · Beat Your Best · Hints · Explanations · Light/Dark mode · Prestige cosmetics</span></div>
-    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.13: 538+ question count banner · CDEM bug fixes</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.15: Mock Exam (69 Qs, 90 min) · Skip in all modes · Animated score · Export/Import · Daily streak · Share result · Onboarding</span></div>
+    <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>v2.14: Font size · Achievement toasts · IDK · Bookmarks · SRS · Trends · Hardest Qs · Time tracking · Daily Challenge · Beat Your Best · Hints · Explanations · Light/Dark mode</span></div>
     <div class="changelog-item"><span class="ci-dot" style="color:var(--cyan)">●</span><span>Chapters 1–10: All 538 CPK questions across 13 topic decks · March 2026 Sgt Syllabus</span></div>
     <button class="modal-dismiss" onclick="dismissChangelog()">LET'S GO →</button>
   </div>
@@ -616,7 +630,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
           <button class="font-btn" onclick="adjustFont(1)" aria-label="Increase font size">A+</button>
         </div>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="theme-btn">☀️</button>
-        <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.15</button>
+        <button class="version-badge" onclick="showChangelog()" title="View changelog">v2.16</button>
       </div>
       <div class="site-badge">NEW ZEALAND POLICE · SERGEANT PROMOTION</div>
       <div class="site-title">NZ Police <span class="accent">Sergeants</span> CPK Simulator</div>
@@ -688,6 +702,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
           <div class="mode-icon">📋</div>
           <div class="mode-name">MOCK EXAM</div>
           <div class="mode-desc">69 Qs · 90 min · skip &amp; review</div>
+        </div>
+        <div class="mode-card" data-mode="survival" onclick="selectMode(this)">
+          <div class="mode-icon">❤️</div>
+          <div class="mode-name">SURVIVAL</div>
+          <div class="mode-desc">3 lives · wrong = lose a life</div>
         </div>
       </div>
     </div>
@@ -785,6 +804,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
       <span class="qtb-time" id="qtb-time-display"></span>
       <div class="xp-badge" id="xp-display">0 XP</div>
       <div class="streak-badge">🔥<span id="streak-display">0</span></div>
+      <div class="lives-display" id="lives-display" style="display:none"></div>
       <button class="btn-bookmark-q" id="btn-bookmark-q" onclick="toggleBookmark()" title="Bookmark this question">☆</button>
     </div>
   </div>
@@ -3767,6 +3787,10 @@ const ACHIEVEMENTS = [
   {id:"mock_complete", icon:"📋", name:"Examined",             desc:"Complete your first Mock Exam (69 questions)",       check:s=>s.mockCompleted>=1},
   {id:"mock_pass",     icon:"🏛️", name:"Mock Pass",            desc:"Score 70%+ on a Mock Exam",                         check:s=>s.mockPassed},
   {id:"mock_merit",    icon:"🎖️", name:"Mock Merit",           desc:"Score 85%+ on a Mock Exam",                         check:s=>s.mockMerit},
+  // Survival mode
+  {id:"survival1",     icon:"❤️", name:"First Blood",          desc:"Complete your first Survival run",                  check:s=>s.survivalBest>=1},
+  {id:"survival20",    icon:"🛡️", name:"Survivor",             desc:"Reach 20 questions in Survival mode",               check:s=>s.survivalBest>=20},
+  {id:"survival50",    icon:"💀", name:"Untouchable",          desc:"Reach 50 questions in Survival mode",               check:s=>s.survivalBest>=50},
   // Daily challenge
   {id:"daily1",        icon:"📅", name:"Day One",              desc:"Complete your first Daily Challenge",               check:s=>s.dcStreak>=1},
   {id:"daily7",        icon:"🗓️", name:"Week Warrior",         desc:"Complete 7 consecutive Daily Challenges",           check:s=>s.dcStreak>=7},
@@ -3934,7 +3958,8 @@ const PDEFAULT = {topicWeekly:{},hardQuestions:{},avgTimeMs:{},srsData:{},bookma
   dcKey:'',dcStreak:0,dcLastStreak:0,dcDoneToday:false,beatBest:false,topicBest:{},hintsUsed:0,idkUsed:0,
   srsCompleted:0,theme:'dark',topicExpert90Count:{},cdemExpert:false,roadPro:false,searchAce:false,riskMgr:false,
   reportedQuestions:[],fontScale:1,
-  mockCompleted:0,mockPassed:false,mockMerit:false};
+  mockCompleted:0,mockPassed:false,mockMerit:false,
+  survivalBest:0};
 Object.keys(PDEFAULT).forEach(k=>{ if(P[k]===undefined) P[k]=PDEFAULT[k]; });
 
 function saveP() { save('cpk_player2', P); }
@@ -4116,6 +4141,8 @@ let GS = {
   isMock: false,
   mockTimeLeft: 90 * 60,
   mockTimer: null,
+  isSurvival: false,
+  lives: 3,
   qStartTime: 0,
   sessionTimes: [],   // ms per question
   hintUsedThisQ: false,
@@ -4127,7 +4154,7 @@ let GS = {
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
-const CURRENT_VERSION = 'v2.15';
+const CURRENT_VERSION = 'v2.16';
 
 function init() {
   applyTheme(P.theme);
@@ -4414,7 +4441,7 @@ function renderScoresTab() {
   if (!P.history.length) {
     histEl.innerHTML = '<div class="empty-state">No quiz history yet.</div>';
   } else {
-    const modeColors = {practice:'var(--blue)',timed:'var(--gold)',exam:'var(--purple)',weak:'var(--orange)',srs:'var(--green)',beat:'var(--red)',daily:'var(--cyan)'};
+    const modeColors = {practice:'var(--blue)',timed:'var(--gold)',exam:'var(--purple)',weak:'var(--orange)',srs:'var(--green)',beat:'var(--red)',daily:'var(--cyan)',mock:'var(--purple)',survival:'var(--red)'};
     histEl.innerHTML = P.history.slice().reverse().slice(0,30).map(s => `
       <div class="score-row">
         <div class="score-date">${s.date}</div>
@@ -4766,6 +4793,18 @@ function iDontKnow() {
 function buildQuestions() {
   const useAll = GS.selectedDecks.has('all');
 
+  if (GS.isSurvival) {
+    // Survival uses the full pool shuffled - unlimited questions
+    let pool = [];
+    const reported = new Set(P.reportedQuestions || []);
+    DECKS.forEach(d => d.cards.forEach((c,i) => {
+      const uid = `${d.id}_${i}`;
+      if (!reported.has(uid)) pool.push({...c, deckName:d.name, deckId:d.id, _uid:uid});
+    }));
+    pool.sort(() => Math.random() - 0.5);
+    return pool; // return all, we end on lives=0
+  }
+
   if (GS.mode === 'srs') {
     // SRS mode: only due cards
     const dueUids = new Set(getSrsDueCards());
@@ -4832,6 +4871,7 @@ function startQuiz() {
   GS.isDailyChallenge = false;
   GS.isSRS = GS.mode === 'srs';
   GS.isMock = GS.mode === 'mock';
+  GS.isSurvival = GS.mode === 'survival';
 
   if (GS.isMock) {
     startMockExam();
@@ -4845,6 +4885,7 @@ function startQuiz() {
   GS.isRetry = false; GS.sessionTimes = [];
   GS.skippedQuestions = [];
   GS.answeredIndices = new Set();
+  GS.lives = 3;
 
   if (GS.mode === 'srs') P.srsCompleted = (P.srsCompleted || 0);
 
@@ -4944,13 +4985,41 @@ function renderQuestion() {
     univSkip.style.display = showSkip ? 'block' : 'none';
   }
 
-  const grid = document.getElementById('options-grid');
+  // Survival lives display
+  const livesEl = document.getElementById('lives-display');
+  if (livesEl) {
+    if (GS.isSurvival) {
+      livesEl.style.display = 'block';
+      livesEl.innerHTML = [0,1,2].map(i =>
+        `<span class="${i < GS.lives ? '' : 'life-lost'}">❤️</span>`
+      ).join('');
+    } else {
+      livesEl.style.display = 'none';
+    }
+  }
+
+  // Build options: mock uses 70/30 three/four answer split; others always 4
+  let displayOptions;
+  if (GS.isMock) {
+    // 70% chance of 3 options, 30% chance of 4
+    const useThree = Math.random() < 0.70;
+    if (useThree) {
+      // Pick 2 of the 3 wrong answers randomly, then shuffle with correct
+      const wrongShuffled = [...q.w].sort(() => Math.random() - 0.5);
+      displayOptions = [q.a, wrongShuffled[0], wrongShuffled[1]].sort(() => Math.random() - 0.5);
+    } else {
+      displayOptions = [q.a, ...q.w].sort(() => Math.random() - 0.5);
+    }
+  } else {
+    displayOptions = options; // already shuffled above
+  }
+  // Store for mock review restoration
+  if (GS.isMock) q._lastOptions = displayOptions;
 
   // In mock mode, if question already answered — restore locked state with NO colour feedback
   if (GS.isMock && q._answered) {
-    const opts = q._lastOptions || options;
+    const opts = q._lastOptions || displayOptions;
     grid.innerHTML = opts.map((opt,i) => {
-      // No correct/wrong styling — just mark chosen with neutral cyan border
       const isChosen = opt === q._chosenAnswer;
       return `<button class="opt-btn" data-correct="${opt===q.a}" disabled style="${isChosen ? 'border-color:var(--cyan)' : ''}">
         <span class="opt-letter">${letters[i]}</span>
@@ -4962,7 +5031,7 @@ function renderQuestion() {
     const skipBtn = document.getElementById('btn-skip-q');
     if (skipBtn) skipBtn.disabled = true;
   } else if (GS.isMock && q._skipped) {
-    grid.innerHTML = options.map((opt,i) => `
+    grid.innerHTML = displayOptions.map((opt,i) => `
       <button class="opt-btn" data-correct="${opt===q.a}" onclick="mockAnswer(this,${opt===q.a})">
         <span class="opt-letter">${letters[i]}</span>
         <span class="opt-text">${opt}</span>
@@ -4972,7 +5041,7 @@ function renderQuestion() {
     const skipBtn = document.getElementById('btn-skip-q');
     if (skipBtn) skipBtn.disabled = false;
   } else {
-    grid.innerHTML = options.map((opt,i) => `
+    grid.innerHTML = displayOptions.map((opt,i) => `
       <button class="opt-btn" data-correct="${opt===q.a}" onclick="${GS.isMock ? 'mockAnswer' : 'answer'}(this,${opt===q.a})">
         <span class="opt-letter">${letters[i]}</span>
         <span class="opt-text">${opt}</span>
@@ -5132,6 +5201,24 @@ function answer(btn, isCorrect) {
     GS.wrongAnswers.push(q);
     recordDeckPerf(q.deckId, false);
     recordWeeklyTopic(q.deckId, false);
+
+    // Survival: deduct a life
+    if (GS.isSurvival) {
+      GS.lives = Math.max(0, GS.lives - 1);
+      updateLivesDisplay();
+      if (GS.lives === 0) {
+        // Game over — show message then go to results
+        fb.innerHTML = `<span class="fb-label" style="color:var(--red)">💀 GAME OVER</span>Correct answer: <strong>${q.a}</strong><br><div style="font-family:var(--font-mono);font-size:.7rem;margin-top:.4rem;color:var(--muted)">You reached question ${GS.currentQ + 1} — personal best: ${Math.max(P.survivalBest, GS.currentQ + 1)}</div>`;
+        // Save survival best
+        if (GS.currentQ + 1 > (P.survivalBest || 0)) P.survivalBest = GS.currentQ + 1;
+        saveP();
+        checkAchievements();
+        // Trim questions to only what was reached so results are accurate
+        GS.questions = GS.questions.slice(0, GS.currentQ + 1);
+        setTimeout(() => showResults(), 2200);
+        return;
+      }
+    }
   }
 
   document.getElementById('btn-next').classList.add('vis');
@@ -5297,6 +5384,23 @@ function finishSkippedReview() {
 const MOCK_TOTAL = 69;
 const MOCK_DURATION = 90 * 60; // seconds
 
+// ═══════════════════════════════════════════
+// SURVIVAL MODE
+// ═══════════════════════════════════════════
+function updateLivesDisplay() {
+  const el = document.getElementById('lives-display');
+  if (!el) return;
+  el.innerHTML = [0,1,2].map(i =>
+    `<span class="${i < GS.lives ? '' : 'life-lost'}">❤️</span>`
+  ).join('');
+  el.classList.remove('survival-lost');
+  void el.offsetWidth;
+  if (GS.lives < 3) el.classList.add('survival-lost');
+}
+
+// ═══════════════════════════════════════════
+// MOCK EXAM
+// ═══════════════════════════════════════════
 function startMockExam() {
   // Build 69 random questions from full pool
   let allCards = [];
@@ -5477,14 +5581,12 @@ function mockSubmitExam() {
 }
 
 function renderMockPostExamReview() {
-  // Replace the breakdown section in results with full mock exam review
   const bdEl = document.getElementById('breakdown');
   if (!bdEl) return;
-
   const questions = GS.questions;
   if (!questions || !questions.length) return;
 
-  // Build per-topic breakdown first
+  // Per-topic breakdown
   const deckIds = Object.keys(GS.deckPerf);
   let breakdownHtml = '';
   if (deckIds.length > 1) {
@@ -5502,34 +5604,67 @@ function renderMockPostExamReview() {
       }).join('');
   }
 
-  // Full question-by-question review
-  const reviewHtml = `
-    <div style="margin-top:1rem">
-      <div class="breakdown-title" style="margin-bottom:.75rem">FULL QUESTION REVIEW</div>
-      ${questions.map((q,i) => {
-        const answered = q._answered;
-        const correct = q._correct;
-        const skipped = q._skipped && !q._answered;
-        let statusColor = skipped ? 'var(--gold)' : !answered ? 'var(--muted)' : correct ? 'var(--green)' : 'var(--red)';
-        let statusIcon = skipped ? '⏭' : !answered ? '—' : correct ? '✓' : '✗';
-        let statusLabel = skipped ? 'SKIPPED' : !answered ? 'NOT ATTEMPTED' : correct ? 'CORRECT' : 'INCORRECT';
-        return `<div style="background:var(--panel2);border:1px solid var(--border);border-left:3px solid ${statusColor};border-radius:6px;padding:.75rem 1rem;margin-bottom:.5rem">
-          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
-            <span style="font-family:var(--font-mono);font-size:.62rem;color:var(--muted)">Q${i+1}</span>
-            <span style="font-family:var(--font-mono);font-size:.6rem;background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44;border-radius:3px;padding:.1rem .4rem;letter-spacing:.5px">${statusIcon} ${statusLabel}</span>
-            <span style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-left:auto">${q.deckName||''}</span>
-          </div>
-          <div style="font-size:.85rem;line-height:1.5;margin-bottom:.4rem;color:var(--text)">${q.q}</div>
-          ${answered ? `
-            ${!correct ? `<div style="font-size:.8rem;color:var(--red);margin-bottom:.2rem">Your answer: <em>${q._chosenAnswer||'—'}</em></div>` : ''}
-            <div style="font-size:.8rem;color:var(--green)">✓ Correct answer: <strong>${q.a}</strong></div>
-          ` : skipped ? `<div style="font-size:.8rem;color:var(--gold)">Question was skipped — correct answer: <strong>${q.a}</strong></div>`
-          : `<div style="font-size:.8rem;color:var(--muted)">Not attempted — correct answer: <strong>${q.a}</strong></div>`}
-        </div>`;
-      }).join('')}
-    </div>`;
+  // Legend
+  const legendHtml = `<div style="margin-top:1rem;margin-bottom:.5rem">
+    <div class="breakdown-title" style="margin-bottom:.5rem">QUESTION REVIEW — tap any box to expand</div>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <div style="display:flex;align-items:center;gap:.3rem;font-family:var(--font-mono);font-size:.6rem;color:var(--green)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(0,230,118,.3);border:1px solid var(--green)"></div>CORRECT</div>
+      <div style="display:flex;align-items:center;gap:.3rem;font-family:var(--font-mono);font-size:.6rem;color:var(--red)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(255,61,90,.3);border:1px solid var(--red)"></div>WRONG</div>
+      <div style="display:flex;align-items:center;gap:.3rem;font-family:var(--font-mono);font-size:.6rem;color:var(--gold)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(255,193,7,.2);border:1px solid var(--gold)"></div>SKIPPED</div>
+      <div style="display:flex;align-items:center;gap:.3rem;font-family:var(--font-mono);font-size:.6rem;color:var(--muted)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(74,96,128,.2);border:1px solid var(--muted)"></div>NOT ATTEMPTED</div>
+    </div>
+  </div>`;
 
-  bdEl.innerHTML = breakdownHtml + reviewHtml;
+  // Clickable number grid
+  const gridHtml = `<div class="mock-result-grid" id="mock-result-grid">` +
+    questions.map((q,i) => {
+      const isCorrect = q._correct;
+      const isAnswered = q._answered;
+      const isSkipped = q._skipped && !q._answered;
+      let cls = 'mock-result-box';
+      if (isAnswered && isCorrect) cls += ' correct';
+      else if (isAnswered && !isCorrect) cls += ' wrong';
+      else if (isSkipped) cls += ' skipped';
+      else cls += ' unattempted';
+      return `<div class="${cls}" id="mrb-${i}" onclick="toggleMockResultDetail(${i})">${i+1}</div>`;
+    }).join('') + '</div>';
+
+  // Detail panels (hidden by default, toggled on click)
+  const detailsHtml = questions.map((q,i) => {
+    const isCorrect = q._correct;
+    const isAnswered = q._answered;
+    const isSkipped = q._skipped && !q._answered;
+    let statusColor = isSkipped ? 'var(--gold)' : !isAnswered ? 'var(--muted)' : isCorrect ? 'var(--green)' : 'var(--red)';
+    let statusLabel = isSkipped ? '⏭ SKIPPED' : !isAnswered ? '— NOT ATTEMPTED' : isCorrect ? '✓ CORRECT' : '✗ INCORRECT';
+    return `<div class="mock-result-detail" id="mrd-${i}">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
+        <span style="font-family:var(--font-mono);font-size:.62rem;color:var(--muted)">Q${i+1}</span>
+        <span style="font-family:var(--font-mono);font-size:.6rem;color:${statusColor};background:${statusColor}18;border:1px solid ${statusColor}40;border-radius:3px;padding:.1rem .4rem">${statusLabel}</span>
+        <span style="font-family:var(--font-mono);font-size:.58rem;color:var(--muted);margin-left:auto">${q.deckName||''}</span>
+      </div>
+      <div style="font-size:.85rem;line-height:1.5;margin-bottom:.5rem;color:var(--text)">${q.q}</div>
+      ${isAnswered && !isCorrect ? `<div style="font-size:.8rem;color:var(--red);margin-bottom:.3rem">Your answer: <em>${q._chosenAnswer||'—'}</em></div>` : ''}
+      <div style="font-size:.8rem;color:var(--green)">✓ Correct answer: <strong>${q.a}</strong></div>
+    </div>`;
+  }).join('');
+
+  bdEl.innerHTML = breakdownHtml + legendHtml + gridHtml + detailsHtml;
+}
+
+function toggleMockResultDetail(idx) {
+  const detail = document.getElementById(`mrd-${idx}`);
+  const box = document.getElementById(`mrb-${idx}`);
+  if (!detail) return;
+  const isOpen = detail.classList.contains('open');
+  // Close all open details first
+  document.querySelectorAll('.mock-result-detail.open').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.mock-result-box.active').forEach(b => b.classList.remove('active'));
+  // Toggle this one
+  if (!isOpen) {
+    detail.classList.add('open');
+    box.classList.add('active');
+    detail.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
 }
 
 function formatMockTime(seconds) {
@@ -5794,6 +5929,12 @@ function showResults() {
       P.mockCompleted = (P.mockCompleted || 0) + 1;
       if (pct >= 70) P.mockPassed = true;
       if (pct >= 85) P.mockMerit = true;
+    }
+
+    // Survival achievements
+    if (GS.mode === 'survival') {
+      const reached = GS.currentQ + 1;
+      if (reached > (P.survivalBest || 0)) P.survivalBest = reached;
     }
 
     if (!P.gcmStreak) P.gcmStreak = 0;
