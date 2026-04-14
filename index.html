@@ -5016,6 +5016,8 @@ function renderQuestion() {
   // Store for mock review restoration
   if (GS.isMock) q._lastOptions = displayOptions;
 
+  const grid = document.getElementById('options-grid');
+
   // In mock mode, if question already answered — restore locked state with NO colour feedback
   if (GS.isMock && q._answered) {
     const opts = q._lastOptions || displayOptions;
