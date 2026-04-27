@@ -77,7 +77,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height
 .site-title{font-family:var(--font-h);font-size:clamp(1.4rem,5vw,2.4rem);font-weight:700;letter-spacing:3px;color:var(--text);line-height:1.1;margin-bottom:.3rem}
 .site-title .accent{color:var(--cyan)}
 .site-sub{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);letter-spacing:1.5px}
-.header-controls{position:absolute;top:0;right:0;display:flex;gap:.4rem;align-items:center}
+.header-controls{display:flex;gap:.4rem;align-items:center;justify-content:flex-end;margin-bottom:.5rem}
 .font-controls{display:flex;gap:1px;align-items:center;background:var(--panel2);border:1px solid var(--border);border-radius:4px;overflow:hidden}
 .font-btn{font-family:var(--font-mono);font-size:.65rem;color:var(--muted);background:none;border:none;padding:.25rem .4rem;cursor:pointer;transition:all .15s;letter-spacing:.5px;line-height:1;min-width:2rem;text-align:center}
 .font-btn:hover{color:var(--cyan);background:rgba(0,212,255,.08)}
@@ -4226,20 +4226,22 @@ function formatMockTime(seconds) {
 
 
 
+function updateNotifBtn() {
+  const btn = document.getElementById('notif-btn');
+  if (!btn) return;
+  if (!('Notification' in window)) { btn.textContent = 'Notifications Not Supported'; return; }
+  if (Notification.permission === 'denied') { btn.textContent = 'Notifications Blocked by Browser'; return; }
+  btn.textContent = P.notifsOn ? 'Daily Reminders On — tap to disable' : 'Enable Daily Reminders';
+}
+
 function requestNotifPermission() {
-  if (!('Notification' in window)) {
-    alert('Notifications not supported on this browser.');
-    return;
+  if (!('Notification' in window)) { alert('Notifications not supported on this browser.'); return; }
+  if (P.notifsOn) {
+    P.notifsOn = false; saveP(); updateNotifBtn(); return;
   }
   Notification.requestPermission().then(perm => {
-    const btn = document.getElementById('notif-btn');
-    if (perm === 'granted') {
-      P.notifsOn = true; saveP();
-      if (btn) btn.textContent = '✓ Daily Reminders On';
-      scheduleNotification();
-    } else {
-      if (btn) btn.textContent = '🚫 Notifications Blocked';
-    }
+    if (perm === 'granted') { P.notifsOn = true; saveP(); scheduleNotification(); }
+    updateNotifBtn();
   });
 }
 
@@ -4265,12 +4267,12 @@ function scheduleNotification() {
 // Init notifications on load
 if (P.notifsOn && Notification.permission === 'granted') {
   scheduleNotification();
-  const btn = document.getElementById('notif-btn');
-  if (btn) btn.textContent = '✓ Daily Reminders On';
 }
+updateNotifBtn();
 
 function openSettings() {
   document.getElementById('settings-modal').classList.remove('hidden');
+  updateNotifBtn();
 }
 function closeSettings() {
   document.getElementById('settings-modal').classList.add('hidden');
