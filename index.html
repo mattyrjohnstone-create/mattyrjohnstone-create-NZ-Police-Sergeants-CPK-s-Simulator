@@ -2206,7 +2206,7 @@ const PDEFAULT = {topicWeekly:{},hardQuestions:{},avgTimeMs:{},srsData:{},bookma
   srsCompleted:0,theme:'dark',topicExpert90Count:{},cdemExpert:false,roadPro:false,searchAce:false,riskMgr:false,
   reportedQuestions:[],fontScale:1,
   mockCompleted:0,mockPassed:false,mockMerit:false,
-  survivalBest:0};
+  survivalBest:0,notifsOn:false,weakSessions:0};
 Object.keys(PDEFAULT).forEach(k=>{ if(P[k]===undefined) P[k]=PDEFAULT[k]; });
 
 function saveP() { save('cpk_player2', P); }
@@ -2579,7 +2579,7 @@ function startCramMode() {
   GS.lives = 3;
   GS.rankUpTo = null;
   GS.isRetry = false;
-  showScreen('screen-quiz');
+  showScreen('quiz');
   renderQuestion();
 }
 
@@ -3210,6 +3210,8 @@ function startDailyChallenge() {
   GS.currentQ = 0; GS.score = 0; GS.sessionXP = 0; GS.streak = 0; GS.bestStreak = 0;
   GS.answered = false; GS.wrongAnswers = []; GS.deckPerf = {}; GS.rankUpTo = null;
   GS.isRetry = false; GS.isDailyChallenge = true; GS.isSRS = false;
+  GS.isMock = false; GS.isSurvival = false;
+  GS.skippedQuestions = []; GS.answeredIndices = new Set(); GS.lives = 3;
   GS.sessionTimes = [];
   showScreen('quiz');
   renderQuestion();
@@ -3741,6 +3743,7 @@ function answer(btn, isCorrect) {
     P.qHistory[q._uid].w++;
     playWrong();
     trackHardQuestion(q, false);
+    const chosen = btn.querySelector('.opt-text') ? btn.querySelector('.opt-text').textContent : btn.textContent.trim();
     const wrongEntry = Object.assign({}, q, {_chosen: chosen});
     GS.wrongAnswers.push(wrongEntry);
     recordDeckPerf(q.deckId, false);
@@ -4407,7 +4410,7 @@ function openQuizReview() {
     </div>`;
   }).join('');
 
-  showScreen('screen-quiz-review');
+  showScreen('quiz-review');
 }
 
 function shareResult() {
@@ -4956,26 +4959,16 @@ function reportQuestion() {
     saveP();
   }
 
-  const subject = encodeURIComponent('CPK Quiz - Question Error Report');
-  const body = encodeURIComponent(
-    'Hi Matthew,\n\nI would like to report a potential error in the following quiz question:\n\n' +
-    'DECK: ' + (q.deckName || 'Unknown') + '\n' +
-    'QUESTION ID: ' + (uid || 'unknown') + '\n' +
-    'QUESTION: ' + q.q + '\n' +
-    'ANSWER SHOWN: ' + q.a + '\n\n' +
-    'ISSUE:\n[Please describe what you believe is incorrect and what the correct answer should be]\n\n' +
-    '— This question has been automatically removed from this user\'s quiz pool until you clear it.\n' +
-    '   To restore it, they can go to Settings → Reported Questions in the app.\n\n' +
-    'Kind regards'
-  );
-  window.open('mailto:matthew.johnstone@police.govt.nz?subject=' + subject + '&body=' + body);
+  // Show the report modal with question ID for the screenshot
+  const modal = document.getElementById('report-modal');
+  const qidEl = document.getElementById('report-modal-qid');
+  if (qidEl) qidEl.textContent = 'Question ID: ' + (uid || 'unknown');
+  if (modal) modal.classList.remove('hidden');
+}
 
-  const sentEl = document.getElementById('report-sent');
-  if (sentEl) {
-    sentEl.textContent = '✓ Reported — question removed from your pool until corrected';
-    sentEl.style.display = 'block';
-    setTimeout(() => { sentEl.style.display = 'none'; sentEl.textContent = '✓ Thank you — report sent to MJQD53'; }, 5000);
-  }
+function closeReportModal() {
+  const modal = document.getElementById('report-modal');
+  if (modal) modal.classList.add('hidden');
 }
 
 function showScreen(name) {
@@ -5020,12 +5013,27 @@ init();
     </div>
   </div>
 </div>
+<!-- ══ REPORT QUESTION MODAL ══ -->
+<div id="report-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeReportModal()">
+  <div class="modal-box" style="max-width:340px;text-align:center">
+    <div style="font-size:1.6rem;margin-bottom:.5rem">⚑</div>
+    <div class="modal-hdr" style="margin-bottom:.6rem">QUESTION REPORTED</div>
+    <div style="font-family:var(--font-mono);font-size:.72rem;color:var(--text);line-height:1.7;margin-bottom:1rem">
+      This question has been removed from your pool.<br><br>
+      Please <strong>screenshot this question</strong> and email it to:<br>
+      <span style="color:var(--cyan);font-size:.8rem;letter-spacing:.5px">MJQD53@police.govt.nz</span>
+    </div>
+    <div id="report-modal-qid" style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-bottom:1rem"></div>
+    <button class="btn-ra" onclick="closeReportModal()" style="width:100%">← RETURN TO GAME</button>
+  </div>
+</div>
+
 <!-- ══ QUIZ REVIEW SCREEN ══ -->
 <div id="screen-quiz-review" class="screen" style="display:none">
   <div style="max-width:680px;margin:0 auto;padding:1rem;width:100%">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
       <div class="section-hdr" style="margin:0">📋 ANSWER REVIEW</div>
-      <button class="btn-rb" onclick="showScreen('screen-results')" style="padding:.4rem .8rem;font-size:.75rem">← BACK</button>
+      <button class="btn-rb" onclick="showScreen('results')" style="padding:.4rem .8rem;font-size:.75rem">← BACK</button>
     </div>
     <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--muted);margin-bottom:.8rem" id="review-summary"></div>
     <div id="review-list"></div>
